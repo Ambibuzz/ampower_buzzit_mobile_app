@@ -30,7 +30,7 @@ AmPower BuzzIT is the go-to mobile app for business owners, managers, and key pe
 
 ### Gif
 
-<img src="https://github.com/Ambibuzz/ampower_buzzit_mobile_app/tree/buzzit_flutter/gif" alt="BuzzIT GIF" width="216" height="432">
+<img src="https://github.com/Ambibuzz/ampower_buzzit_mobile_app/blob/buzzit_flutter/gif/buzzit_recording.gif" alt="BuzzIT GIF" width="216" height="432">
 
 ### Features of AmPower BuzzIT
 - Dashboard which will show income,expense and net profit

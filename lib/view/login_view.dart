@@ -33,8 +33,7 @@ class LoginView extends StatelessWidget {
     }
   }
 
-  Future getPrefs(LoginViewModel model) async {
-    //TODO:Uncomment if it doesnt fixes issue
+  Future getPrefs(LoginViewModel model, BuildContext context) async {
     model.setState(ViewState.idle);
     var uname = await model.getUsername();
     var url = await model.getInstanceUrl();
@@ -43,6 +42,8 @@ class LoginView extends StatelessWidget {
     }
     if (url.isNotEmpty) {
       instanceUrlController.text = url;
+    } else {
+      await showDialogToEnterSiteUrl(model, context);
     }
   }
 
@@ -51,7 +52,7 @@ class LoginView extends StatelessWidget {
     return BaseView<LoginViewModel>(
       onModelReady: (model) async {
         model.getVersion();
-        await getPrefs(model);
+        await getPrefs(model, context);
 
         // model.showNotification();
       },

@@ -8,7 +8,7 @@
 PRODUCT_NAME = ampower_buzzit_mobile
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.example.ampower_buzzit_mobile
+PRODUCT_BUNDLE_IDENTIFIER = com.ampower.buzzit_mobile_app
 
 // The copyright displayed in application information
 PRODUCT_COPYRIGHT = Copyright © 2024 com.example. All rights reserved.

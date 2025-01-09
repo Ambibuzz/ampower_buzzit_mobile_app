@@ -55,6 +55,8 @@ class StockBalanceFilterBottomSheetView extends StatelessWidget {
                               ],
                             ),
                             Common.widgetSpacingVerticalLg(),
+                            companyField(model, context),
+                            Common.widgetSpacingVerticalLg(),
                             itemGroupField(model, context),
                             Common.widgetSpacingVerticalLg(),
                             warehouseField(model, context),
@@ -108,6 +110,35 @@ class StockBalanceFilterBottomSheetView extends StatelessWidget {
       suggestionsCallback: (pattern) {
         return TypeAheadWidgets.getSuggestions(
             pattern, locator.get<StockBalanceReportViewModel>().itemCodeList);
+      },
+      transitionBuilder: (context, controller, suggestionsBox) {
+        return suggestionsBox;
+      },
+    );
+  }
+
+  Widget companyField(
+      StockBalanceFilterBottomSheetViewModel model, BuildContext context) {
+    var companyData =
+        locator.get<StockBalanceReportViewModel>().company['message'] as List;
+    var companyList = companyData.map((e) => e['value'] as String).toList();
+    return CustomTypeAheadFormField(
+      controller: model.companyController,
+      focusNode: model.companyFocusNode,
+      decoration: Common.inputDecoration(),
+      label: 'Company',
+      // hideSuggestionOnKeyboardHide: true,
+      required: true,
+      style: Theme.of(context).textTheme.bodyMedium,
+      itemBuilder: (context, item) {
+        return TypeAheadWidgets.itemUi(item, context);
+      },
+      onSuggestionSelected: (suggestion) async {
+        model.companyController.text = suggestion;
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      suggestionsCallback: (pattern) {
+        return TypeAheadWidgets.getSuggestions(pattern, companyList);
       },
       transitionBuilder: (context, controller, suggestionsBox) {
         return suggestionsBox;

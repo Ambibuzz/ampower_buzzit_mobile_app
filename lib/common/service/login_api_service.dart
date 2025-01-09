@@ -3,10 +3,7 @@ import 'package:ampower_buzzit_mobile/common/service/storage_service.dart';
 import 'package:ampower_buzzit_mobile/common/widgets/custom_toast.dart';
 import 'package:ampower_buzzit_mobile/config/exception.dart';
 import 'package:ampower_buzzit_mobile/locator/locator.dart';
-import 'package:ampower_buzzit_mobile/model/user.dart';
 import 'package:ampower_buzzit_mobile/route/routing_constants.dart';
-import 'package:ampower_buzzit_mobile/service/api_service.dart';
-import 'package:ampower_buzzit_mobile/service/fetch_cached_doctype_service.dart';
 import 'package:ampower_buzzit_mobile/util/dio_helper.dart';
 import 'package:ampower_buzzit_mobile/util/preference.dart';
 import 'package:dio/dio.dart';
@@ -42,10 +39,6 @@ class LoginService {
         storageService.userName = username;
         storageService.loggedIn = true;
         storageService.name = fullname;
-        var loggedInUserName = await locator.get<ApiService>().getUsername();
-        var user =
-            await locator.get<ApiService>().getUserFromEmail(loggedInUserName);
-        await checkIfLoginUserHasChanged(user);
         await storageService.setBool(PreferenceVariables.loggedIn, true);
 
         var cookie = response!.headers.map['set-cookie'];
@@ -58,17 +51,6 @@ class LoginService {
       }
     } catch (e) {
       exception(e, url, 'login');
-    }
-  }
-
-  Future checkIfLoginUserHasChanged(User currentUser) async {
-    var previousDetails = locator.get<FetchCachedDoctypeService>().getUser();
-    if (previousDetails.fullName != null ||
-        previousDetails.fullName?.isNotEmpty == true) {
-      // if current and previous credentials dont match means login has changes
-      if (currentUser.fullName != previousDetails.fullName) {
-        locator.get<StorageService>().isLoginChanged = true;
-      }
     }
   }
 }

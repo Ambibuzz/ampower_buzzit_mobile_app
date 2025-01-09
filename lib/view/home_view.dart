@@ -42,15 +42,6 @@ class HomeView extends StatelessWidget {
         }
         var connectivityStatus =
             Provider.of<ConnectivityStatus>(context, listen: false);
-        if (locator.get<StorageService>().isLoginChanged) {
-          debugPrint(
-              'is login changed ${locator.get<StorageService>().isLoginChanged}');
-          // set isLoginChanged to false and recache doctypes
-          locator.get<StorageService>().isLoginChanged = false;
-          locator
-              .get<DoctypeCachingService>()
-              .reCacheDoctype(connectivityStatus);
-        }
         await model.checkDoctypeCachedOrNot(connectivityStatus);
         await model.getGlobalDefaults();
         await model.getUser();

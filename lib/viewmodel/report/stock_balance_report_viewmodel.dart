@@ -17,6 +17,7 @@ class StockBalanceReportViewModel extends BaseViewModel {
   var itemGroupList = <String>[];
   var warehouseList = <String>[];
   dynamic response;
+  dynamic company;
 
   Future getStockBalanceReport({Map<String, dynamic>? filters}) async {
     setState(ViewState.busy);
@@ -25,18 +26,6 @@ class StockBalanceReportViewModel extends BaseViewModel {
     var datePrevMon = Jiffy.now().subtract(months: 1).dateTime;
     var fromDate = DateFormat('yyyy-MM-dd').format(datePrevMon);
     var toDate = DateFormat('yyyy-MM-dd').format(dateNow);
-    // function to generate report
-    await locator.get<ReportService>().generateStockBalanceReport(
-          company,
-          fromDate,
-          toDate,
-          itemCode: "",
-          itemGroup: "",
-          warehouse: "",
-          filters: filters,
-        );
-    await Future.delayed(const Duration(seconds: 1));
-
     stockBalance = await locator.get<ReportService>().getStockBalanceReport(
           company,
           fromDate,
@@ -77,6 +66,7 @@ class StockBalanceReportViewModel extends BaseViewModel {
           'name',
           queryParams,
         );
+    company = await locator.get<ApiService>().searchLink('Company', {});
     setState(ViewState.idle);
     notifyListeners();
   }

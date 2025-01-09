@@ -126,17 +126,20 @@ class Common {
       String? key, String? value, BuildContext context) {
     return Row(
       children: [
-        Text(
-          '$key : ',
-          style: TextStyle(
-            fontSize: 14,
-            color: CustomTheme.borderColor,
+        Expanded(
+          flex: 30,
+          child: Text(
+            '$key : ',
+            style: TextStyle(
+              fontSize: 14,
+              color: CustomTheme.borderColor,
+            ),
           ),
         ),
-        SizedBox(
-          width: Sizes.smallPaddingWidget(context),
-        ),
+        const Text(' : '),
+        SizedBox(width: Sizes.smallPaddingWidget(context)),
         Expanded(
+          flex: 65,
           child: value != null ? Html(data: value) : const SizedBox(),
         ),
       ],
@@ -146,17 +149,20 @@ class Common {
   static Widget rowWidget(String? key, String? value, BuildContext context) {
     return Row(
       children: [
-        Text(
-          '$key : ',
-          style: TextStyle(
-            fontSize: 14,
-            color: CustomTheme.borderColor,
+        Expanded(
+          flex: 30,
+          child: Text(
+            '$key : ',
+            style: TextStyle(
+              fontSize: 14,
+              color: CustomTheme.borderColor,
+            ),
           ),
         ),
-        SizedBox(
-          width: Sizes.smallPaddingWidget(context),
-        ),
+        const Text(' : '),
+        SizedBox(width: Sizes.smallPaddingWidget(context)),
         Expanded(
+          flex: 65,
           child: Text(
             value ?? '',
             maxLines: 6,
@@ -297,7 +303,7 @@ class Common {
               ),
               const Spacer(),
               CustomButtons.textButton(
-                  'Add Comment', Theme.of(context).colorScheme.secondary,
+                  'Comment', Theme.of(context).colorScheme.secondary,
                   () async {
                 await showDialog(
                   context: context,

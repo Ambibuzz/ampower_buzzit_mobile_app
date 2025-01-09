@@ -284,6 +284,48 @@ class ApiService {
     return User();
   }
 
+  Future<User> getUserFromEmail(String email) async {
+    User user;
+    // final url = userFromFullName(fullname);
+    var url = '/api/resource/User';
+    var queryParams = {
+      'fields': '["*"]',
+      'filters': '[["User","email","=","$email"]]',
+    };
+    try {
+      final response = await DioHelper.dio?.get(
+        url,
+        queryParameters: queryParams,
+      );
+      if (response?.statusCode == 200) {
+        user = User.fromJson(response?.data['data'][0]);
+        return user;
+      }
+    } catch (e) {
+      exception(e, url, 'getUser');
+    }
+    return User();
+  }
+
+  //for fetching username
+  Future<String> getUsername() async {
+    var username = '';
+    final url = usernameUrl();
+
+    try {
+      final response = await DioHelper.dio?.get(url);
+
+      if (response?.statusCode == 200) {
+        var data = response?.data;
+        username = data['message'];
+        return username;
+      }
+    } catch (e) {
+      exception(e, url, 'getUsername');
+    }
+    return username;
+  }
+
   Future<String> downloadPdf(String doctype, String docname) async {
     var storagePermission = await [
       Permission.storage,

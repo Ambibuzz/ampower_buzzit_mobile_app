@@ -145,7 +145,7 @@ class LoginView extends StatelessWidget {
                               ],
                             ),
                             SizedBox(
-                              height: displayHeight(context) * 0.02,
+                              height: displayHeight(context) * 0.01,
                             ),
                             Center(
                               child: Column(

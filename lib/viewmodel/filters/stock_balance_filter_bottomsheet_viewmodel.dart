@@ -18,6 +18,8 @@ class StockBalanceFilterBottomSheetViewModel extends BaseViewModel {
   var customerFocusNode = FocusNode();
   var itemCodeFocusNode = FocusNode();
   var itemGroupFocusNode = FocusNode();
+  var companyController = TextEditingController();
+  var companyFocusNode = FocusNode();
 
   void initData() async {
     var dateNow = DateTime.now();
@@ -28,12 +30,15 @@ class StockBalanceFilterBottomSheetViewModel extends BaseViewModel {
     toDateController.text = toDateController.text.isNotEmpty == true
         ? toDateController.text
         : DateFormat('yyyy-MM-dd').format(dateNow);
+    companyController.text =
+        locator.get<HomeViewModel>().globalDefaults.defaultCompany ?? '';
     notifyListeners();
   }
 
   void clear() {
     // pastOrderDetailsReportModel.clear();
     // pastOrderDetailsReportBarChart.clear();
+    companyController.clear();
     customerController.clear();
     itemCodeController.clear();
     itemGroupController.clear();
@@ -51,12 +56,11 @@ class StockBalanceFilterBottomSheetViewModel extends BaseViewModel {
   }
 
   Future applyFilter(BuildContext context) async {
-    var company = locator.get<HomeViewModel>().globalDefaults.defaultCompany;
     var filters = {
-      "company": company,
       "from_date": fromDateController.text,
       "to_date": toDateController.text,
-      "ignore_closing_balance": 1,
+      "valuation_field_type": "Currency",
+      "asset": [],
     };
     if (warehouseController.text.isNotEmpty == true) {
       filters["warehouse"] = warehouseController.text;
@@ -66,6 +70,9 @@ class StockBalanceFilterBottomSheetViewModel extends BaseViewModel {
     }
     if (itemCodeController.text.isNotEmpty == true) {
       filters["item_code"] = itemCodeController.text;
+    }
+    if (companyController.text.isNotEmpty == true) {
+      filters["company"] = companyController.text;
     }
     await Future.delayed(const Duration(milliseconds: 100));
     Navigator.of(context).pop(filters);
@@ -79,6 +86,7 @@ class StockBalanceFilterBottomSheetViewModel extends BaseViewModel {
     warehouseFocusNode.unfocus();
     itemGroupFocusNode.unfocus();
     itemCodeFocusNode.unfocus();
+    companyFocusNode.unfocus();
     notifyListeners();
   }
 }

@@ -141,57 +141,6 @@ class ReportService {
     return '';
   }
 
-  Future generateStockBalanceReport(
-    String? company,
-    String? fromDate,
-    String? toDate, {
-    String? warehouse,
-    String? itemGroup,
-    String? itemCode,
-    Map<String, dynamic>? filters,
-  }) async {
-    var url = '/api/method/frappe.desk.query_report.background_enqueue_run';
-    try {
-      var filter = {
-        "company": company,
-        "from_date": fromDate,
-        "to_date": toDate,
-        "ignore_closing_balance": 1,
-      };
-      if (warehouse?.isNotEmpty == true) {
-        filter["warehouse"] = warehouse;
-      }
-      if (itemGroup?.isNotEmpty == true) {
-        filter["item_group"] = itemGroup;
-      }
-      if (itemCode?.isNotEmpty == true) {
-        filter["item_code"] = itemCode;
-      }
-      var queryParams = <String, dynamic>{};
-      // generate stock balance based on default filter
-      if (filters == null || filters.keys.isEmpty) {
-        queryParams = {
-          'report_name': 'Stock Balance',
-          'filters': jsonEncode(filter),
-        };
-      }
-      // generate stock balance based on filter
-      else {
-        queryParams = {
-          'report_name': 'Stock Balance',
-          'filters': jsonEncode(filters),
-        };
-      }
-
-      final response = await DioHelper.dio?.post(
-        url,
-        queryParameters: queryParams,
-      );
-    } catch (e) {
-      exception(e, url, 'generateStockBalanceReport');
-    }
-  }
-
   Future<StockBalance> getStockBalanceReport(
     String? company,
     String? fromDate,
@@ -207,11 +156,14 @@ class ReportService {
       var timestamp = DateTime.now().millisecondsSinceEpoch;
 
       var filter = {
-        "company": company,
         "from_date": fromDate,
         "to_date": toDate,
-        "ignore_closing_balance": 1,
+        "valuation_field_type": "Currency",
+        "asset": [],
       };
+      if (company?.isNotEmpty == true) {
+        filter["company"] = company;
+      }
       if (warehouse?.isNotEmpty == true) {
         filter["warehouse"] = warehouse;
       }
@@ -227,6 +179,7 @@ class ReportService {
         queryParams = {
           'report_name': 'Stock Balance',
           'filters': jsonEncode(filter),
+          'ignore_prepared_report': false,
           'are_default_filters': false,
           '_': timestamp
         };
@@ -236,6 +189,7 @@ class ReportService {
         queryParams = {
           'report_name': 'Stock Balance',
           'filters': jsonEncode(filters),
+          'ignore_prepared_report': false,
           'are_default_filters': false,
           '_': timestamp
         };
@@ -270,10 +224,10 @@ class ReportService {
       var timestamp = DateTime.now().millisecondsSinceEpoch;
 
       var filter = {
-        "company": company,
         "from_date": fromDate,
         "to_date": toDate,
-        "ignore_closing_balance": 1,
+        "valuation_field_type": "Currency",
+        "asset": [],
       };
       if (warehouse?.isNotEmpty == true) {
         filter["warehouse"] = warehouse;
@@ -284,12 +238,16 @@ class ReportService {
       if (itemCode?.isNotEmpty == true) {
         filter["item_code"] = itemCode;
       }
+      if (company?.isNotEmpty == true) {
+        filter["company"] = company;
+      }
       var queryParams = <String, dynamic>{};
       if (filters == null) {
         debugPrint('fetching stock balance based on default filter');
         queryParams = {
           'report_name': 'Stock Balance',
           'filters': jsonEncode(filter),
+          'ignore_prepared_report': false,
           'are_default_filters': false,
           '_': timestamp
         };
@@ -298,6 +256,7 @@ class ReportService {
         queryParams = {
           'report_name': 'Stock Balance',
           'filters': jsonEncode(filters),
+          'ignore_prepared_report': false,
           'are_default_filters': false,
           '_': timestamp
         };
@@ -309,7 +268,6 @@ class ReportService {
       );
       if (response?.statusCode == 200) {
         var data = response?.data;
-
         return data;
       }
     } catch (e) {

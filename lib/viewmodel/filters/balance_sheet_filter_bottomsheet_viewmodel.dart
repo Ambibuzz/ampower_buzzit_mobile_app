@@ -60,10 +60,8 @@ class BalanceSheetFilterBottomSheetViewModel extends BaseViewModel {
   }
 
   Future applyFilter(BuildContext context) async {
-    var company = locator.get<HomeViewModel>().globalDefaults.defaultCompany;
-
     var filters = {
-      "company": company,
+      "company": companyController.text,
       "filter_based_on": "Date Range",
       "period_start_date": fromDateController.text,
       "period_end_date": toDateController.text,

@@ -131,7 +131,7 @@ class SalesOrderDetailView extends StatelessWidget {
                 Row(
                   children: [
                     CustomButtons.textButton(
-                        'Add Comment', Theme.of(context).colorScheme.secondary,
+                        'Comment', Theme.of(context).colorScheme.secondary,
                         () async {
                       var connectivityStatus = Provider.of<ConnectivityStatus>(
                           context,

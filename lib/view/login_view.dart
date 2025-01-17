@@ -2,6 +2,7 @@ import 'package:ampower_buzzit_mobile/base_view.dart';
 import 'package:ampower_buzzit_mobile/base_viewmodel.dart';
 import 'package:ampower_buzzit_mobile/common/service/storage_service.dart';
 import 'package:ampower_buzzit_mobile/common/widgets/common.dart';
+import 'package:ampower_buzzit_mobile/common/widgets/custom_snackbar.dart';
 import 'package:ampower_buzzit_mobile/common/widgets/custom_textformfield.dart';
 import 'package:ampower_buzzit_mobile/config/styles.dart';
 import 'package:ampower_buzzit_mobile/config/theme.dart';
@@ -242,10 +243,17 @@ class LoginView extends StatelessWidget {
                       backgroundColor: WidgetStatePropertyAll(
                           Theme.of(context).colorScheme.secondary),
                     ),
-                    onPressed: () {
-                      locator.get<StorageService>().apiUrl =
-                          instanceUrlController.text;
-                      Navigator.of(context, rootNavigator: true).pop();
+                    onPressed: () async {
+                      // check url is active
+                      if (await model.isUrlActive(instanceUrlController.text)) {
+                        locator.get<StorageService>().apiUrl =
+                            instanceUrlController.text;
+                        Navigator.of(context, rootNavigator: true).pop();
+                      } else {
+                        showSnackBar(
+                            'The URL provided is invalid. Please check the URL and try again.',
+                            context);
+                      }
                     },
                     child: const Text(
                       'Confirm',

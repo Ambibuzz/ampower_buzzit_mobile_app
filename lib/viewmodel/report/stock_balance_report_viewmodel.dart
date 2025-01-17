@@ -26,6 +26,17 @@ class StockBalanceReportViewModel extends BaseViewModel {
     var datePrevMon = Jiffy.now().subtract(months: 1).dateTime;
     var fromDate = DateFormat('yyyy-MM-dd').format(datePrevMon);
     var toDate = DateFormat('yyyy-MM-dd').format(dateNow);
+    // function to generate report
+    await locator.get<ReportService>().generateStockBalanceReport(
+          company,
+          fromDate,
+          toDate,
+          itemCode: "",
+          itemGroup: "",
+          warehouse: "",
+          filters: filters,
+        );
+    await Future.delayed(const Duration(seconds: 1));
     stockBalance = await locator.get<ReportService>().getStockBalanceReport(
           company,
           fromDate,

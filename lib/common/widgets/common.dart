@@ -243,127 +243,139 @@ class Common {
               vertical: Sizes.smallPaddingWidget(context)),
           child: Row(
             children: [
-              Image.asset(icon, width: 25, height: 25),
-              SizedBox(
-                width: Sizes.smallPaddingWidget(context),
+              Expanded(
+                flex: 10,
+                child: Image.asset(icon, width: 25, height: 25),
               ),
-              Column(
-                children: <Widget>[
-                  Theme(
-                    data: Theme.of(context)
-                        .copyWith(dividerColor: Colors.transparent),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          title ?? '',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                        ),
-                        SizedBox(
-                          height: Sizes.smallPaddingWidget(context),
-                        ),
-                        Text(
-                          subtitle ?? '',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontSize: 14,
-                          ),
-                        ),
-                        SizedBox(
-                            height: Sizes.smallPaddingWidget(context) * 1.5),
-                        Container(
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                color: CustomTheme.borderColor,
-                              ),
-                              borderRadius: Corners.xxlBorder),
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: Sizes.smallPaddingWidget(context),
-                                vertical: 2),
-                            child: Text(
-                              status ?? '',
-                              style: TextStyle(
-                                  color: CustomTheme.borderColor, fontSize: 12),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: Sizes.smallPaddingWidget(context)),
-                ],
-              ),
-              const Spacer(),
-              CustomButtons.textButton(
-                  'Comment', Theme.of(context).colorScheme.secondary,
-                  () async {
-                await showDialog(
-                  context: context,
-                  barrierDismissible: true,
-                  builder: (context) => AlertDialog(
-                    insetPadding: EdgeInsets.zero,
-                    contentPadding: EdgeInsets.symmetric(
-                      horizontal: Sizes.paddingWidget(context),
-                      vertical: Sizes.smallPaddingWidget(context),
-                    ),
-                    title: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            'Please type to add your comments',
+              SizedBox(width: Sizes.smallPaddingWidget(context)),
+              Expanded(
+                flex: 58,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Theme(
+                      data: Theme.of(context)
+                          .copyWith(dividerColor: Colors.transparent),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            title ?? '',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               fontSize: 16,
+                              fontWeight: FontWeight.bold,
                               color: Theme.of(context).primaryColor,
                             ),
                           ),
-                        ),
-                        SizedBox(width: Sizes.smallPaddingWidget(context)),
-                        GestureDetector(
-                            onTap: () {
-                              Navigator.of(context, rootNavigator: true).pop();
-                            },
-                            child: const Icon(Icons.clear))
+                          SizedBox(
+                            height: Sizes.smallPaddingWidget(context),
+                          ),
+                          Text(
+                            subtitle ?? '',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 14,
+                            ),
+                          ),
+                          SizedBox(
+                              height: Sizes.smallPaddingWidget(context) * 1.5),
+                          Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: CustomTheme.borderColor,
+                                ),
+                                borderRadius: Corners.xxlBorder),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: Sizes.smallPaddingWidget(context),
+                                  vertical: 2),
+                              child: Text(
+                                status ?? '',
+                                style: TextStyle(
+                                    color: CustomTheme.borderColor,
+                                    fontSize: 12),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: Sizes.smallPaddingWidget(context)),
+                  ],
+                ),
+              ),
+              Expanded(
+                flex: 30,
+                child: CustomButtons.textButton(
+                    'Comment', Theme.of(context).colorScheme.secondary,
+                    () async {
+                  await showDialog(
+                    context: context,
+                    barrierDismissible: true,
+                    builder: (context) => AlertDialog(
+                      insetPadding: EdgeInsets.zero,
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: Sizes.paddingWidget(context),
+                        vertical: Sizes.smallPaddingWidget(context),
+                      ),
+                      title: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              'Please type to add your comments',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: Sizes.smallPaddingWidget(context)),
+                          GestureDetector(
+                              onTap: () {
+                                Navigator.of(context, rootNavigator: true)
+                                    .pop();
+                              },
+                              child: const Icon(Icons.clear))
+                        ],
+                      ),
+                      content:
+                          // Common.addCommentTextField(
+                          //     controller, 'Add a comment', context)
+                          Common.mentionsField(globalKey, context),
+                      actions: <Widget>[
+                        CustomButtons.textButton(
+                            'Comment', Theme.of(context).colorScheme.secondary,
+                            () async {
+                          var user = locator.get<HomeViewModel>().user;
+                          var result =
+                              await locator.get<ApiService>().addComment(
+                                    doctype: doctype,
+                                    name: subtitle,
+                                    content: globalKey
+                                        .currentState!.controller!.text,
+                                    email: user.email,
+                                    commentBy: user.fullName,
+                                  );
+                          if (result) {
+                            // controller.clear();
+                          }
+                          flutterStyledToast(
+                              context,
+                              'Your comment is added successfully',
+                              CustomTheme.toastSuccessColor,
+                              textStyle: TextStyle(
+                                color: Theme.of(context).colorScheme.onSurface,
+                              ));
+                          Navigator.of(context, rootNavigator: true).pop();
+                        })
                       ],
                     ),
-                    content:
-                        // Common.addCommentTextField(
-                        //     controller, 'Add a comment', context)
-                        Common.mentionsField(globalKey, context),
-                    actions: <Widget>[
-                      CustomButtons.textButton('Add Comment',
-                          Theme.of(context).colorScheme.secondary, () async {
-                        var user = locator.get<HomeViewModel>().user;
-                        var result = await locator.get<ApiService>().addComment(
-                              doctype: doctype,
-                              name: subtitle,
-                              content: globalKey.currentState!.controller!.text,
-                              email: user.email,
-                              commentBy: user.fullName,
-                            );
-                        if (result) {
-                          // controller.clear();
-                        }
-                        flutterStyledToast(
-                            context,
-                            'Your comment is added successfully',
-                            CustomTheme.toastSuccessColor,
-                            textStyle: TextStyle(
-                              color: Theme.of(context).colorScheme.onSurface,
-                            ));
-                        Navigator.of(context, rootNavigator: true).pop();
-                      })
-                    ],
-                  ),
-                );
-              }, buttonTextStyle: TextStyle(fontSize: 13)),
+                  );
+                }, buttonTextStyle: TextStyle(fontSize: 13)),
+              ),
             ],
           ),
         ),

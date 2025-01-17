@@ -158,7 +158,9 @@ class StockBalanceReportView extends StatelessWidget {
       for (var r in model.stockBalance.message!.result!) {
         data.add([
           TableData(
-              value: '${(model.stockBalance.message!.result!.indexOf(r) + 1)}. ${r.itemCode}\n', width: displayWidth(context) * 0.45),
+              value:
+                  '${(model.stockBalance.message!.result!.indexOf(r) + 1)}. ${r.itemCode}\n',
+              width: displayWidth(context) * 0.45),
           TableData(
               value: '${r.itemName}\n', width: displayWidth(context) * 0.45),
           TableData(

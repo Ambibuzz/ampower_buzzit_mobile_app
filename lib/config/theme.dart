@@ -206,11 +206,11 @@ class CustomTheme {
         elevation: elevation,
       ),
       expansionTileTheme: ExpansionTileThemeData(
-        backgroundColor: surfaceColorLight,
+        backgroundColor: backgroundColorLight,
         textColor: Colors.black,
         iconColor: Colors.black,
         collapsedIconColor: Colors.black,
-        collapsedBackgroundColor: surfaceColorLight,
+        collapsedBackgroundColor: backgroundColorLight,
         collapsedTextColor: Colors.black,
         // shape: const RoundedRectangleBorder(borderRadius: Corners.xlBorder),
       ),

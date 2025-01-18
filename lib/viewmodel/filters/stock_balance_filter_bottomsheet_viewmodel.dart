@@ -60,7 +60,6 @@ class StockBalanceFilterBottomSheetViewModel extends BaseViewModel {
       "from_date": fromDateController.text,
       "to_date": toDateController.text,
       "valuation_field_type": "Currency",
-      "asset": [],
     };
     if (warehouseController.text.isNotEmpty == true) {
       filters["warehouse"] = warehouseController.text;

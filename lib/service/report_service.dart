@@ -197,7 +197,8 @@ class ReportService {
   Future<StockBalance> getStockBalanceReport(
     String? company,
     String? fromDate,
-    String? toDate, {
+    String? toDate,
+    bool? areDefaultFilters, {
     String? warehouse,
     String? itemGroup,
     String? itemCode,
@@ -232,7 +233,7 @@ class ReportService {
           'report_name': 'Stock Balance',
           'filters': jsonEncode(filter),
           'ignore_prepared_report': false,
-          'are_default_filters': false,
+          'are_default_filters': areDefaultFilters,
           '_': timestamp
         };
       }
@@ -242,7 +243,7 @@ class ReportService {
           'report_name': 'Stock Balance',
           'filters': jsonEncode(filters),
           'ignore_prepared_report': false,
-          'are_default_filters': false,
+          'are_default_filters': areDefaultFilters,
           '_': timestamp
         };
       }
@@ -251,6 +252,7 @@ class ReportService {
         url,
         queryParameters: queryParams,
       );
+      print(response?.data);
       if (response?.statusCode == 200) {
         var data = response?.data;
         sbr = StockBalance.fromJson(data);
@@ -265,7 +267,8 @@ class ReportService {
   Future<dynamic> getStockBalanceReportResponse(
     String? company,
     String? fromDate,
-    String? toDate, {
+    String? toDate,
+    bool? areDefaultFilters, {
     String? warehouse,
     String? itemGroup,
     String? itemCode,
@@ -299,7 +302,7 @@ class ReportService {
           'report_name': 'Stock Balance',
           'filters': jsonEncode(filter),
           'ignore_prepared_report': false,
-          'are_default_filters': false,
+          'are_default_filters': areDefaultFilters,
           '_': timestamp
         };
       } else {
@@ -308,7 +311,7 @@ class ReportService {
           'report_name': 'Stock Balance',
           'filters': jsonEncode(filters),
           'ignore_prepared_report': false,
-          'are_default_filters': false,
+          'are_default_filters': areDefaultFilters,
           '_': timestamp
         };
       }
@@ -317,6 +320,7 @@ class ReportService {
         url,
         queryParameters: queryParams,
       );
+      print(response?.data);
       if (response?.statusCode == 200) {
         var data = response?.data;
         return data;

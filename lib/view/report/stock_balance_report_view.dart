@@ -30,7 +30,7 @@ class StockBalanceReportView extends StatelessWidget {
       onModelReady: (model) async {
         // model.clear();
         model.loadData();
-        await model.getStockBalanceReport();
+        await model.getStockBalanceReport(true);
       },
       builder: (context, model, child) {
         return Scaffold(
@@ -43,7 +43,7 @@ class StockBalanceReportView extends StatelessWidget {
                     var result =
                         await showStockBalanceFilterBottomSheet(model, context);
                     if (result != null) {
-                      await model.getStockBalanceReport(
+                      await model.getStockBalanceReport(false,
                           filters: result as Map<String, dynamic>);
                     }
                   },
@@ -59,7 +59,7 @@ class StockBalanceReportView extends StatelessWidget {
                   ? EmptyWidget(
                       onRefresh: () async {
                         // model.clear();
-                        await model.getStockBalanceReport();
+                        await model.getStockBalanceReport(true);
                       },
                     )
                   : SingleChildScrollView(

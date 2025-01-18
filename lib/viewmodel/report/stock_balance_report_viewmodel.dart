@@ -19,7 +19,8 @@ class StockBalanceReportViewModel extends BaseViewModel {
   dynamic response;
   dynamic company;
 
-  Future getStockBalanceReport({Map<String, dynamic>? filters}) async {
+  Future getStockBalanceReport(bool areDefaultFilters,
+      {Map<String, dynamic>? filters}) async {
     setState(ViewState.busy);
     var company = locator.get<HomeViewModel>().globalDefaults.defaultCompany;
     var dateNow = DateTime.now();
@@ -41,6 +42,7 @@ class StockBalanceReportViewModel extends BaseViewModel {
           company,
           fromDate,
           toDate,
+          areDefaultFilters,
           itemCode: "",
           itemGroup: "",
           warehouse: "",
@@ -50,6 +52,7 @@ class StockBalanceReportViewModel extends BaseViewModel {
           company,
           fromDate,
           toDate,
+          areDefaultFilters,
           itemCode: "",
           itemGroup: "",
           warehouse: "",

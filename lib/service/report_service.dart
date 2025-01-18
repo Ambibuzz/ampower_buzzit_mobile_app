@@ -252,7 +252,6 @@ class ReportService {
         url,
         queryParameters: queryParams,
       );
-      print(response?.data);
       if (response?.statusCode == 200) {
         var data = response?.data;
         sbr = StockBalance.fromJson(data);
@@ -320,7 +319,6 @@ class ReportService {
         url,
         queryParameters: queryParams,
       );
-      print(response?.data);
       if (response?.statusCode == 200) {
         var data = response?.data;
         return data;

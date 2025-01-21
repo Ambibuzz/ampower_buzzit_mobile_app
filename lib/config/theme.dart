@@ -92,7 +92,7 @@ class CustomTheme {
   static Brightness brightnessLight = Brightness.light;
   static Color disabledColorLight = const Color(0xFFA5A5A5);
   static Color dangerColor = const Color(0xFFBE2527);
-  static Color errorColorLight = const Color(0xFFB00020);
+  static Color errorColorLight = const Color(0xFFE33629);
   static Color appBarIconThemeColorLight = const Color(0xFFFFFFFF);
   static Color onBackgroundColorLight = const Color(0xFF000000);
   static Color onErrorColorLight = const Color(0xFFFFFFFF);

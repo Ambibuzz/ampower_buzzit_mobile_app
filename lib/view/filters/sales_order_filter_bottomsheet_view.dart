@@ -5,6 +5,7 @@ import 'package:ampower_buzzit_mobile/common/widgets/custom_dropdown.dart';
 import 'package:ampower_buzzit_mobile/common/widgets/custom_textformfield.dart';
 import 'package:ampower_buzzit_mobile/common/widgets/custom_typeahead_formfield.dart';
 import 'package:ampower_buzzit_mobile/common/widgets/typeahead_widgets.dart';
+import 'package:ampower_buzzit_mobile/config/theme.dart';
 import 'package:ampower_buzzit_mobile/model/filter_custom.dart';
 import 'package:ampower_buzzit_mobile/util/constants/lists.dart';
 import 'package:ampower_buzzit_mobile/util/constants/sizes.dart';
@@ -45,15 +46,15 @@ class SalesOrderFilterBottomSheetView extends StatelessWidget {
                       customerField(model, context),
                       verticalPadding(context),
                       statusDropdownField(model, context),
-                      SizedBox(height: Sizes.extraSmallPaddingWidget(context)),
+                      SizedBox(height: Sizes.paddingWidget(context)),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           clearFilter(model, context),
+                          SizedBox(width: Sizes.smallPaddingWidget(context)),
+                          applyFilterButton(model, context),
                         ],
                       ),
-                      SizedBox(height: Sizes.extraSmallPaddingWidget(context)),
-                      applyFilterButton(model, context),
                       verticalPadding(context),
                     ],
                   ),
@@ -69,15 +70,17 @@ class SalesOrderFilterBottomSheetView extends StatelessWidget {
 
   Widget clearFilter(
       SalesOrderFilterBottomSheetViewModel model, BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(Sizes.smallPaddingWidget(context)),
-      child: GestureDetector(
-        onTap: () {
-          model.clearData();
-        },
-        child: const Text(
-          Strings.clear,
-          style: TextStyle(color: Colors.red, fontSize: 16),
+    return Expanded(
+      child: SizedBox(
+        height: Sizes.buttonHeightWidget(context),
+        child: ElevatedButton(
+          style: ButtonStyle(
+              backgroundColor:
+                  WidgetStatePropertyAll(CustomTheme.errorColorLight)),
+          onPressed: () {
+            model.clearData();
+          },
+          child: const Text(Strings.clear),
         ),
       ),
     );
@@ -85,12 +88,14 @@ class SalesOrderFilterBottomSheetView extends StatelessWidget {
 
   Widget applyFilterButton(
       SalesOrderFilterBottomSheetViewModel model, BuildContext context) {
-    return SizedBox(
-      height: Sizes.buttonHeightTargetitWidget(context),
-      width: displayWidth(context),
-      child: ElevatedButton(
-        onPressed: () => applyFilter(model, context),
-        child: const Text(Strings.done),
+    return Expanded(
+      child: SizedBox(
+        height: Sizes.buttonHeightWidget(context),
+        width: displayWidth(context),
+        child: ElevatedButton(
+          onPressed: () => applyFilter(model, context),
+          child: const Text(Strings.done),
+        ),
       ),
     );
   }

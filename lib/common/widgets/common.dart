@@ -1,4 +1,5 @@
 import 'package:ampower_buzzit_mobile/common/widgets/abstract_factory/iwidgetsfactory.dart';
+import 'package:ampower_buzzit_mobile/common/widgets/custom_alert_dialog.dart';
 import 'package:ampower_buzzit_mobile/common/widgets/custom_buttons.dart';
 import 'package:ampower_buzzit_mobile/common/widgets/custom_snackbar.dart';
 import 'package:ampower_buzzit_mobile/common/widgets/custom_textformfield.dart';
@@ -35,6 +36,22 @@ class Common {
       ),
       maxLines: 4,
     );
+  }
+
+  static Future<bool> showExitConfirmationDialog(BuildContext context) async {
+    return await CustomAlertDialog().alertDialog(
+          'Are you sure you want to exit?',
+          '',
+          'Stay',
+          'Exit',
+          () => Navigator.of(context, rootNavigator: true).pop(false),
+          () => Navigator.of(context, rootNavigator: true).pop(true),
+          context,
+          headingTextColor: CustomTheme.secondaryColorLight,
+          okBtnBgColor: CustomTheme.secondaryColorLight,
+          cancelColor: CustomTheme.secondaryColorLight,
+        ) ??
+        false;
   }
 
   static Widget mentionsField(

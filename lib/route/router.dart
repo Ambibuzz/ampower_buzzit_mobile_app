@@ -45,7 +45,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case loginViewRoute:
       return MaterialPageRoute(builder: (context) => LoginView());
     case homeViewRoute:
-      return MaterialPageRoute(builder: (context) => const HomeView());
+      return MaterialPageRoute(builder: (context) => HomeView());
     case salesOrderListViewRoute:
       var args = settings.arguments as String?;
       return MaterialPageRoute(

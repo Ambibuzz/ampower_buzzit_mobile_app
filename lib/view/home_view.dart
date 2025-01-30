@@ -26,7 +26,8 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class HomeView extends StatelessWidget {
-  const HomeView({super.key});
+  HomeView({super.key});
+  bool _isDialogOpen = false; // Flag to prevent multiple dialogs
 
   @override
   Widget build(BuildContext context) {
@@ -60,257 +61,268 @@ class HomeView extends StatelessWidget {
         await model.getUserFullNameList();
       },
       builder: (context, model, child) {
-        return Scaffold(
-          appBar: AppBar(
-            title: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Hello',
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: Colors.white,
+        return WillPopScope(
+          onWillPop: () async {
+            if (_isDialogOpen) return false; // Prevent opening multiple dialogs
+            _isDialogOpen = true;
+            var exitApp = await Common.showExitConfirmationDialog(context);
+            _isDialogOpen = false;
+            return exitApp;
+          },
+          child: Scaffold(
+            appBar: AppBar(
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Hello',
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: Colors.white,
+                    ),
+                  ),
+                  Text(
+                    model.user.username ?? '',
+                    style: const TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+              flexibleSpace: Container(
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.vertical(bottom: Corners.xlRadius),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: <Color>[
+                      Color(0xFF006CB5), // Starting color
+                      Color(0xFF002D4C) // ending color
+                    ],
                   ),
                 ),
-                Text(
-                  model.user.username ?? '',
-                  style: const TextStyle(
-                    color: Colors.white,
-                  ),
+              ),
+              systemOverlayStyle: SystemUiOverlayStyle.light,
+              actions: [
+                GestureDetector(
+                  onTap: () async {
+                    // await locator.get<LogoutService>().logOut(context);
+                    await locator
+                        .get<NavigationService>()
+                        .navigateTo(profileViewRoute);
+                  },
+                  child: (model.user.userImage == null ||
+                          model.user.userImage?.isEmpty == true)
+                      ? Common.customImageIcon(
+                          context, 30, 20, Images.profileIcon)
+                      : ClipOval(
+                          clipBehavior: Clip.antiAlias,
+                          child: CachedNetworkImage(
+                            imageUrl:
+                                '${locator.get<StorageService>().apiUrl}${model.user.userImage}',
+                            httpHeaders: {'cookie': DioHelper.cookies ?? ''},
+                            width: 30,
+                            height: 30,
+                            fit: BoxFit.cover,
+                            placeholder: (context, url) =>
+                                const Icon(Icons.error),
+                            errorWidget: (context, url, error) =>
+                                const Icon(Icons.error),
+                          ),
+                        ),
+                ),
+                SizedBox(
+                  width: Sizes.paddingWidget(context),
                 ),
               ],
-            ),
-            flexibleSpace: Container(
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.vertical(bottom: Corners.xlRadius),
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: <Color>[
-                    Color(0xFF006CB5), // Starting color
-                    Color(0xFF002D4C) // ending color
-                  ],
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.vertical(
+                  bottom: Corners.xlRadius,
                 ),
               ),
             ),
-            systemOverlayStyle: SystemUiOverlayStyle.light,
-            actions: [
-              GestureDetector(
-                onTap: () async {
-                  // await locator.get<LogoutService>().logOut(context);
-                  await locator
-                      .get<NavigationService>()
-                      .navigateTo(profileViewRoute);
-                },
-                child: (model.user.userImage == null ||
-                        model.user.userImage?.isEmpty == true)
-                    ? Common.customImageIcon(
-                        context, 30, 20, Images.profileIcon)
-                    : ClipOval(
-                        clipBehavior: Clip.antiAlias,
-                        child: CachedNetworkImage(
-                          imageUrl:
-                              '${locator.get<StorageService>().apiUrl}${model.user.userImage}',
-                          httpHeaders: {'cookie': DioHelper.cookies ?? ''},
-                          width: 30,
-                          height: 30,
-                          fit: BoxFit.cover,
-                          placeholder: (context, url) =>
-                              const Icon(Icons.error),
-                          errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
-                        ),
-                      ),
-              ),
-              SizedBox(
-                width: Sizes.paddingWidget(context),
-              ),
-            ],
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(
-                bottom: Corners.xlRadius,
-              ),
-            ),
-          ),
-          body: model.state == ViewState.busy
-              ? WidgetsFactoryList.circularProgressIndicator()
-              : RefreshIndicator(
-                  onRefresh: () async {
-                    var connectivityStatus =
-                        Provider.of<ConnectivityStatus>(context, listen: false);
-                    locator
-                        .get<DoctypeCachingService>()
-                        .reCacheDoctype(connectivityStatus);
-                  },
-                  child: SingleChildScrollView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: Sizes.smallPaddingWidget(context) * 1.5),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          verticalPadding(context),
-                          const Text(
-                            'Profit and Loss',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(
-                            height: Sizes.smallPaddingWidget(context),
-                          ),
-                          cardUi(model, context),
-                          /*
-                          Card(
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: Sizes.smallPaddingWidget(context)),
-                              child: Column(
-                                children: [
-                                  verticalPadding(context),
-                                  // verticalPadding(context),
-                                  // Row(
-                                  //   children: [
-                                  //     statusDropdownField(model, context),
-                                  //   ],
-                                  // ),
-                                  cardUi(model, context),
-                                  /*
-                                  model.viewTypeText == Lists.viewTypeList[0]
-                                      ?
-                                      //  cardUi(model, context)
-                
-                                      barChartWidget(
-                                          model,
-                                          [
-                                            BarChartGroupData(
-                                              x: 0,
-                                              barRods: [
-                                                BarChartRodData(
-                                                  toY: model.income,
-                                                  color: const Color(0xFF006CB5),
-                                                  width: 10,
-                                                  borderRadius:
-                                                      const BorderRadius.all(
-                                                    Radius.circular(Corners.lg),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            BarChartGroupData(
-                                              x: 1,
-                                              barRods: [
-                                                BarChartRodData(
-                                                  toY: model.expense,
-                                                  color: const Color(0xFFFF731D),
-                                                  width: 10,
-                                                  borderRadius:
-                                                      const BorderRadius.all(
-                                                    Radius.circular(Corners.lg),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            BarChartGroupData(
-                                              x: 2,
-                                              barRods: [
-                                                BarChartRodData(
-                                                  toY: model.income -
-                                                      model.expense,
-                                                  color: const Color(0xFF189333),
-                                                  width: 10,
-                                                  borderRadius:
-                                                      const BorderRadius.all(
-                                                    Radius.circular(Corners.lg),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                          [
-                                            BarChartModel(
-                                              'Income',
-                                              model.income,
-                                            ),
-                                            BarChartModel(
-                                              'Expense',
-                                              model.expense,
-                                            ),
-                                            BarChartModel(
-                                              'Profit',
-                                              model.income - model.expense,
-                                            ),
-                                          ],
-                                          context)
-                                      : pieChart(model, context),
-                                  */
-                                  verticalPadding(context),
-                                  /*
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                        color: const Color(0xFF006CB5),
-                                      ),
-                                      borderRadius: Corners.xxlBorder,
-                                    ),
-                                    child: Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical:
-                                              Sizes.smallPaddingWidget(context) *
-                                                  1.5),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          legend(
-                                              const Color(0xFF006CB5),
-                                              'Total Income',
-                                              model.income,
-                                              context),
-                                          legend(
-                                              const Color(0xFFFF731D),
-                                              'Total Expense',
-                                              model.expense,
-                                              context),
-                                          legend(
-                                              const Color(0xFF189333),
-                                              'Total Profit',
-                                              model.income - model.expense,
-                                              context),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  */
-                                  // verticalPadding(context),
-                                  // verticalPadding(context),
-                                ],
+            body: model.state == ViewState.busy
+                ? WidgetsFactoryList.circularProgressIndicator()
+                : RefreshIndicator(
+                    onRefresh: () async {
+                      var connectivityStatus = Provider.of<ConnectivityStatus>(
+                          context,
+                          listen: false);
+                      locator
+                          .get<DoctypeCachingService>()
+                          .reCacheDoctype(connectivityStatus);
+                    },
+                    child: SingleChildScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal:
+                                Sizes.smallPaddingWidget(context) * 1.5),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            verticalPadding(context),
+                            const Text(
+                              'Profit and Loss',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                          ),
-                          */
-                          verticalPadding(context),
-                          Row(
-                            children: [
-                              Text(
-                                'Quick Links',
-                                style: TextStyle(
-                                  fontSize: Sizes.fontSizeWidget(context),
-                                  fontWeight: FontWeight.bold,
+                            SizedBox(
+                              height: Sizes.smallPaddingWidget(context),
+                            ),
+                            cardUi(model, context),
+                            /*
+                            Card(
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: Sizes.smallPaddingWidget(context)),
+                                child: Column(
+                                  children: [
+                                    verticalPadding(context),
+                                    // verticalPadding(context),
+                                    // Row(
+                                    //   children: [
+                                    //     statusDropdownField(model, context),
+                                    //   ],
+                                    // ),
+                                    cardUi(model, context),
+                                    /*
+                                    model.viewTypeText == Lists.viewTypeList[0]
+                                        ?
+                                        //  cardUi(model, context)
+                  
+                                        barChartWidget(
+                                            model,
+                                            [
+                                              BarChartGroupData(
+                                                x: 0,
+                                                barRods: [
+                                                  BarChartRodData(
+                                                    toY: model.income,
+                                                    color: const Color(0xFF006CB5),
+                                                    width: 10,
+                                                    borderRadius:
+                                                        const BorderRadius.all(
+                                                      Radius.circular(Corners.lg),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              BarChartGroupData(
+                                                x: 1,
+                                                barRods: [
+                                                  BarChartRodData(
+                                                    toY: model.expense,
+                                                    color: const Color(0xFFFF731D),
+                                                    width: 10,
+                                                    borderRadius:
+                                                        const BorderRadius.all(
+                                                      Radius.circular(Corners.lg),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              BarChartGroupData(
+                                                x: 2,
+                                                barRods: [
+                                                  BarChartRodData(
+                                                    toY: model.income -
+                                                        model.expense,
+                                                    color: const Color(0xFF189333),
+                                                    width: 10,
+                                                    borderRadius:
+                                                        const BorderRadius.all(
+                                                      Radius.circular(Corners.lg),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                            [
+                                              BarChartModel(
+                                                'Income',
+                                                model.income,
+                                              ),
+                                              BarChartModel(
+                                                'Expense',
+                                                model.expense,
+                                              ),
+                                              BarChartModel(
+                                                'Profit',
+                                                model.income - model.expense,
+                                              ),
+                                            ],
+                                            context)
+                                        : pieChart(model, context),
+                                    */
+                                    verticalPadding(context),
+                                    /*
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          color: const Color(0xFF006CB5),
+                                        ),
+                                        borderRadius: Corners.xxlBorder,
+                                      ),
+                                      child: Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            vertical:
+                                                Sizes.smallPaddingWidget(context) *
+                                                    1.5),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            legend(
+                                                const Color(0xFF006CB5),
+                                                'Total Income',
+                                                model.income,
+                                                context),
+                                            legend(
+                                                const Color(0xFFFF731D),
+                                                'Total Expense',
+                                                model.expense,
+                                                context),
+                                            legend(
+                                                const Color(0xFF189333),
+                                                'Total Profit',
+                                                model.income - model.expense,
+                                                context),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    */
+                                    // verticalPadding(context),
+                                    // verticalPadding(context),
+                                  ],
                                 ),
                               ),
-                            ],
-                          ),
-                          quickLinksWidget(model, context),
-                          // accountBalanceData(model, context),
-                          // verticalPadding(context),
-                        ],
+                            ),
+                            */
+                            verticalPadding(context),
+                            Row(
+                              children: [
+                                Text(
+                                  'Quick Links',
+                                  style: TextStyle(
+                                    fontSize: Sizes.fontSizeWidget(context),
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            quickLinksWidget(model, context),
+                            // accountBalanceData(model, context),
+                            // verticalPadding(context),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
+          ),
         );
       },
     );

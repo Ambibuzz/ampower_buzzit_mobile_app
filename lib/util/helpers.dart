@@ -9,6 +9,7 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:html/parser.dart';
 
 Future initDb() async {
   await locator.get<StorageService>().initHiveStorage();
@@ -87,6 +88,15 @@ noInternetAlert(
   await locator.get<DialogService>().showDialog(
       title: 'Connection Lost',
       description: 'You are not connected to Internet. Retry after sometime.');
+}
+
+String parseHtmlString(String htmlString) {
+  var parsedString = '';
+  final document = parse(htmlString);
+  if (document.body?.text.isNotEmpty == true) {
+    parsedString = parse(document.body?.text).documentElement?.text ?? '';
+  }
+  return parsedString;
 }
 
 String getServerMessage(String serverMsgs) {

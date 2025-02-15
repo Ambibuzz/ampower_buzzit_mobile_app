@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:ampower_buzzit_mobile/common/service/dialog_service.dart';
 import 'package:ampower_buzzit_mobile/locator/locator.dart';
+import 'package:ampower_buzzit_mobile/util/helpers.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -44,11 +45,12 @@ void exception(e, String url, String function, {bool showToast = true}) async {
       if (e.response!.data['exception'] != null) {
         print('****');
         print(e.response!.data);
-        styledToast(e.response!.data['exception'].split(": ")[1]);
+        styledToast(
+            parseHtmlString(e.response!.data['exception'].split(": ")[1]));
       }
     } else if (e.response!.data['exception'].split(" ")[0] ==
         'ModuleNotFoundError:') {
-      styledToast(e.response!.data['exception']);
+      styledToast(parseHtmlString(e.response!.data['exception']));
     } else {
       switch (e.response!.statusCode) {
         case 400:

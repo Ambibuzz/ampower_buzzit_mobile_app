@@ -175,56 +175,49 @@ class PurchaseInvoiceFilterBottomSheetView extends StatelessWidget {
 
   Widget supplierField(
       PurchaseInvoiceFilterBottomSheetViewModel model, BuildContext context) {
-    return Expanded(
-      child: CustomTypeAheadFormField(
-        controller: model.supplierController,
-        decoration: Common.inputDecoration(),
-        label: 'Supplier',
-        // hideSuggestionOnKeyboardHide: true,
-        required: true,
-        style: Theme.of(context).textTheme.bodyMedium,
-        itemBuilder: (context, item) {
-          return TypeAheadWidgets.itemUi(item, context);
-        },
-        onSuggestionSelected: (suggestion) async {
-          model.supplierController.text = suggestion;
-          FocusManager.instance.primaryFocus?.unfocus();
-        },
-        suggestionsCallback: (pattern) {
-          return TypeAheadWidgets.getSuggestions(pattern, model.supplierList);
-        },
-        transitionBuilder: (context, controller, suggestionsBox) {
-          return suggestionsBox;
-        },
-      ),
+    return CustomTypeAheadFormField(
+      controller: model.supplierController,
+      decoration: Common.inputDecoration(),
+      label: 'Supplier',
+      // hideSuggestionOnKeyboardHide: true,
+      required: true,
+      style: Theme.of(context).textTheme.bodyMedium,
+      itemBuilder: (context, item) {
+        return TypeAheadWidgets.itemUi(item, context);
+      },
+      onSuggestionSelected: (suggestion) async {
+        model.supplierController.text = suggestion;
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      suggestionsCallback: (pattern) {
+        return TypeAheadWidgets.getSuggestions(pattern, model.supplierList);
+      },
+      transitionBuilder: (context, controller, suggestionsBox) {
+        return suggestionsBox;
+      },
     );
   }
 
   Widget statusDropdownField(
       PurchaseInvoiceFilterBottomSheetViewModel model, BuildContext context) {
-    return Expanded(
-      child: CustomDropDown(
-        value: model.statusText,
-        items:
-            Lists.purchaseInvoiceStatus.map<DropdownMenuItem<String>>((value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Text(
-              value.toString(),
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium
-                  ?.copyWith(fontSize: 14),
-            ),
-          );
-        }).toList(),
-        alignment: CrossAxisAlignment.start,
-        onChanged: (String? value) {
-          model.setStatusSO(value);
-        },
-        label: 'Status',
-        labelStyle: TextStyle(fontSize: Sizes.labelTextSizeWidget(context)),
-      ),
+    return CustomDropDown(
+      value: model.statusText,
+      items: Lists.purchaseInvoiceStatus.map<DropdownMenuItem<String>>((value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(
+            value.toString(),
+            style:
+                Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 14),
+          ),
+        );
+      }).toList(),
+      alignment: CrossAxisAlignment.start,
+      onChanged: (String? value) {
+        model.setStatusSO(value);
+      },
+      label: 'Status',
+      labelStyle: TextStyle(fontSize: Sizes.labelTextSizeWidget(context)),
     );
   }
 

@@ -45,14 +45,14 @@ class ReportService {
           'ignore_prepared_report': false,
           'is_tree': true,
           'parent_field': 'parent_account',
-          'are_default_filters': false,
+          'are_default_filters': true,
           '_': timestamp
         };
       } else {
         queryParams = {
           'report_name': 'Balance Sheet',
           'filters': jsonEncode(filters),
-          'ignore_prepared_report': false,
+          'ignore_prepared_report': true,
           'is_tree': true,
           'parent_field': 'parent_account',
           'are_default_filters': false,
@@ -116,14 +116,14 @@ class ReportService {
           'report_name': 'General Ledger',
           'filters': jsonEncode(filter),
           'ignore_prepared_report': false,
-          'are_default_filters': false,
+          'are_default_filters': true,
           '_': timestamp
         };
       } else {
         queryParams = {
           'report_name': 'General Ledger',
           'filters': jsonEncode(filters),
-          'ignore_prepared_report': false,
+          'ignore_prepared_report': true,
           'are_default_filters': false,
           '_': timestamp
         };
@@ -141,57 +141,6 @@ class ReportService {
       exception(e, url, 'getGeneralLedgerReport');
     }
     return '';
-  }
-
-  Future generateStockBalanceReport(
-    String? company,
-    String? fromDate,
-    String? toDate, {
-    String? warehouse,
-    String? itemGroup,
-    String? itemCode,
-    Map<String, dynamic>? filters,
-  }) async {
-    var url =
-        '/api/method/frappe.core.doctype.prepared_report.prepared_report.get_reports_in_queued_state';
-    try {
-      var filter = {
-        "company": company,
-        "from_date": fromDate,
-        "to_date": toDate,
-        "valuation_field_type": "Currency",
-      };
-      if (warehouse?.isNotEmpty == true) {
-        filter["warehouse"] = warehouse;
-      }
-      if (itemGroup?.isNotEmpty == true) {
-        filter["item_group"] = itemGroup;
-      }
-      if (itemCode?.isNotEmpty == true) {
-        filter["item_code"] = itemCode;
-      }
-      var queryParams = <String, dynamic>{};
-      // generate stock balance based on default filter
-      if (filters == null || filters.keys.isEmpty) {
-        queryParams = {
-          'report_name': 'Stock Balance',
-          'filters': jsonEncode(filter),
-        };
-      }
-      // generate stock balance based on filter
-      else {
-        queryParams = {
-          'report_name': 'Stock Balance',
-          'filters': jsonEncode(filters),
-        };
-      }
-      final response = await DioHelper.dio?.post(
-        url,
-        queryParameters: queryParams,
-      );
-    } catch (e) {
-      exception(e, url, 'generateStockBalanceReport');
-    }
   }
 
   Future<StockBalance> getStockBalanceReport(
@@ -213,6 +162,8 @@ class ReportService {
         "from_date": fromDate,
         "to_date": toDate,
         "valuation_field_type": "Currency",
+        "project": [],
+        "customer": [],
       };
       if (company?.isNotEmpty == true) {
         filter["company"] = company;
@@ -242,7 +193,7 @@ class ReportService {
         queryParams = {
           'report_name': 'Stock Balance',
           'filters': jsonEncode(filters),
-          'ignore_prepared_report': false,
+          'ignore_prepared_report': true,
           'are_default_filters': areDefaultFilters,
           '_': timestamp
         };
@@ -281,6 +232,8 @@ class ReportService {
         "from_date": fromDate,
         "to_date": toDate,
         "valuation_field_type": "Currency",
+        "project": [],
+        "customer": [],
       };
       if (warehouse?.isNotEmpty == true) {
         filter["warehouse"] = warehouse;
@@ -309,7 +262,7 @@ class ReportService {
         queryParams = {
           'report_name': 'Stock Balance',
           'filters': jsonEncode(filters),
-          'ignore_prepared_report': false,
+          'ignore_prepared_report': true,
           'are_default_filters': areDefaultFilters,
           '_': timestamp
         };

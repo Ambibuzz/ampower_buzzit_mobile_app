@@ -16,6 +16,7 @@ import 'package:ampower_buzzit_mobile/util/helpers.dart';
 import 'package:ampower_buzzit_mobile/view/login_view.dart';
 import 'package:ampower_buzzit_mobile/viewmodel/profile_viewmodel.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -59,6 +60,8 @@ class ProfileView extends StatelessWidget {
             SizedBox(height: Sizes.paddingWidget(context)),
             mobileNoField(model, context),
             SizedBox(height: Sizes.paddingWidget(context)),
+            connectedToUrlField(model, context),
+            SizedBox(height: Sizes.paddingWidget(context)),
             SizedBox(
               width: displayWidth(context) < 600
                   ? displayWidth(context)
@@ -73,15 +76,21 @@ class ProfileView extends StatelessWidget {
             ),
             const Spacer(),
             const PoweredByAmbibuzzLogo(),
-            Align(
-              alignment: Alignment.center,
-              child: Text(
-                'v${model.version}',
-                textAlign: TextAlign.right,
-                style: TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).primaryColor,
+            Padding(
+              padding: EdgeInsets.only(
+                  bottom: defaultTargetPlatform == TargetPlatform.iOS
+                      ? Sizes.smallPaddingWidget(context)
+                      : 0),
+              child: Align(
+                alignment: Alignment.center,
+                child: Text(
+                  'v${model.version}',
+                  textAlign: TextAlign.right,
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).primaryColor,
+                  ),
                 ),
               ),
             ),
@@ -131,6 +140,20 @@ class ProfileView extends StatelessWidget {
         color: CustomTheme.iconColor,
       )),
       label: 'Full Name',
+      style: Theme.of(context).textTheme.bodyMedium,
+      readOnly: true,
+    );
+  }
+
+  Widget connectedToUrlField(ProfileViewModel model, BuildContext context) {
+    return CustomTextFormField(
+      initialValue: locator.get<StorageService>().apiUrl,
+      decoration: Common.inputDecoration().copyWith(
+          prefixIcon: Icon(
+        Icons.cast_connected,
+        color: CustomTheme.iconColor,
+      )),
+      label: 'Connected To',
       style: Theme.of(context).textTheme.bodyMedium,
       readOnly: true,
     );

@@ -12,6 +12,7 @@ import 'package:ampower_buzzit_mobile/util/constants/sizes.dart';
 import 'package:ampower_buzzit_mobile/util/display_helper.dart';
 import 'package:ampower_buzzit_mobile/util/enums.dart';
 import 'package:ampower_buzzit_mobile/viewmodel/login_viewmodel.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 //Login class contains ui of login form
@@ -163,13 +164,21 @@ class LoginView extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     const PoweredByAmbibuzzLogo(),
-                                    Text(
-                                      'v${model.version}',
-                                      textAlign: TextAlign.right,
-                                      style: TextStyle(
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold,
-                                        color: Theme.of(context).primaryColor,
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                          bottom: defaultTargetPlatform ==
+                                                  TargetPlatform.iOS
+                                              ? Sizes.smallPaddingWidget(
+                                                  context)
+                                              : 0),
+                                      child: Text(
+                                        'v${model.version}',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          color: Theme.of(context).primaryColor,
+                                        ),
                                       ),
                                     ),
                                   ],

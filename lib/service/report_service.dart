@@ -42,7 +42,7 @@ class ReportService {
         queryParams = {
           'report_name': 'Balance Sheet',
           'filters': jsonEncode(filter),
-          'ignore_prepared_report': false,
+          'ignore_prepared_report': true,
           'is_tree': true,
           'parent_field': 'parent_account',
           'are_default_filters': true,
@@ -115,7 +115,7 @@ class ReportService {
         queryParams = {
           'report_name': 'General Ledger',
           'filters': jsonEncode(filter),
-          'ignore_prepared_report': false,
+          'ignore_prepared_report': true,
           'are_default_filters': true,
           '_': timestamp
         };
@@ -183,7 +183,7 @@ class ReportService {
         queryParams = {
           'report_name': 'Stock Balance',
           'filters': jsonEncode(filter),
-          'ignore_prepared_report': false,
+          'ignore_prepared_report': true,
           'are_default_filters': areDefaultFilters,
           '_': timestamp
         };
@@ -253,7 +253,7 @@ class ReportService {
         queryParams = {
           'report_name': 'Stock Balance',
           'filters': jsonEncode(filter),
-          'ignore_prepared_report': false,
+          'ignore_prepared_report': true,
           'are_default_filters': areDefaultFilters,
           '_': timestamp
         };

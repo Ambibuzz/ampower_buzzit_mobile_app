@@ -197,7 +197,7 @@ class PurchaseInvoiceListView extends StatelessWidget {
           builder: (context, controller) {
             return SingleChildScrollView(
               controller: controller,
-              child: const SalesInvoiceFilterBottomSheetView(),
+              child: const PurchaseInvoiceFilterBottomSheetView(),
             );
           },
         );

@@ -12,6 +12,7 @@ import 'package:ampower_buzzit_mobile/util/constants/sizes.dart';
 import 'package:ampower_buzzit_mobile/util/display_helper.dart';
 import 'package:ampower_buzzit_mobile/util/enums.dart';
 import 'package:ampower_buzzit_mobile/viewmodel/login_viewmodel.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 //Login class contains ui of login form
@@ -89,95 +90,112 @@ class LoginView extends StatelessWidget {
                         height: displayHeight(context) * 0.38,
                         child: const Center(child: Logo()),
                       ),
-                      Container(
-                        height: displayHeight(context) -
-                            (displayHeight(context) * 0.38),
-                        decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.vertical(
-                              top: Corners.xxlRadius,
-                            ),
-                            color: Colors.white),
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: Sizes.paddingWidget(context)),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(
-                                height: displayHeight(context) * 0.04,
-                              ),
-                              // const Logo(),
-                              Common.reusableTextWidget(
-                                'Ready to dive in?',
-                                28,
-                                context,
-                                color: Colors.black,
-                              ),
-                              verticalPadding(context,
-                                  height: Sizes.smallPaddingWidget(context)),
-                              Common.reusableTextWidget(
-                                  'Access your account with your login details.',
-                                  14,
-                                  context,
-                                  color: Color(0xFF666666),
-                                  fontWeight: FontWeight.w400),
-                              verticalPadding(context),
-                              verticalPadding(context,
-                                  height: Sizes.smallPaddingWidget(context)),
-                              usernameTextField(context),
-                              verticalPadding(context),
-                              // passwordTextField(model, context),
-                              const PasswordField(),
-                              verticalPadding(context),
-                              loginButton(model, context),
-                              verticalPadding(context),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                      Stack(
+                        children: [
+                          Container(
+                            height: displayHeight(context) -
+                                (displayHeight(context) * 0.38),
+                            decoration: const BoxDecoration(
+                                borderRadius: BorderRadius.vertical(
+                                  top: Corners.xxlRadius,
+                                ),
+                                color: Colors.white),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: Sizes.paddingWidget(context)),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  GestureDetector(
-                                    onTap: () async {
-                                      await showDialogToEnterSiteUrl(
-                                          model, context);
-                                      // await locator
-                                      //     .get<NavigationService>()
-                                      //     .navigateTo(instanceUrlViewRoute);
-                                    },
-                                    child: Text(
-                                      'Update your site URL!',
-                                      style: TextStyle(
-                                        color: Theme.of(context).primaryColor,
-                                        fontSize: displayWidth(context) < 600
-                                            ? 16
-                                            : 28,
-                                        fontWeight: FontWeight.bold,
+                                  SizedBox(
+                                    height: displayHeight(context) * 0.04,
+                                  ),
+                                  // const Logo(),
+                                  Common.reusableTextWidget(
+                                    'Ready to dive in?',
+                                    28,
+                                    context,
+                                    color: Colors.black,
+                                  ),
+                                  verticalPadding(context,
+                                      height:
+                                          Sizes.smallPaddingWidget(context)),
+                                  Common.reusableTextWidget(
+                                      'Access your account with your login details.',
+                                      14,
+                                      context,
+                                      color: Color(0xFF666666),
+                                      fontWeight: FontWeight.w400),
+                                  verticalPadding(context),
+                                  verticalPadding(context,
+                                      height:
+                                          Sizes.smallPaddingWidget(context)),
+                                  usernameTextField(context),
+                                  verticalPadding(context),
+                                  // passwordTextField(model, context),
+                                  const PasswordField(),
+                                  verticalPadding(context),
+                                  loginButton(model, context),
+                                  verticalPadding(context),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () async {
+                                          await showDialogToEnterSiteUrl(
+                                              model, context);
+                                          // await locator
+                                          //     .get<NavigationService>()
+                                          //     .navigateTo(instanceUrlViewRoute);
+                                        },
+                                        child: Text(
+                                          'Update your site URL!',
+                                          style: TextStyle(
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                            fontSize:
+                                                displayWidth(context) < 600
+                                                    ? 16
+                                                    : 28,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
                                       ),
-                                    ),
+                                    ],
                                   ),
                                 ],
                               ),
-                              SizedBox(
-                                height: displayHeight(context) * 0.01,
-                              ),
-                              Center(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    const PoweredByAmbibuzzLogo(),
-                                    Text(
+                            ),
+                          ),
+                          Positioned(
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            child: Center(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  const PoweredByAmbibuzzLogo(),
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        bottom: defaultTargetPlatform ==
+                                                TargetPlatform.iOS
+                                            ? Sizes.paddingWidget(context)
+                                            : 0),
+                                    child: Text(
                                       'v${model.version}',
-                                      textAlign: TextAlign.right,
+                                      textAlign: TextAlign.center,
                                       style: TextStyle(
                                         fontSize: 10,
                                         fontWeight: FontWeight.bold,
                                         color: Theme.of(context).primaryColor,
                                       ),
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                        ),
+                            ),
+                          )
+                        ],
                       ),
                     ],
                   ),
@@ -382,7 +400,7 @@ class PoweredByAmbibuzzLogo extends StatelessWidget {
     return Image.asset(
       Images.poweredByAmbibuzzLogo,
       width: 90,
-      height: 90,
+      height: 65,
       fit: BoxFit.cover,
     );
   }

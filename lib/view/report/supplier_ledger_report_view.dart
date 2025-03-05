@@ -2,9 +2,13 @@ import 'package:ampower_buzzit_mobile/base_view.dart';
 import 'package:ampower_buzzit_mobile/common/widgets/abstract_factory/iwidgetsfactory.dart';
 import 'package:ampower_buzzit_mobile/common/widgets/common.dart';
 import 'package:ampower_buzzit_mobile/common/widgets/custom_popup_menu_items.dart';
+import 'package:ampower_buzzit_mobile/common/widgets/empty_widget.dart';
 import 'package:ampower_buzzit_mobile/config/styles.dart';
+import 'package:ampower_buzzit_mobile/locator/locator.dart';
 import 'package:ampower_buzzit_mobile/util/display_helper.dart';
+import 'package:ampower_buzzit_mobile/util/enums.dart';
 import 'package:ampower_buzzit_mobile/view/filters/supplier_ledger_filter_bottomsheet_viewmodel.dart';
+import 'package:ampower_buzzit_mobile/viewmodel/filters/supplier_ledger_filter_bottomsheet_viewmodel.dart';
 import 'package:ampower_buzzit_mobile/viewmodel/report/supplier_ledger_report_viewmodel.dart';
 import 'package:flutter/material.dart';
 
@@ -15,7 +19,9 @@ class SupplierLedgerReportView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BaseView<SupplierLedgerReportViewModel>(
       onModelReady: (model) async {
-        model.loadData();
+        // clear filter
+        locator.get<SupplierLedgerFilterBottomSheetViewModel>().clearFilter();
+        await model.loadData();
         await model.getSupplierLedgerReport();
       },
       builder: (context, model, child) {
@@ -38,20 +44,27 @@ class SupplierLedgerReportView extends StatelessWidget {
                     .exportCsvPopUpMenu(model.supplierLedger, context),
               ],
               context),
-          body: model.supplierLedger == null
+          body: model.state == ViewState.busy
               ? WidgetsFactoryList.circularProgressIndicator()
-              : Common.reportTable(
-                  model.supplierLedger,
-                  <String>[
-                    'posting_date',
-                    'account',
-                    'debit',
-                    'credit',
-                    'balance',
-                    'voucher_type',
-                    'voucher_no'
-                  ],
-                  context),
+              : model.supplierLedger == null
+                  ? EmptyWidget(
+                      onRefresh: () async {
+                        await model.loadData();
+                        await model.getSupplierLedgerReport();
+                      },
+                    )
+                  : Common.reportTable(
+                      model.supplierLedger,
+                      <String>[
+                        'posting_date',
+                        'account',
+                        'debit',
+                        'credit',
+                        'balance',
+                        'voucher_type',
+                        'voucher_no'
+                      ],
+                      context),
         );
       },
     );

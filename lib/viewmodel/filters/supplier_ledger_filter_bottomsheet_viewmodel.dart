@@ -13,6 +13,13 @@ class SupplierLedgerFilterBottomSheetViewModel extends BaseViewModel {
   var supplierController = TextEditingController();
   var supplierFocusNode = FocusNode();
 
+  void clearFilter() {
+    fromDateController.clear();
+    toDateController.clear();
+    supplierController.clear();
+    notifyListeners();
+  }
+
   void initData() async {
     var dateNow = DateTime.now();
     var datePrevMon = Jiffy.now().subtract(months: 1).dateTime;

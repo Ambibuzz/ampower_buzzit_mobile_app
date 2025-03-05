@@ -2,8 +2,10 @@ import 'package:ampower_buzzit_mobile/base_view.dart';
 import 'package:ampower_buzzit_mobile/common/widgets/abstract_factory/iwidgetsfactory.dart';
 import 'package:ampower_buzzit_mobile/common/widgets/common.dart';
 import 'package:ampower_buzzit_mobile/common/widgets/custom_popup_menu_items.dart';
+import 'package:ampower_buzzit_mobile/common/widgets/empty_widget.dart';
 import 'package:ampower_buzzit_mobile/config/styles.dart';
 import 'package:ampower_buzzit_mobile/util/display_helper.dart';
+import 'package:ampower_buzzit_mobile/util/enums.dart';
 import 'package:ampower_buzzit_mobile/view/filters/customer_ledger_filter_bottomsheet_viewmodel.dart';
 import 'package:ampower_buzzit_mobile/viewmodel/report/customer_ledger_report_viewmodel.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +17,7 @@ class CustomerLedgerReportView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BaseView<CustomerLedgerReportViewModel>(
       onModelReady: (model) async {
-        model.loadData();
+        await model.loadData();
         await model.getCustomerLedgerReport();
       },
       builder: (context, model, child) {
@@ -38,20 +40,27 @@ class CustomerLedgerReportView extends StatelessWidget {
                     .exportCsvPopUpMenu(model.customerLedger, context),
               ],
               context),
-          body: model.customerLedger == null
+          body: model.state == ViewState.busy
               ? WidgetsFactoryList.circularProgressIndicator()
-              : Common.reportTable(
-                  model.customerLedger,
-                  <String>[
-                    'posting_date',
-                    'account',
-                    'debit',
-                    'credit',
-                    'balance',
-                    'voucher_type',
-                    'voucher_no'
-                  ],
-                  context),
+              : model.customerLedger == null
+                  ? EmptyWidget(
+                      onRefresh: () async {
+                        await model.loadData();
+                        await model.getCustomerLedgerReport();
+                      },
+                    )
+                  : Common.reportTable(
+                      model.customerLedger,
+                      <String>[
+                        'posting_date',
+                        'account',
+                        'debit',
+                        'credit',
+                        'balance',
+                        'voucher_type',
+                        'voucher_no'
+                      ],
+                      context),
         );
       },
     );

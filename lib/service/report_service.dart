@@ -70,8 +70,9 @@ class ReportService {
       }
     } catch (e) {
       exception(e, url, 'getGeneralLedgerReport');
+      return null;
     }
-    return '';
+    return null;
   }
 
   // get double digit
@@ -139,11 +140,12 @@ class ReportService {
       }
     } catch (e) {
       exception(e, url, 'getGeneralLedgerReport');
+      return null;
     }
-    return '';
+    return null;
   }
 
-  Future<StockBalance> getStockBalanceReport(
+  Future<dynamic> getStockBalanceReport(
     String? company,
     String? fromDate,
     String? toDate,
@@ -210,8 +212,9 @@ class ReportService {
       }
     } catch (e) {
       exception(e, url, 'getStockBalanceReport');
+      return null;
     }
-    return sbr;
+    return null;
   }
 
   Future<dynamic> getStockBalanceReportResponse(
@@ -278,7 +281,8 @@ class ReportService {
       }
     } catch (e) {
       exception(e, url, 'getStockBalanceReportResponse');
+      return null;
     }
-    return '';
+    return null;
   }
 }

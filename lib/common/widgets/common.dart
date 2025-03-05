@@ -4,6 +4,7 @@ import 'package:ampower_buzzit_mobile/common/widgets/custom_buttons.dart';
 import 'package:ampower_buzzit_mobile/common/widgets/custom_snackbar.dart';
 import 'package:ampower_buzzit_mobile/common/widgets/custom_textformfield.dart';
 import 'package:ampower_buzzit_mobile/common/widgets/custom_toast.dart';
+import 'package:ampower_buzzit_mobile/common/widgets/empty_widget.dart';
 import 'package:ampower_buzzit_mobile/config/styles.dart';
 import 'package:ampower_buzzit_mobile/config/theme.dart';
 import 'package:ampower_buzzit_mobile/locator/locator.dart';
@@ -798,50 +799,58 @@ class Common {
 
   static Widget reportTable(
       dynamic reportMeta, List<String> showFields, BuildContext context) {
-    var columns = reportMeta['message']['columns'] as List<dynamic>;
-    var result = reportMeta['message']['result'] as List<dynamic>;
-    var filteredColumns = [];
-    columns.forEach(
-      (e) {
-        if (showFields.contains(e['fieldname'])) {
-          filteredColumns.add(e);
-        }
-      },
-    );
+    if (reportMeta != null || reportMeta != '') {
+      var columns = reportMeta['message']['columns'] as List<dynamic>;
+      var result = reportMeta['message']['result'] as List<dynamic>;
+      var filteredColumns = [];
+      columns.forEach(
+        (e) {
+          if (showFields.contains(e['fieldname'])) {
+            filteredColumns.add(e);
+          }
+        },
+      );
 
-    return JsonTable(result,
-        showColumnToggle: true,
-        paginationRowCount: 50,
-        tableCellBuilder: (value) => Sizes.tableCellBuilder(value, context),
-        tableHeaderBuilder: (header) =>
-            Sizes.tableHeaderBuilder(header, context),
-        columns: filteredColumns
-            .map((e) => JsonTableColumn(e['fieldname'], label: e['label']))
-            .toList());
+      return JsonTable(result,
+          showColumnToggle: true,
+          paginationRowCount: 50,
+          tableCellBuilder: (value) => Sizes.tableCellBuilder(value, context),
+          tableHeaderBuilder: (header) =>
+              Sizes.tableHeaderBuilder(header, context),
+          columns: filteredColumns
+              .map((e) => JsonTableColumn(e['fieldname'], label: e['label']))
+              .toList());
+    } else {
+      return const EmptyWidget();
+    }
   }
 
   static Widget reportTableWithHiddenColumns(
       dynamic reportMeta, List<String> hiddenFields, BuildContext context) {
-    var columns = reportMeta['message']['columns'] as List<dynamic>;
-    var result = reportMeta['message']['result'] as List<dynamic>;
-    var filteredColumns = [];
-    columns.forEach(
-      (e) {
-        if (!hiddenFields.contains(e['fieldname'])) {
-          filteredColumns.add(e);
-        }
-      },
-    );
+    if (reportMeta != null || reportMeta != '') {
+      var columns = reportMeta['message']['columns'] as List<dynamic>;
+      var result = reportMeta['message']['result'] as List<dynamic>;
+      var filteredColumns = [];
+      columns.forEach(
+        (e) {
+          if (!hiddenFields.contains(e['fieldname'])) {
+            filteredColumns.add(e);
+          }
+        },
+      );
 
-    return JsonTable(result,
-        showColumnToggle: true,
-        paginationRowCount: 50,
-        tableCellBuilder: (value) => Sizes.tableCellBuilder(value, context),
-        tableHeaderBuilder: (header) =>
-            Sizes.tableHeaderBuilder(header, context),
-        columns: filteredColumns
-            .map((e) => JsonTableColumn(e['fieldname'], label: e['label']))
-            .toList());
+      return JsonTable(result,
+          showColumnToggle: true,
+          paginationRowCount: 50,
+          tableCellBuilder: (value) => Sizes.tableCellBuilder(value, context),
+          tableHeaderBuilder: (header) =>
+              Sizes.tableHeaderBuilder(header, context),
+          columns: filteredColumns
+              .map((e) => JsonTableColumn(e['fieldname'], label: e['label']))
+              .toList());
+    } else {
+      return const EmptyWidget();
+    }
   }
 }
 

@@ -31,6 +31,7 @@ class BalanceSheetReportViewModel extends BaseViewModel {
   Future getBalanceSheetReport({
     Map<String, dynamic>? filters,
   }) async {
+    setState(ViewState.busy);
     var globalDefaults = locator.get<HomeViewModel>().globalDefaults;
     reportData = null;
     var data = await locator.get<ApiService>().getFiscalYear();
@@ -50,6 +51,7 @@ class BalanceSheetReportViewModel extends BaseViewModel {
         [],
         [],
         filters: filters);
+    setState(ViewState.idle);
     notifyListeners();
   }
 }

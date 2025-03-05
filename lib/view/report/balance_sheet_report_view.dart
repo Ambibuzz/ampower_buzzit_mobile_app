@@ -1,9 +1,11 @@
 import 'package:ampower_buzzit_mobile/base_view.dart';
 import 'package:ampower_buzzit_mobile/common/widgets/abstract_factory/iwidgetsfactory.dart';
 import 'package:ampower_buzzit_mobile/common/widgets/common.dart';
+import 'package:ampower_buzzit_mobile/common/widgets/empty_widget.dart';
 import 'package:ampower_buzzit_mobile/config/styles.dart';
 import 'package:ampower_buzzit_mobile/util/constants/sizes.dart';
 import 'package:ampower_buzzit_mobile/util/display_helper.dart';
+import 'package:ampower_buzzit_mobile/util/enums.dart';
 import 'package:ampower_buzzit_mobile/view/filters/balance_sheet_filter_bottomsheet_view.dart';
 import 'package:ampower_buzzit_mobile/viewmodel/report/balance_sheet_report_viewmodel.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +17,7 @@ class BalanceSheetReportView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BaseView<BalanceSheetReportViewModel>(
       onModelReady: (model) async {
-        model.loadData();
+        await model.loadData();
         await model.getBalanceSheetReport();
       },
       builder: (context, model, child) {
@@ -39,10 +41,17 @@ class BalanceSheetReportView extends StatelessWidget {
                 ),
               ],
               context),
-          body: model.reportData == null
+          body: model.state == ViewState.busy
               ? WidgetsFactoryList.circularProgressIndicator()
-              : Common.reportTableWithHiddenColumns(
-                  model.reportData, <String>['currency'], context),
+              : model.reportData == null
+                  ? EmptyWidget(
+                      onRefresh: () async {
+                        await model.loadData();
+                        await model.getBalanceSheetReport();
+                      },
+                    )
+                  : Common.reportTableWithHiddenColumns(
+                      model.reportData, <String>['currency'], context),
         );
       },
     );

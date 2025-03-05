@@ -26,6 +26,7 @@ class SupplierLedgerReportViewModel extends BaseViewModel {
   Future getSupplierLedgerReport({
     Map<String, dynamic>? filters,
   }) async {
+    setState(ViewState.busy);
     var globalDefaults = locator.get<HomeViewModel>().globalDefaults;
     var dateNow = DateTime.now();
     var datePrevMon = Jiffy.now().subtract(months: 1).dateTime;
@@ -40,6 +41,7 @@ class SupplierLedgerReportViewModel extends BaseViewModel {
         [],
         'Group by Voucher (Consolidated)',
         filters: filters);
+    setState(ViewState.idle);
     notifyListeners();
   }
 }

@@ -29,7 +29,7 @@ class StockBalanceReportView extends StatelessWidget {
     return BaseView<StockBalanceReportViewModel>(
       onModelReady: (model) async {
         // model.clear();
-        model.loadData();
+        await model.loadData();
         await model.getStockBalanceReport(true);
       },
       builder: (context, model, child) {
@@ -55,10 +55,11 @@ class StockBalanceReportView extends StatelessWidget {
               context),
           body: model.state == ViewState.busy
               ? WidgetsFactoryList.circularProgressIndicator()
-              : model.stockBalance.message?.result == null
+              : (model.stockBalance.message?.result == null ||
+                      model.response == null)
                   ? EmptyWidget(
                       onRefresh: () async {
-                        // model.clear();
+                        await model.loadData();
                         await model.getStockBalanceReport(true);
                       },
                     )

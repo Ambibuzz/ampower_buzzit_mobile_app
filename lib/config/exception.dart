@@ -51,6 +51,8 @@ void exception(e, String url, String function, {bool showToast = true}) async {
     } else if (e.response!.data['exception'].split(" ")[0] ==
         'ModuleNotFoundError:') {
       styledToast(parseHtmlString(e.response!.data['exception']));
+    } else if (e.response!.data['exception'] != null) {
+      styledToast(parseHtmlString(e.response!.data['exception']));
     } else {
       switch (e.response!.statusCode) {
         case 400:

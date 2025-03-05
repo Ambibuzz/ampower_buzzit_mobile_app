@@ -13,6 +13,13 @@ class CustomerLedgerFilterBottomSheetViewModel extends BaseViewModel {
   var customerController = TextEditingController();
   var customerFocusNode = FocusNode();
 
+  void clearFilter() {
+    fromDateController.clear();
+    toDateController.clear();
+    customerController.clear();
+    notifyListeners();
+  }
+
   void initData() async {
     var dateNow = DateTime.now();
     var datePrevMon = Jiffy.now().subtract(months: 1).dateTime;

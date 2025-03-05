@@ -21,6 +21,17 @@ class StockBalanceFilterBottomSheetViewModel extends BaseViewModel {
   var companyController = TextEditingController();
   var companyFocusNode = FocusNode();
 
+  void clearFilter() {
+    fromDateController.clear();
+    toDateController.clear();
+    customerController.clear();
+    itemCodeController.clear();
+    itemGroupController.clear();
+    warehouseController.clear();
+    companyController.clear();
+    notifyListeners();
+  }
+
   void initData() async {
     var dateNow = DateTime.now();
     var datePrevMon = Jiffy.now().subtract(months: 1).dateTime;

@@ -50,13 +50,12 @@ jobs:
       id: create_release
       uses: actions/create-release@v1
       with:
-        tag_name: "v1.3.0" # Replace with your desired tag name
-        release_name: "v1.3.0" # Replace with your desired release name
+        tag_name: "v1.3.1" # Replace with your desired tag name
+        release_name: "v1.3.1" # Replace with your desired release name
         body: |
           This release includes:
-          - Bug fix : Added supplier field to purchase invoice
-          - Bug fix : Stock Balance not fetching
-          - Feature : Added Url to which app is connected to
+          - cleared report filter on init
+          - handled null cases in reports
         draft: false
         prerelease: false
       env:

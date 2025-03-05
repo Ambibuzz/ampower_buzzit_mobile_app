@@ -28,7 +28,8 @@ class StockBalanceReportView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BaseView<StockBalanceReportViewModel>(
       onModelReady: (model) async {
-        // model.clear();
+        // clear filter
+        locator.get<StockBalanceFilterBottomSheetViewModel>().clearFilter();
         await model.loadData();
         await model.getStockBalanceReport(true);
       },

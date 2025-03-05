@@ -20,6 +20,15 @@ class BalanceSheetFilterBottomSheetViewModel extends BaseViewModel {
   String? fiscalYear;
   String? periodicityText = Lists.periodicity[3];
 
+  void clearFilter() {
+    fromDateController.clear();
+    toDateController.clear();
+    companyController.clear();
+    costCenterController.clear();
+    projectController.clear();
+    notifyListeners();
+  }
+
   void initData() async {
     var fiscalYearData =
         locator.get<BalanceSheetReportViewModel>().fiscalYearData;

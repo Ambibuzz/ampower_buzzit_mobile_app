@@ -4,9 +4,11 @@ import 'package:ampower_buzzit_mobile/common/widgets/common.dart';
 import 'package:ampower_buzzit_mobile/common/widgets/custom_popup_menu_items.dart';
 import 'package:ampower_buzzit_mobile/common/widgets/empty_widget.dart';
 import 'package:ampower_buzzit_mobile/config/styles.dart';
+import 'package:ampower_buzzit_mobile/locator/locator.dart';
 import 'package:ampower_buzzit_mobile/util/display_helper.dart';
 import 'package:ampower_buzzit_mobile/util/enums.dart';
 import 'package:ampower_buzzit_mobile/view/filters/supplier_ledger_filter_bottomsheet_viewmodel.dart';
+import 'package:ampower_buzzit_mobile/viewmodel/filters/supplier_ledger_filter_bottomsheet_viewmodel.dart';
 import 'package:ampower_buzzit_mobile/viewmodel/report/supplier_ledger_report_viewmodel.dart';
 import 'package:flutter/material.dart';
 
@@ -17,6 +19,8 @@ class SupplierLedgerReportView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BaseView<SupplierLedgerReportViewModel>(
       onModelReady: (model) async {
+        // clear filter
+        locator.get<SupplierLedgerFilterBottomSheetViewModel>().clearFilter();
         await model.loadData();
         await model.getSupplierLedgerReport();
       },

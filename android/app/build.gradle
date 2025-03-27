@@ -30,12 +30,21 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace "com.ampower.buzzit_mobile_app"
-    compileSdk 34
-    ndkVersion "25.1.8937393"
+    compileSdk 36
+    ndkVersion "29.0.13113456"
 
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8
     }
 
     defaultConfig {
@@ -44,10 +53,14 @@ android {
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         minSdkVersion 24
-        targetSdkVersion 34
-        versionCode flutterVersionCode.toInteger()
-        versionName flutterVersionName
+        targetSdkVersion 36
+        versionCode flutter.versionCode
+        versionName flutter.versionName
         multiDexEnabled true
+
+        ndk {
+            abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+        }
     }
 
     signingConfigs {

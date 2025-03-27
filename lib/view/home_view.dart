@@ -34,7 +34,7 @@ class HomeView extends StatelessWidget {
     return BaseView<HomeViewModel>(
       onModelReady: (model) async {
         var statusCode = await locator.get<ApiService>().checkSessionExpired();
-        if (statusCode != 200) {
+        if (statusCode == 403) {
           // logout
           locator.get<StorageService>().loggedIn = false;
           await locator

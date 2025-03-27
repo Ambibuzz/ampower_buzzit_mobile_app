@@ -70,25 +70,25 @@ flutter:
     - assets/icon/
 
 flutter_launcher_icons:
-  image_path: "assets/buzzit_logo.png"
+  image_path: "assets/ampower_buzzit_logo_with_bg.jpg"
   android: true
   ios: true
   adaptive_icon_background: "#ffffff"
-  adaptive_icon_foreground: "assets/buzzit_logo.png"
+  adaptive_icon_foreground: "assets/ampower_buzzit_logo_with_bg.jpg"
   remove_alpha_ios: true
   min_sdk_android: 21 # android min sdk min:16, default 21
   web:
     generate: true
-    image_path: "assets/buzzit_logo.png"
+    image_path: "assets/ampower_buzzit_logo_with_bg.jpg"
     background_color: "#hexcode"
     theme_color: "#hexcode"
   windows:
     generate: true
-    image_path: "assets/buzzit_logo.png"
+    image_path: "assets/ampower_buzzit_logo_with_bg.jpg"
     icon_size: 48 # min:48, max:256, default: 48
   macos:
     generate: true
-    image_path: "assets/buzzit_logo.png"
+    image_path: "assets/ampower_buzzit_logo_with_bg.jpg"
 
 flutter_native_splash:
   android_12:

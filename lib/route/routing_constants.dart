@@ -3,6 +3,7 @@ const customerLedgerReportViewRoute = 'customer_ledger_report';
 const homeViewRoute = '/';
 const itemViewRoute = 'item_view';
 const loginViewRoute = 'login';
+const noInternetConnectionViewRoute = 'no_internet_connection';
 const settingsViewRoute = 'settings';
 const salesOrderListViewRoute = 'sales_order_list';
 const salesOrderDetailViewRoute = 'sales_order_detail';

@@ -10,6 +10,7 @@ class Images {
   static const itemsIcon = 'assets/icon/items_icon.png';
   static const netProfitIcon = 'assets/icon/net_profit_icon.png';
   static const noDataIcon = 'assets/icon/no_data.png';
+  static const noInternetIcon = 'assets/icon/no_internet_icon.png';
   static const profileIcon = 'assets/icon/profile_icon.png';
   static const purchaseInvoiceIcon = 'assets/icon/purchase_invoice_icon.png';
   static const purchaseOrderIcon = 'assets/icon/purchase_order_icon.png';

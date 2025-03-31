@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:ampower_buzzit_mobile/common/service/dialog_service.dart';
+import 'package:ampower_buzzit_mobile/common/service/navigation_service.dart';
 import 'package:ampower_buzzit_mobile/locator/locator.dart';
+import 'package:ampower_buzzit_mobile/route/routing_constants.dart';
 import 'package:ampower_buzzit_mobile/util/helpers.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -13,15 +15,18 @@ void exception(e, String url, String function, {bool showToast = true}) async {
   var dialogService = locator.get<DialogService>();
   var contactSupport = 'Please contact support@ambibuzz.com';
 
-  print(e.response.data);
-  printWrapped(e.response.data.toString());
-
-  // print(url);
+  print(e);
+  if (e is DioException) {
+    if (e.error is SocketException) {
+      await locator
+          .get<NavigationService>()
+          .navigateTo(noInternetConnectionViewRoute);
+    }
+  }
   if (e.response != null) {
-    if (e is SocketException) {
-      styledToast(
-          'No Internet Connection. Please Connect to Wifi or Mobile Network.');
-    } else if (e.response!.data['exc_type'] == 'PermissionError' ||
+    print(e.response.data);
+    printWrapped(e.response.data.toString());
+    if (e.response!.data['exc_type'] == 'PermissionError' ||
         e.response!.data['exc_type'] == 'ValidationError' ||
         e.response!.data['exc_type'] == 'TimestampMismatchError' ||
         e.response!.data['exc_type'] == 'MissingDocumentError' ||

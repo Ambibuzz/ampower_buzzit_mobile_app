@@ -1,4 +1,5 @@
 import 'package:ampower_buzzit_mobile/common/service/storage_service.dart';
+import 'package:ampower_buzzit_mobile/common/view/no_internet_connection_view.dart';
 import 'package:ampower_buzzit_mobile/config/logger.dart';
 import 'package:ampower_buzzit_mobile/locator/locator.dart';
 import 'package:ampower_buzzit_mobile/route/undefined_view.dart';
@@ -46,6 +47,9 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (context) => LoginView());
     case homeViewRoute:
       return MaterialPageRoute(builder: (context) => HomeView());
+    case noInternetConnectionViewRoute:
+      return MaterialPageRoute(
+          builder: (context) => NoInternetConnectionView());
     case salesOrderListViewRoute:
       var args = settings.arguments as String?;
       return MaterialPageRoute(

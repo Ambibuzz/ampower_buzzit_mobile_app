@@ -55,13 +55,15 @@ class ApiService {
     return false;
   }
 
-  Future<int> checkSessionExpired() async {
+  Future<int?> checkSessionExpired() async {
     final url = usernameUrl();
     try {
       final response = await DioHelper.dio?.get(url);
       return response?.statusCode ?? 400;
     } catch (e) {
-      exception(e, url, 'checkSessionExpired');
+      if (e is DioException) {
+        return e.response?.statusCode;
+      }
     }
     return 0;
   }

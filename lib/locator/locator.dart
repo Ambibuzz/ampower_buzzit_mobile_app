@@ -1,11 +1,13 @@
 import 'package:ampower_buzzit_mobile/app_viewmodel.dart';
 import 'package:ampower_buzzit_mobile/common/service/connectivity_service.dart';
 import 'package:ampower_buzzit_mobile/common/service/dialog_service.dart';
+import 'package:ampower_buzzit_mobile/common/service/error_log_service.dart';
 import 'package:ampower_buzzit_mobile/common/service/login_api_service.dart';
 import 'package:ampower_buzzit_mobile/common/service/logout_api_service.dart';
 import 'package:ampower_buzzit_mobile/common/service/navigation_service.dart';
 import 'package:ampower_buzzit_mobile/common/service/offline_storage_service.dart';
 import 'package:ampower_buzzit_mobile/common/service/storage_service.dart';
+import 'package:ampower_buzzit_mobile/common/viewmodel/error_log_list_viewmodel.dart';
 import 'package:ampower_buzzit_mobile/common/viewmodel/pdf_download_viewmodel.dart';
 import 'package:ampower_buzzit_mobile/config/theme.dart';
 import 'package:ampower_buzzit_mobile/service/api_service.dart';
@@ -116,4 +118,7 @@ Future setUpLocator() async {
       () => DoctypeCachingService());
   locator.registerLazySingleton<FetchCachedDoctypeService>(
       () => FetchCachedDoctypeService());
+  locator.registerLazySingleton<ErrorLogService>(() => ErrorLogService());
+  locator.registerLazySingleton<ErrorLogListViewModel>(
+      () => ErrorLogListViewModel());
 }

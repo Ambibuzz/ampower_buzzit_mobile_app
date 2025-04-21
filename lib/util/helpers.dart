@@ -10,6 +10,7 @@ import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:html/parser.dart';
+import 'package:share_plus/share_plus.dart';
 
 Future initDb() async {
   await locator.get<StorageService>().initHiveStorage();
@@ -107,4 +108,11 @@ String getServerMessage(String serverMsgs) {
   }
 
   return errorStr;
+}
+
+Future shareText(String title, String text) async {
+  await Share.share(
+    text,
+    subject: title,
+  );
 }

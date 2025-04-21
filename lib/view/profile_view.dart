@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:ampower_buzzit_mobile/base_view.dart';
+import 'package:ampower_buzzit_mobile/common/service/navigation_service.dart';
 import 'package:ampower_buzzit_mobile/common/service/storage_service.dart';
 import 'package:ampower_buzzit_mobile/common/widgets/abstract_factory/iwidgetsfactory.dart';
 import 'package:ampower_buzzit_mobile/common/widgets/common.dart';
@@ -7,6 +8,7 @@ import 'package:ampower_buzzit_mobile/common/widgets/custom_textformfield.dart';
 import 'package:ampower_buzzit_mobile/common/widgets/custom_toast.dart';
 import 'package:ampower_buzzit_mobile/config/theme.dart';
 import 'package:ampower_buzzit_mobile/locator/locator.dart';
+import 'package:ampower_buzzit_mobile/route/routing_constants.dart';
 import 'package:ampower_buzzit_mobile/service/camera_service.dart';
 import 'package:ampower_buzzit_mobile/util/constants/sizes.dart';
 import 'package:ampower_buzzit_mobile/util/dio_helper.dart';
@@ -32,7 +34,34 @@ class ProfileView extends StatelessWidget {
       },
       builder: (context, model, child) {
         return Scaffold(
-            appBar: Common.commonAppBar('Profile', [], context),
+            appBar: Common.commonAppBar(
+                'Profile',
+                [
+                  TextButton(
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStatePropertyAll(
+                          Theme.of(context).colorScheme.onSecondary),
+                    ),
+                    onPressed: () async {
+                      await locator
+                          .get<NavigationService>()
+                          .navigateTo(errorLogListViewRoute);
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: Sizes.smallPaddingWidget(context)),
+                      child: Text(
+                        'Error Log',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.primary,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: Sizes.paddingWidget(context)),
+                ],
+                context),
             body: model.state == ViewState.busy
                 ? WidgetsFactoryList.circularProgressIndicator()
                 : profileScreenUi(model, context));

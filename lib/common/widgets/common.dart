@@ -470,6 +470,14 @@ class Common {
     );
   }
 
+  static double convertToDouble(dynamic data) {
+    if (data is int) {
+      return (data).toDouble();
+    } else {
+      return data;
+    }
+  }
+
   static Widget addressWidget(String? text, BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(

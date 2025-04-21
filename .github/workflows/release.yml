@@ -50,13 +50,12 @@ jobs:
       id: create_release
       uses: actions/create-release@v1
       with:
-        tag_name: "v1.4.0" # Replace with your desired tag name
-        release_name: "v1.4.0" # Replace with your desired release name
+        tag_name: "v1.5.0" # Replace with your desired tag name
+        release_name: "v1.5.0" # Replace with your desired release name
         body: |
           This release includes:
-          - changed app logo
-          - added no internet screen
-          - updated android sdk to ad support for android 15 and 16
+          - added error log
+          - updated readme
         draft: false
         prerelease: false
       env:

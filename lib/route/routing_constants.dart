@@ -1,5 +1,6 @@
 const balanceSheetReportViewRoute = 'balance_sheet_report';
 const customerLedgerReportViewRoute = 'customer_ledger_report';
+const errorLogListViewRoute = 'error_log_list';
 const homeViewRoute = '/';
 const itemViewRoute = 'item_view';
 const loginViewRoute = 'login';

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:ampower_buzzit_mobile/common/service/dialog_service.dart';
+import 'package:ampower_buzzit_mobile/common/service/error_log_service.dart';
 import 'package:ampower_buzzit_mobile/common/service/navigation_service.dart';
 import 'package:ampower_buzzit_mobile/locator/locator.dart';
 import 'package:ampower_buzzit_mobile/route/routing_constants.dart';
@@ -24,6 +25,9 @@ void exception(e, String url, String function, {bool showToast = true}) async {
     }
   }
   if (e.response != null) {
+    await locator
+        .get<ErrorLogService>()
+        .saveErrorLog(e.response.data.toString(),e);
     print(e.response.data);
     printWrapped(e.response.data.toString());
     if (e.response!.data['exc_type'] == 'PermissionError' ||

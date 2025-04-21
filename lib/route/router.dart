@@ -1,4 +1,5 @@
 import 'package:ampower_buzzit_mobile/common/service/storage_service.dart';
+import 'package:ampower_buzzit_mobile/common/view/error_log_list_view.dart';
 import 'package:ampower_buzzit_mobile/common/view/no_internet_connection_view.dart';
 import 'package:ampower_buzzit_mobile/config/logger.dart';
 import 'package:ampower_buzzit_mobile/locator/locator.dart';
@@ -41,6 +42,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case customerLedgerReportViewRoute:
       return MaterialPageRoute(
           builder: (context) => const CustomerLedgerReportView());
+    case errorLogListViewRoute:
+      return MaterialPageRoute(builder: (context) => const ErrorLogListView());
     case itemViewRoute:
       return MaterialPageRoute(builder: (context) => const ItemView());
     case loginViewRoute:

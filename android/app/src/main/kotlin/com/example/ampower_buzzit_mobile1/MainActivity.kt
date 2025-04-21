@@ -1,4 +1,4 @@
-package com.ampower.buzzit_community
+package com.ampower.buzzit_mobile_app
 
 import io.flutter.embedding.android.FlutterActivity
 

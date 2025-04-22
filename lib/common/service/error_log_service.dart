@@ -10,7 +10,8 @@ import 'package:intl/intl.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class ErrorLogService {
-  Future<void> saveErrorLog(String error, dynamic errorResponse) async {
+  Future<void> saveErrorLog(
+      String error, int? statusCode, dynamic errorResponse) async {
     var dateTimeObj = DateTime.now();
     var exception = errorResponse.response!.data['exception'] ?? '';
 
@@ -22,6 +23,7 @@ class ErrorLogService {
       error: error,
       version: packageInfo.version,
       exception: exception ?? '',
+      statusCode: statusCode ?? 0,
     );
 
     //get errorlogMap

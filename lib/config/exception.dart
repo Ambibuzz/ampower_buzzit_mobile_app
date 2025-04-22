@@ -27,7 +27,7 @@ void exception(e, String url, String function, {bool showToast = true}) async {
   if (e.response != null) {
     await locator
         .get<ErrorLogService>()
-        .saveErrorLog(e.response.data.toString(),e);
+        .saveErrorLog(e.response.data.toString(), e.response!.statusCode, e);
     print(e.response.data);
     printWrapped(e.response.data.toString());
     if (e.response!.data['exc_type'] == 'PermissionError' ||

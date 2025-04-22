@@ -173,7 +173,7 @@ class StockBalanceReportView extends StatelessWidget {
               value: '${r.stockUom}\n', width: displayWidth(context) * 0.2),
           TableData(
               value: r.balQty != null
-                  ? '${Others.formatter.format(r.balQty)}\n'
+                  ? '${r.balQty}\n'
                   : '0',
               width: displayWidth(context) * 0.3,
               alignment: Alignment.centerRight,

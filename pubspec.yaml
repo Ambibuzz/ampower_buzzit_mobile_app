@@ -3,7 +3,7 @@ description: "With this app business owners,managers and key personel would be a
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
-version: 1.5.1+9
+version: 1.6.0+9
 
 environment:
   sdk: ">=3.3.0 <4.0.0"
@@ -19,7 +19,7 @@ dependencies:
   file_picker: ^8.0.3
   flutter_html: ^3.0.0-alpha.6
   flutter_typeahead: ^5.2.0
-  fluttertoast: ^8.2.1
+  fluttertoast: ^8.2.12
   get_it: ^7.2.0
   google_fonts: ^6.1.0
   hive: ^2.2.3
@@ -28,7 +28,7 @@ dependencies:
   intl: ^0.19.0
   json_table: ^2.0.1
   logger: ^2.0.2+1
-  open_filex: ^4.5.0
+  open_filex: ^4.7.0
   path: ^1.8.2
   path_provider: ^2.0.14
   permission_handler: ^11.0.0

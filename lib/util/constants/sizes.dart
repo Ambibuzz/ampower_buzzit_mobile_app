@@ -100,24 +100,6 @@ class Sizes {
     }
   }
 
-  static SideTitleWidget bottomTileSideTitleWidget(
-      String text, TextStyle style, BuildContext context) {
-    return SideTitleWidget(
-      axisSide: AxisSide.left,
-      angle: 120,
-      child: SizedBox(
-        width: displayWidth(context) < 600 ? 70 : 70 * 1.5,
-        child: Text(
-          text,
-          style: style,
-          maxLines: 2,
-          textAlign: TextAlign.center,
-          overflow: TextOverflow.clip,
-        ),
-      ),
-    );
-  }
-
   static double appBarFontSizeWidget(BuildContext context) {
     if (displayWidth(context) < 600) {
       return Sizes.appBarFontSizeMobile;
@@ -268,17 +250,6 @@ class Sizes {
 
   static double barChartAspectRatioWidget(BuildContext context) {
     return displayWidth(context) / (displayHeight(context) * 0.6);
-  }
-
-  static SideTitleWidget leftTileSideTileWidget(
-      AxisSide axisSide, String text, TextStyle textStyle) {
-    return SideTitleWidget(
-      axisSide: axisSide,
-      child: Text(
-        text,
-        style: textStyle,
-      ),
-    );
   }
 
   static Widget tableHeaderBuilder(String? header, BuildContext context) {

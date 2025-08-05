@@ -24,6 +24,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class HomeView extends StatelessWidget {
   HomeView({super.key});
@@ -33,6 +34,7 @@ class HomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BaseView<HomeViewModel>(
       onModelReady: (model) async {
+        model.setIsLoading(true);
         var statusCode = await locator.get<ApiService>().checkSessionExpired();
         if (statusCode == 403) {
           // logout
@@ -52,6 +54,10 @@ class HomeView extends StatelessWidget {
               .get<DoctypeCachingService>()
               .reCacheDoctype(connectivityStatus);
         }
+        await model.getBuzzitConfig();
+        model.getQuickLinksList();
+        await Future.delayed(const Duration(seconds: 1));
+        model.setIsLoading(false);
         await model.checkDoctypeCachedOrNot(connectivityStatus);
         await model.getGlobalDefaults();
         await model.getUser();
@@ -141,39 +147,39 @@ class HomeView extends StatelessWidget {
                 ),
               ),
             ),
-            body: model.state == ViewState.busy
-                ? WidgetsFactoryList.circularProgressIndicator()
-                : RefreshIndicator(
-                    onRefresh: () async {
-                      var connectivityStatus = Provider.of<ConnectivityStatus>(
-                          context,
-                          listen: false);
-                      locator
-                          .get<DoctypeCachingService>()
-                          .reCacheDoctype(connectivityStatus);
-                    },
-                    child: SingleChildScrollView(
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal:
-                                Sizes.smallPaddingWidget(context) * 1.5),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            verticalPadding(context),
-                            const Text(
-                              'Profit and Loss',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(
-                              height: Sizes.smallPaddingWidget(context),
-                            ),
-                            cardUi(model, context),
-                            /*
+            body:
+                // model.state == ViewState.busy
+                //     ? WidgetsFactoryList.circularProgressIndicator()
+                //     :
+                RefreshIndicator(
+              onRefresh: () async {
+                var connectivityStatus =
+                    Provider.of<ConnectivityStatus>(context, listen: false);
+                locator
+                    .get<DoctypeCachingService>()
+                    .reCacheDoctype(connectivityStatus);
+              },
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: Sizes.smallPaddingWidget(context) * 1.5),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      verticalPadding(context),
+                      const Text(
+                        'Profit and Loss',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(
+                        height: Sizes.smallPaddingWidget(context),
+                      ),
+                      cardUi(model, context),
+                      /*
                             Card(
                               child: Padding(
                                 padding: EdgeInsets.symmetric(
@@ -302,26 +308,26 @@ class HomeView extends StatelessWidget {
                               ),
                             ),
                             */
-                            verticalPadding(context),
-                            Row(
-                              children: [
-                                Text(
-                                  'Quick Links',
-                                  style: TextStyle(
-                                    fontSize: Sizes.fontSizeWidget(context),
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
+                      verticalPadding(context),
+                      Row(
+                        children: [
+                          Text(
+                            'Quick Links',
+                            style: TextStyle(
+                              fontSize: Sizes.fontSizeWidget(context),
+                              fontWeight: FontWeight.bold,
                             ),
-                            quickLinksWidget(model, context),
-                            // accountBalanceData(model, context),
-                            // verticalPadding(context),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    ),
+                      quickLinksWidget(model, context),
+                      // accountBalanceData(model, context),
+                      // verticalPadding(context),
+                    ],
                   ),
+                ),
+              ),
+            ),
           ),
         );
       },
@@ -509,43 +515,57 @@ class HomeView extends StatelessWidget {
   }
 
   Widget quickLinksWidget(HomeViewModel model, BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(
-        top: Sizes.smallPaddingWidget(context),
-        bottom: Sizes.bottomPaddingWidget(context),
-      ),
-      child: Card(
-        child: Column(
-          children: model.quickLinksList
-              .map((e) => Column(
-                    children: [
-                      quickLinkListTile(
-                        title: e.label,
-                        route: e.routeName,
-                        routeType: e.routeType,
-                        context: context,
-                        args: e.args,
-                        icon: e.icon,
-                      ),
-                      model.quickLinksList.length - 1 ==
-                              model.quickLinksList.indexOf(e)
-                          ? const SizedBox()
-                          : const Divider(
-                              color: Color(0xFFD6D6D6),
-                              endIndent: 0,
-                              indent: 0,
-                              height: 1,
+    return model.isQuickLinksLoading
+        ? Skeletonizer(
+            enabled: true,
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: 5,
+              itemBuilder: (context, index) {
+                return const ListTile(
+                  leading: Text('H'),
+                  title: Text('Hello'),
+                  trailing: Icon(Icons.arrow_forward_ios),
+                );
+              },
+            ))
+        : Padding(
+            padding: EdgeInsets.only(
+              top: Sizes.smallPaddingWidget(context),
+              bottom: Sizes.bottomPaddingWidget(context),
+            ),
+            child: Card(
+              child: Column(
+                children: model.quickLinksList
+                    .map((e) => Column(
+                          children: [
+                            quickLinkListTile(
+                              title: e.label,
+                              route: e.routeName,
+                              routeType: e.routeType,
+                              context: context,
+                              args: e.args,
+                              icon: e.icon,
                             ),
-                      // model.quickLinksList.indexOf(e) ==
-                      //         model.quickLinksList.length - 1
-                      //     ? const SizedBox()
-                      //     : const Divider()
-                    ],
-                  ))
-              .toList(),
-        ),
-      ),
-    );
+                            model.quickLinksList.length - 1 ==
+                                    model.quickLinksList.indexOf(e)
+                                ? const SizedBox()
+                                : const Divider(
+                                    color: Color(0xFFD6D6D6),
+                                    endIndent: 0,
+                                    indent: 0,
+                                    height: 1,
+                                  ),
+                            // model.quickLinksList.indexOf(e) ==
+                            //         model.quickLinksList.length - 1
+                            //     ? const SizedBox()
+                            //     : const Divider()
+                          ],
+                        ))
+                    .toList(),
+              ),
+            ),
+          );
   }
 
   Widget legend(Color color, String text, double price, BuildContext context) {

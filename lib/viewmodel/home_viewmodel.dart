@@ -1,4 +1,5 @@
 import 'package:ampower_buzzit_mobile/base_viewmodel.dart';
+import 'package:ampower_buzzit_mobile/common/model/buzzit_config.dart';
 import 'package:ampower_buzzit_mobile/common/model/global_defaults.dart';
 import 'package:ampower_buzzit_mobile/common/service/navigation_service.dart';
 import 'package:ampower_buzzit_mobile/common/service/storage_service.dart';
@@ -22,73 +23,165 @@ import 'package:path/path.dart';
 class HomeViewModel extends BaseViewModel {
   Accounts accounts = Accounts();
   AccountBalance accountBalance = AccountBalance();
+  var buzzitConfig = BuzzitConfig();
   var globalDefaults = GlobalDefaults();
   var income = 0.0;
   var expense = 0.0;
-  var quickLinksList = <QuickLinks>[
-    QuickLinks(
-      label: 'Purchase Order',
-      routeName: purchaseOrderListViewRoute,
-      routeType: '',
-      // args: Strings.customer,
-      icon: Images.purchaseOrderIcon,
-    ),
-    QuickLinks(
-      label: 'Purchase Invoice',
-      routeName: purchaseInvoiceListViewRoute,
-      routeType: '',
-      // args: Strings.customer,
-      icon: Images.purchaseInvoiceIcon,
-    ),
-    QuickLinks(
-      label: 'Sales Order',
-      routeName: salesOrderListViewRoute,
-      routeType: '',
-      // args: Strings.customer,
-      icon: Images.salesOrderIcon,
-    ),
-    QuickLinks(
-      label: 'Sales Invoice',
-      routeName: salesInvoiceListViewRoute,
-      routeType: '',
-      // args: Strings.customer,
-      icon: Images.salesInvoiceIcon,
-    ),
-    QuickLinks(
-      label: 'Stock Balance Report',
-      routeName: stockBalanceReportViewRoute,
-      routeType: '',
-      // args: Strings.customer,
-      icon: Images.stockBalanceIcon,
-    ),
-    QuickLinks(
-      label: 'Customer Ledger Report',
-      routeName: customerLedgerReportViewRoute,
-      routeType: '',
-      icon: Images.customerLedgerIcon,
-    ),
-    QuickLinks(
-      label: 'Supplier Ledger Report',
-      routeName: supplierLedgerReportViewRoute,
-      routeType: '',
-      icon: Images.supplierLedgerIcon,
-    ),
-    QuickLinks(
-      label: 'Balance Sheet Report',
-      routeName: balanceSheetReportViewRoute,
-      routeType: '',
-      icon: Images.balanceSheetIcon,
-    ),
-    QuickLinks(
-      label: 'View Items',
-      routeName: itemViewRoute,
-      routeType: '',
-      icon: Images.itemsIcon,
-    ),
-  ];
+  var quickLinksList = <QuickLinks>[];
   String? viewTypeText = Lists.viewTypeList[1];
   User user = User();
   var userFullNameList = <String>[];
+  bool isQuickLinksLoading = false;
+
+  void setIsLoading(bool val) {
+    isQuickLinksLoading = val;
+    notifyListeners();
+  }
+
+  void getQuickLinksList() {
+    if (buzzitConfig.doctype == null) {
+      quickLinksList.addAll(<QuickLinks>[
+        QuickLinks(
+          label: 'Purchase Order',
+          routeName: purchaseOrderListViewRoute,
+          routeType: '',
+          // args: Strings.customer,
+          icon: Images.purchaseOrderIcon,
+        ),
+        QuickLinks(
+          label: 'Purchase Invoice',
+          routeName: purchaseInvoiceListViewRoute,
+          routeType: '',
+          // args: Strings.customer,
+          icon: Images.purchaseInvoiceIcon,
+        ),
+        QuickLinks(
+          label: 'Sales Order',
+          routeName: salesOrderListViewRoute,
+          routeType: '',
+          // args: Strings.customer,
+          icon: Images.salesOrderIcon,
+        ),
+        QuickLinks(
+          label: 'Sales Invoice',
+          routeName: salesInvoiceListViewRoute,
+          routeType: '',
+          // args: Strings.customer,
+          icon: Images.salesInvoiceIcon,
+        ),
+        QuickLinks(
+          label: 'Stock Balance Report',
+          routeName: stockBalanceReportViewRoute,
+          routeType: '',
+          // args: Strings.customer,
+          icon: Images.stockBalanceIcon,
+        ),
+        QuickLinks(
+          label: 'Customer Ledger Report',
+          routeName: customerLedgerReportViewRoute,
+          routeType: '',
+          icon: Images.customerLedgerIcon,
+        ),
+        QuickLinks(
+          label: 'Supplier Ledger Report',
+          routeName: supplierLedgerReportViewRoute,
+          routeType: '',
+          icon: Images.supplierLedgerIcon,
+        ),
+        QuickLinks(
+          label: 'Balance Sheet Report',
+          routeName: balanceSheetReportViewRoute,
+          routeType: '',
+          icon: Images.balanceSheetIcon,
+        ),
+        QuickLinks(
+          label: 'View Items',
+          routeName: itemViewRoute,
+          routeType: '',
+          icon: Images.itemsIcon,
+        ),
+      ]);
+    } else {
+      if (buzzitConfig.purchaseOrder == 1) {
+        quickLinksList.add(QuickLinks(
+          label: 'Purchase Order',
+          routeName: purchaseOrderListViewRoute,
+          routeType: '',
+          // args: Strings.customer,
+          icon: Images.purchaseOrderIcon,
+        ));
+      }
+      if (buzzitConfig.purchaseInvoice == 1) {
+        quickLinksList.add(QuickLinks(
+          label: 'Purchase Invoice',
+          routeName: purchaseInvoiceListViewRoute,
+          routeType: '',
+          // args: Strings.customer,
+          icon: Images.purchaseInvoiceIcon,
+        ));
+      }
+      if (buzzitConfig.salesOrder == 1) {
+        quickLinksList.add(QuickLinks(
+          label: 'Sales Order',
+          routeName: salesOrderListViewRoute,
+          routeType: '',
+          // args: Strings.customer,
+          icon: Images.salesOrderIcon,
+        ));
+      }
+      if (buzzitConfig.salesInvoice == 1) {
+        quickLinksList.add(QuickLinks(
+          label: 'Sales Invoice',
+          routeName: salesInvoiceListViewRoute,
+          routeType: '',
+          // args: Strings.customer,
+          icon: Images.salesInvoiceIcon,
+        ));
+      }
+      if (buzzitConfig.stockBalanceReport == 1) {
+        quickLinksList.add(QuickLinks(
+          label: 'Stock Balance Report',
+          routeName: stockBalanceReportViewRoute,
+          routeType: '',
+          // args: Strings.customer,
+          icon: Images.stockBalanceIcon,
+        ));
+      }
+      if (buzzitConfig.customerLedgerReport == 1) {
+        quickLinksList.add(QuickLinks(
+          label: 'Customer Ledger Report',
+          routeName: customerLedgerReportViewRoute,
+          routeType: '',
+          icon: Images.customerLedgerIcon,
+        ));
+      }
+      if (buzzitConfig.supplierLedgerReport == 1) {
+        quickLinksList.add(QuickLinks(
+          label: 'Supplier Ledger Report',
+          routeName: supplierLedgerReportViewRoute,
+          routeType: '',
+          icon: Images.supplierLedgerIcon,
+        ));
+      }
+      if (buzzitConfig.balanceSheetReport == 1) {
+        quickLinksList.add(QuickLinks(
+          label: 'Balance Sheet Report',
+          routeName: balanceSheetReportViewRoute,
+          routeType: '',
+          icon: Images.balanceSheetIcon,
+        ));
+      }
+      if (buzzitConfig.viewItems == 1) {
+        quickLinksList.add(QuickLinks(
+          label: 'View Items',
+          routeName: itemViewRoute,
+          routeType: '',
+          icon: Images.itemsIcon,
+        ));
+      }
+    }
+    notifyListeners();
+  }
 
   Future checkDoctypeCachedOrNot(ConnectivityStatus connectivityStatus) async {
     try {
@@ -169,6 +262,11 @@ class HomeViewModel extends BaseViewModel {
         expense += e.balance!.abs();
       }
     });
+    notifyListeners();
+  }
+
+  Future getBuzzitConfig() async {
+    buzzitConfig = await locator.get<ApiService>().getBuzzitConfig();
     notifyListeners();
   }
 

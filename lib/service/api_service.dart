@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:ampower_buzzit_mobile/common/model/buzzit_config.dart';
 import 'package:ampower_buzzit_mobile/common/model/global_defaults.dart';
 import 'package:ampower_buzzit_mobile/common/service/offline_storage_service.dart';
 import 'package:ampower_buzzit_mobile/common/widgets/custom_toast.dart';
@@ -220,6 +221,22 @@ class ApiService {
       exception(e, url, 'getDoctype');
     }
     return doctypeMeta;
+  }
+
+  Future<BuzzitConfig> getBuzzitConfig() async {
+    BuzzitConfig bc;
+    var url = '/api/resource/Buzzit%20Config/Buzzit%20Config';
+    try {
+      final response = await DioHelper.dio?.get(url);
+      if (response?.statusCode == 200) {
+        print(response?.data);
+        bc = BuzzitConfig.fromJson(response?.data['data']);
+        return bc;
+      }
+    } catch (e) {
+      exception(e, url, 'getBuzzitConfig');
+    }
+    return BuzzitConfig();
   }
 
   Future<GlobalDefaults> getGlobalDefaults() async {

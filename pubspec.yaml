@@ -70,6 +70,7 @@ flutter:
   assets:
     - assets/
     - assets/icon/
+    - assets/icon/quick_links/
 
 flutter_launcher_icons:
   image_path: "assets/ampower_buzzit_logo_with_bg.jpg"

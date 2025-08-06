@@ -52,9 +52,8 @@ class ProfileView extends StatelessWidget {
                           horizontal: Sizes.smallPaddingWidget(context)),
                       child: Text(
                         'Error Log',
-                        style: TextStyle(
+                        style: Sizes.titleTextStyle(context)?.copyWith(
                           color: Theme.of(context).colorScheme.primary,
-                          fontSize: 16,
                         ),
                       ),
                     ),

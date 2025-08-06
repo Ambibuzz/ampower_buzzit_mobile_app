@@ -164,7 +164,7 @@ class ItemView extends StatelessWidget {
             children: [
               Text(
                 'Stock Balance Data',
-                style: Theme.of(context).textTheme.titleMedium,
+                style: Sizes.subTitleTextStyle(context),
               ),
               ListView.builder(
                 padding: EdgeInsets.symmetric(vertical: 0),
@@ -180,11 +180,11 @@ class ItemView extends StatelessWidget {
                           horizontal: Sizes.smallPaddingWidget(context)),
                       title: Text(
                         bin.warehouse ?? '',
-                        style: Theme.of(context).textTheme.titleSmall,
+                        style: Sizes.subTitleTextStyle(context),
                       ),
                       trailing: Text(
                         bin.actualQty.toString(),
-                        style: Theme.of(context).textTheme.titleMedium,
+                        style: Sizes.subTitleTextStyle(context),
                       ),
                     ),
                   );

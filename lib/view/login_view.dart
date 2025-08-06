@@ -247,9 +247,9 @@ class LoginView extends StatelessWidget {
             Expanded(
               child: Text(
                 'Update your URL to get going      ',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
+                style: Sizes.subTitleTextStyle(context)?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
             SizedBox(width: Sizes.smallPaddingWidget(context)),

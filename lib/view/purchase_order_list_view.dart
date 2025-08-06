@@ -216,8 +216,7 @@ class PurchaseOrderListView extends StatelessWidget {
 
 TextStyle? _listItemTextStyle(BuildContext context) {
   if (displayWidth(context) < 600) {
-    return const TextStyle(
-      fontSize: 14,
+    return Sizes.subTitleTextStyle(context)?.copyWith(
       fontWeight: FontWeight.bold,
     );
   } else {

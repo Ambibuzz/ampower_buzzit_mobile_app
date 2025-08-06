@@ -78,12 +78,11 @@ class ErrorLogListView extends StatelessWidget {
                   children: [
                     Text(
                       'Time : ${errorLog.time}',
-                      style:
-                          Theme.of(context).textTheme.titleMedium?.copyWith(),
+                      style: Sizes.titleTextStyle(context)?.copyWith(),
                     ),
                     Text(
                       'Error : ${parseHtmlString(errorLog.exception ?? '')}',
-                      style: const TextStyle(fontSize: 14),
+                      style: Sizes.subTitleTextStyle(context),
                     ),
                   ],
                 ),

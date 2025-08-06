@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class CustomTheme {
-  static const primarycolor = Color(0xFF002D4C);
+  static const primarycolor = Colors.black;
   static TextTheme textTheme = TextTheme(
       displayLarge: GoogleFonts.dmSans(
           textStyle: const TextStyle(

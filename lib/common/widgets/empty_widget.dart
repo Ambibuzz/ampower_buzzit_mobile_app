@@ -30,6 +30,7 @@ class EmptyWidget extends StatelessWidget {
               Images.noDataIcon,
               width: Sizes.illustrationImageWidget(context),
               height: Sizes.illustrationImageWidget(context),
+              color: Theme.of(context).colorScheme.primary,
             ),
           ),
         ),

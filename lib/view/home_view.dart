@@ -3,6 +3,7 @@ import 'package:ampower_buzzit_mobile/common/service/navigation_service.dart';
 import 'package:ampower_buzzit_mobile/common/service/storage_service.dart';
 import 'package:ampower_buzzit_mobile/common/widgets/abstract_factory/iwidgetsfactory.dart';
 import 'package:ampower_buzzit_mobile/common/widgets/common.dart';
+import 'package:ampower_buzzit_mobile/common/widgets/drawer.dart';
 import 'package:ampower_buzzit_mobile/config/styles.dart';
 import 'package:ampower_buzzit_mobile/locator/locator.dart';
 import 'package:ampower_buzzit_mobile/model/barchart.dart';
@@ -29,6 +30,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 class HomeView extends StatelessWidget {
   HomeView({super.key});
   bool _isDialogOpen = false; // Flag to prevent multiple dialogs
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +78,12 @@ class HomeView extends StatelessWidget {
             return exitApp;
           },
           child: Scaffold(
+            key: _scaffoldKey,
+            drawer: drawer(context, DrawerMenu.buzzit),
             appBar: AppBar(
+              leading: Common.hamburgerMenuWidget(_scaffoldKey, context),
+              backgroundColor: Theme.of(context).colorScheme.surface,
+              titleSpacing: 0,
               title: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -84,31 +91,15 @@ class HomeView extends StatelessWidget {
                     'Hello',
                     style: TextStyle(
                       fontSize: 10,
-                      color: Colors.white,
                     ),
                   ),
                   Text(
-                    model.user.username ?? '',
-                    style: const TextStyle(
-                      color: Colors.white,
-                    ),
+                    model.user.firstName ?? '',
+                    style: const TextStyle(),
                   ),
                 ],
               ),
-              flexibleSpace: Container(
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.vertical(bottom: Corners.xlRadius),
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: <Color>[
-                      Color(0xFF006CB5), // Starting color
-                      Color(0xFF002D4C) // ending color
-                    ],
-                  ),
-                ),
-              ),
-              systemOverlayStyle: SystemUiOverlayStyle.light,
+              shadowColor: Colors.black.withOpacity(0.4),
               actions: [
                 GestureDetector(
                   onTap: () async {
@@ -141,11 +132,6 @@ class HomeView extends StatelessWidget {
                   width: Sizes.paddingWidget(context),
                 ),
               ],
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.vertical(
-                  bottom: Corners.xlRadius,
-                ),
-              ),
             ),
             body:
                 // model.state == ViewState.busy
@@ -159,172 +145,41 @@ class HomeView extends StatelessWidget {
                     .get<DoctypeCachingService>()
                     .reCacheDoctype(connectivityStatus);
               },
-              child: SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: Sizes.smallPaddingWidget(context) * 1.5),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      verticalPadding(context),
-                      const Text(
-                        'Profit and Loss',
-                        style: TextStyle(
-                          fontSize: 16,
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: Sizes.smallPaddingWidget(context) * 1.5),
+                child: CustomScrollView(
+                  slivers: [
+                    verticalPadding(context),
+                    SliverToBoxAdapter(
+                      child: Text(
+                        'Financial Summary',
+                        style: Sizes.titleTextStyle(context)?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(
+                    ),
+                    SliverToBoxAdapter(
+                      child: SizedBox(
                         height: Sizes.smallPaddingWidget(context),
                       ),
-                      cardUi(model, context),
-                      /*
-                            Card(
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: Sizes.smallPaddingWidget(context)),
-                                child: Column(
-                                  children: [
-                                    verticalPadding(context),
-                                    // verticalPadding(context),
-                                    // Row(
-                                    //   children: [
-                                    //     statusDropdownField(model, context),
-                                    //   ],
-                                    // ),
-                                    cardUi(model, context),
-                                    /*
-                                    model.viewTypeText == Lists.viewTypeList[0]
-                                        ?
-                                        //  cardUi(model, context)
-                  
-                                        barChartWidget(
-                                            model,
-                                            [
-                                              BarChartGroupData(
-                                                x: 0,
-                                                barRods: [
-                                                  BarChartRodData(
-                                                    toY: model.income,
-                                                    color: const Color(0xFF006CB5),
-                                                    width: 10,
-                                                    borderRadius:
-                                                        const BorderRadius.all(
-                                                      Radius.circular(Corners.lg),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              BarChartGroupData(
-                                                x: 1,
-                                                barRods: [
-                                                  BarChartRodData(
-                                                    toY: model.expense,
-                                                    color: const Color(0xFFFF731D),
-                                                    width: 10,
-                                                    borderRadius:
-                                                        const BorderRadius.all(
-                                                      Radius.circular(Corners.lg),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              BarChartGroupData(
-                                                x: 2,
-                                                barRods: [
-                                                  BarChartRodData(
-                                                    toY: model.income -
-                                                        model.expense,
-                                                    color: const Color(0xFF189333),
-                                                    width: 10,
-                                                    borderRadius:
-                                                        const BorderRadius.all(
-                                                      Radius.circular(Corners.lg),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                            [
-                                              BarChartModel(
-                                                'Income',
-                                                model.income,
-                                              ),
-                                              BarChartModel(
-                                                'Expense',
-                                                model.expense,
-                                              ),
-                                              BarChartModel(
-                                                'Profit',
-                                                model.income - model.expense,
-                                              ),
-                                            ],
-                                            context)
-                                        : pieChart(model, context),
-                                    */
-                                    verticalPadding(context),
-                                    /*
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: const Color(0xFF006CB5),
-                                        ),
-                                        borderRadius: Corners.xxlBorder,
-                                      ),
-                                      child: Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            vertical:
-                                                Sizes.smallPaddingWidget(context) *
-                                                    1.5),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            legend(
-                                                const Color(0xFF006CB5),
-                                                'Total Income',
-                                                model.income,
-                                                context),
-                                            legend(
-                                                const Color(0xFFFF731D),
-                                                'Total Expense',
-                                                model.expense,
-                                                context),
-                                            legend(
-                                                const Color(0xFF189333),
-                                                'Total Profit',
-                                                model.income - model.expense,
-                                                context),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    */
-                                    // verticalPadding(context),
-                                    // verticalPadding(context),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            */
-                      verticalPadding(context),
-                      Row(
-                        children: [
-                          Text(
-                            'Quick Links',
-                            style: TextStyle(
-                              fontSize: Sizes.fontSizeWidget(context),
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
+                    ),
+                    SliverToBoxAdapter(child: cardUi(model, context)),
+                    verticalPadding(context),
+                    SliverToBoxAdapter(
+                      child: Text(
+                        'Action Center',
+                        style: TextStyle(
+                          fontSize: Sizes.fontSizeWidget(context),
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                      quickLinksWidget(model, context),
-                      // accountBalanceData(model, context),
-                      // verticalPadding(context),
-                    ],
-                  ),
+                    ),
+                    verticalPadding(context),
+                    quickLinksGridViewWidget(model, context),
+                    // accountBalanceData(model, context),
+                    // verticalPadding(context),
+                  ],
                 ),
               ),
             ),
@@ -466,8 +321,10 @@ class HomeView extends StatelessWidget {
   }
 
   Widget verticalPadding(BuildContext context) {
-    return SizedBox(
-      height: Sizes.smallPaddingWidget(context) * 1.5,
+    return SliverToBoxAdapter(
+      child: SizedBox(
+        height: Sizes.smallPaddingWidget(context) * 1.5,
+      ),
     );
   }
 
@@ -483,7 +340,7 @@ class HomeView extends StatelessWidget {
             color: Theme.of(context).primaryColor,
             width: 1,
           ),
-          borderRadius: Corners.xxlBorder),
+          borderRadius: Corners.lgBorder),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
           value: model.viewTypeText,
@@ -509,6 +366,34 @@ class HomeView extends StatelessWidget {
               ),
             );
           }).toList(),
+        ),
+      ),
+    );
+  }
+
+  Widget quickLinksGridViewWidget(HomeViewModel model, BuildContext context) {
+    return SliverToBoxAdapter(
+      child: Card(
+        child: GridView.builder(
+          padding: EdgeInsets.symmetric(
+            vertical: Sizes.paddingWidget(context),
+          ),
+          shrinkWrap: true,
+          itemCount: model.quickLinksList.length,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 4),
+          itemBuilder: (context, index) {
+            var e = model.quickLinksList[index];
+            return quickLinkGridTile(
+              title: e.label,
+              route: e.routeName,
+              context: context,
+              args: e.args,
+              icon: e.icon,
+              isBottomsheet: e.isBottomSheet,
+              bottomsheet: e.bottomSheet,
+            );
+          },
         ),
       ),
     );
@@ -598,13 +483,82 @@ class HomeView extends StatelessWidget {
         ),
         Text(
           Others.formatter.format(price),
-          style: TextStyle(
-            fontSize: 14,
+          style: Sizes.subTitleTextStyle(context)?.copyWith(
             fontWeight: FontWeight.bold,
             color: color,
           ),
         )
       ],
+    );
+  }
+
+  // navigation drawer tile ui
+  Widget quickLinkGridTile({
+    String? title,
+    required String route,
+    dynamic args,
+    String? icon,
+    required isBottomsheet,
+    required BuildContext context,
+    Widget? bottomsheet,
+  }) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () async {
+        if (isBottomsheet) {
+          await showModalBottomSheet<dynamic>(
+            // constraints: BoxConstraints(
+            //   minWidth: displayWidth(context),
+            // ),
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            showDragHandle: true,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                topLeft: Corners.xxxlRadius,
+                topRight: Corners.xxxlRadius,
+              ),
+            ),
+            context: context,
+            builder: (ctx) {
+              return bottomsheet ?? const SizedBox();
+            },
+          );
+        } else {
+          await locator
+              .get<NavigationService>()
+              .navigateTo(route, arguments: args);
+        }
+      },
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+            horizontal: Sizes.extraSmallPaddingWidget(context)),
+        child: SizedBox(
+          // height: 100,
+          // width: 100,
+          child: Column(
+            children: [
+              Image.asset(
+                icon ?? '',
+                width: displayWidth(context) < 600 ? 32 : 48,
+                height: displayWidth(context) < 600 ? 32 : 48,
+              ),
+              SizedBox(
+                height: Sizes.smallPaddingWidget(context),
+              ),
+              Text(
+                key: Key(title ?? ''),
+                title ?? '',
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: Sizes.subTitleTextStyle(context)?.copyWith(
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 

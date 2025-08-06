@@ -90,7 +90,7 @@ class PurchaseOrderDetailView extends StatelessWidget {
                 Row(
                   children: [
                     Common.reusableTextWidget(
-                        model.po.supplierName, 16, context,
+                        model.po.supplierName ?? '', 16, context,
                         fontWeight: FontWeight.bold,
                         color: Theme.of(context).primaryColor),
                     const Spacer(),

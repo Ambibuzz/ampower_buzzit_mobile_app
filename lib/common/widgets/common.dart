@@ -360,35 +360,54 @@ class Common {
                                   //     controller, 'Add a comment', context)
                                   Common.mentionsField(globalKey, context),
                               actions: <Widget>[
-                                CustomButtons.textButton('Add Comment',
-                                    Theme.of(context).colorScheme.primary,
-                                    () async {
-                                  var user = locator.get<HomeViewModel>().user;
-                                  var result = await locator
-                                      .get<ApiService>()
-                                      .addComment(
-                                        doctype: doctype,
-                                        name: subtitle,
-                                        content: globalKey
-                                            .currentState!.controller!.text,
-                                        email: user.email,
-                                        commentBy: user.fullName,
-                                      );
-                                  if (result) {
-                                    // controller.clear();
-                                  }
-                                  flutterStyledToast(
-                                      context,
-                                      'Your comment is added successfully',
-                                      CustomTheme.toastSuccessColor,
-                                      textStyle: TextStyle(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onSurface,
-                                      ));
-                                  Navigator.of(context, rootNavigator: true)
-                                      .pop();
-                                }, context)
+                                CustomButtons.textButton(
+                                  'Add Comment',
+                                  Theme.of(context).colorScheme.primary,
+                                  () async {
+                                    var user =
+                                        locator.get<HomeViewModel>().user;
+                                    if (globalKey.currentState!.controller!.text
+                                        .isNotEmpty) {
+                                      var result = await locator
+                                          .get<ApiService>()
+                                          .addComment(
+                                            doctype: doctype,
+                                            name: subtitle,
+                                            content: globalKey
+                                                .currentState!.controller!.text,
+                                            email: user.email,
+                                            commentBy: user.fullName,
+                                          );
+                                      if (result) {
+                                        // controller.clear();
+                                      }
+                                      flutterStyledToast(
+                                          context,
+                                          'Your comment is added successfully',
+                                          CustomTheme.toastSuccessColor,
+                                          textStyle: TextStyle(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSurface,
+                                          ));
+                                      Navigator.of(context, rootNavigator: true)
+                                          .pop();
+                                    } else {
+                                      flutterStyledToast(
+                                          context,
+                                          'Oops! Looks like the comment field is empty. Please add a comment.',
+                                          Theme.of(context)
+                                              .colorScheme
+                                              .onPrimary,
+                                          textStyle: TextStyle(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary,
+                                          ));
+                                    }
+                                  },
+                                  context,
+                                )
                               ],
                             ),
                           );

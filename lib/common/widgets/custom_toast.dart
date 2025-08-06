@@ -51,7 +51,7 @@ flutterStyledToast(BuildContext context, String message, Color backgroundColor,
       context: context,
       textStyle: textStyle,
       animation: StyledToastAnimation.slideFromTop,
-      borderRadius: Corners.xxlBorder,
+      borderRadius: Corners.lgBorder,
       textPadding: EdgeInsets.symmetric(
           horizontal: Sizes.paddingWidget(context),
           vertical: Sizes.paddingWidget(context)),

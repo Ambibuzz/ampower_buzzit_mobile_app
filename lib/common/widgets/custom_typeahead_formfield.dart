@@ -112,8 +112,8 @@ class CustomTypeAheadFormField extends StatelessWidget {
               },
               decorationBuilder: (context, child) {
                 return Material(
-                  elevation: 4,
-                  borderRadius: Corners.xxlBorder,
+                  elevation: CustomTheme.elevation,
+                  borderRadius: Corners.lgBorder,
                   child: child,
                 );
               },

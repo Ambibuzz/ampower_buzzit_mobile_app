@@ -6,6 +6,7 @@ import 'package:ampower_buzzit_mobile/locator/locator.dart';
 import 'package:ampower_buzzit_mobile/util/helpers.dart';
 import 'package:ampower_buzzit_mobile/util/preference.dart';
 import 'package:camera/camera.dart';
+import 'package:feedback/feedback.dart';
 import 'package:flutter/material.dart';
 import 'util/dio_helper.dart';
 
@@ -23,7 +24,10 @@ Future<void> main() async {
         .get<StorageService>()
         .getBool(PreferenceVariables.loggedIn);
 
-    runApp(App(login: login));
+    runApp(BetterFeedback(
+      mode: FeedbackMode.navigate,
+      child: App(login: login),
+    ));
   } catch (e) {
     exception(e, '', 'main');
   }

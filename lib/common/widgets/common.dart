@@ -1,3 +1,5 @@
+import 'package:ampower_buzzit_mobile/common/service/navigation_service.dart';
+import 'package:ampower_buzzit_mobile/common/service/storage_service.dart';
 import 'package:ampower_buzzit_mobile/common/widgets/abstract_factory/iwidgetsfactory.dart';
 import 'package:ampower_buzzit_mobile/common/widgets/custom_alert_dialog.dart';
 import 'package:ampower_buzzit_mobile/common/widgets/custom_buttons.dart';
@@ -5,6 +7,7 @@ import 'package:ampower_buzzit_mobile/common/widgets/custom_snackbar.dart';
 import 'package:ampower_buzzit_mobile/common/widgets/custom_textformfield.dart';
 import 'package:ampower_buzzit_mobile/common/widgets/custom_toast.dart';
 import 'package:ampower_buzzit_mobile/common/widgets/empty_widget.dart';
+import 'package:ampower_buzzit_mobile/common/widgets/image_widget.dart';
 import 'package:ampower_buzzit_mobile/config/styles.dart';
 import 'package:ampower_buzzit_mobile/config/theme.dart';
 import 'package:ampower_buzzit_mobile/locator/locator.dart';
@@ -15,11 +18,13 @@ import 'package:ampower_buzzit_mobile/util/constants/sizes.dart';
 import 'package:ampower_buzzit_mobile/util/display_helper.dart';
 import 'package:ampower_buzzit_mobile/viewmodel/home_viewmodel.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_mentions/flutter_mentions.dart';
 import 'package:json_table/json_table.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class Common {
@@ -36,6 +41,17 @@ class Common {
         ),
       ),
       maxLines: 4,
+    );
+  }
+
+  static Widget hamburgerMenuWidget(
+      GlobalKey<ScaffoldState> key, BuildContext context) {
+    return IconButton(
+      icon: Icon(
+        Icons.menu,
+        color: Theme.of(context).primaryColor,
+      ),
+      onPressed: () => key.currentState?.openDrawer(),
     );
   }
 
@@ -148,8 +164,7 @@ class Common {
           flex: 30,
           child: Text(
             '$key : ',
-            style: TextStyle(
-              fontSize: 14,
+            style: Sizes.subTitleTextStyle(context)?.copyWith(
               color: CustomTheme.borderColor,
             ),
           ),
@@ -171,8 +186,7 @@ class Common {
           flex: 30,
           child: Text(
             '$key : ',
-            style: TextStyle(
-              fontSize: 14,
+            style: Sizes.subTitleTextStyle(context)?.copyWith(
               color: CustomTheme.borderColor,
             ),
           ),
@@ -184,10 +198,9 @@ class Common {
           child: Text(
             value ?? '',
             maxLines: 6,
-            style: const TextStyle(
-              fontSize: 14,
-              // color: Theme.of(context).primaryColor,
-            ),
+            style: Sizes.subTitleTextStyle(context)?.copyWith(
+                // color: Theme.of(context).primaryColor,
+                ),
           ),
         ),
       ],
@@ -201,8 +214,7 @@ class Common {
         children: [
           Text(
             '$key : ',
-            style: TextStyle(
-              fontSize: 14,
+            style: Sizes.subTitleTextStyle(context)?.copyWith(
               color: CustomTheme.borderColor,
             ),
           ),
@@ -213,10 +225,9 @@ class Common {
             child: Text(
               value ?? '',
               maxLines: 6,
-              style: const TextStyle(
-                fontSize: 14,
-                // color: Theme.of(context).primaryColor,
-              ),
+              style: Sizes.subTitleTextStyle(context)?.copyWith(
+                  // color: Theme.of(context).primaryColor,
+                  ),
             ),
           ),
         ],
@@ -230,7 +241,7 @@ class Common {
           border: Border.all(
             color: CustomTheme.borderColor,
           ),
-          borderRadius: Corners.xxlBorder),
+          borderRadius: Corners.lgBorder),
       child: Padding(
         padding: EdgeInsets.symmetric(
             horizontal: Sizes.smallPaddingWidget(context), vertical: 2),
@@ -243,7 +254,8 @@ class Common {
   }
 
   static Widget doctypeListViewCardUi(String? doctype, String? title,
-      String? subtitle, String icon, String? status, BuildContext context) {
+      String? subtitle, String icon, String? status, BuildContext context,
+      {isCommentVisible = true}) {
     // TextEditingController controller = TextEditingController();
     var globalKey = GlobalKey<FlutterMentionsState>(debugLabel: 'global_key');
     return Padding(
@@ -253,8 +265,8 @@ class Common {
       ),
       child: Card(
         margin: EdgeInsets.zero,
-        shape: const RoundedRectangleBorder(borderRadius: Corners.xxlBorder),
-        elevation: 4,
+        shape: const RoundedRectangleBorder(borderRadius: Corners.lgBorder),
+        elevation: CustomTheme.elevation,
         child: Container(
           padding: EdgeInsets.symmetric(
               horizontal: Sizes.smallPaddingWidget(context),
@@ -262,12 +274,12 @@ class Common {
           child: Row(
             children: [
               Expanded(
-                flex: 10,
-                child: Image.asset(icon, width: 25, height: 25),
+                  flex: 10, child: Image.asset(icon, width: 25, height: 25)),
+              SizedBox(
+                width: Sizes.smallPaddingWidget(context),
               ),
-              SizedBox(width: Sizes.smallPaddingWidget(context)),
               Expanded(
-                flex: 58,
+                flex: isCommentVisible ? 58 : 85,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -281,119 +293,137 @@ class Common {
                             title ?? '',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: 16,
+                            style: Sizes.titleTextStyle(context)?.copyWith(
                               fontWeight: FontWeight.bold,
                               color: Theme.of(context).primaryColor,
                             ),
                           ),
                           SizedBox(
-                            height: Sizes.smallPaddingWidget(context),
+                            height: Sizes.extraSmallPaddingWidget(context),
                           ),
                           Text(
                             subtitle ?? '',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontSize: 14,
-                            ),
+                            style: Sizes.subTitleTextStyle(context)?.copyWith(),
                           ),
                           SizedBox(
-                              height: Sizes.smallPaddingWidget(context) * 1.5),
-                          Container(
-                            decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: CustomTheme.borderColor,
-                                ),
-                                borderRadius: Corners.xxlBorder),
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: Sizes.smallPaddingWidget(context),
-                                  vertical: 2),
-                              child: Text(
-                                status ?? '',
-                                style: TextStyle(
-                                    color: CustomTheme.borderColor,
-                                    fontSize: 12),
-                              ),
-                            ),
+                              height: Sizes.extraSmallPaddingWidget(context)),
+                          Text(
+                            'Status : ${status ?? ''}',
+                            style: Sizes.subTitleTextStyle(context)?.copyWith(),
                           ),
                         ],
                       ),
                     ),
-                    SizedBox(height: Sizes.smallPaddingWidget(context)),
                   ],
                 ),
               ),
-              Expanded(
-                flex: 30,
-                child: CustomButtons.textButton(
-                    'Comment', Theme.of(context).colorScheme.secondary,
-                    () async {
-                  await showDialog(
-                    context: context,
-                    barrierDismissible: true,
-                    builder: (context) => AlertDialog(
-                      insetPadding: EdgeInsets.zero,
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: Sizes.paddingWidget(context),
-                        vertical: Sizes.smallPaddingWidget(context),
-                      ),
-                      title: Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              'Please type to add your comments',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Theme.of(context).primaryColor,
+              isCommentVisible
+                  ? Expanded(
+                      flex: 20,
+                      child: GestureDetector(
+                        onTap: () async {
+                          await showDialog(
+                            context: context,
+                            barrierDismissible: true,
+                            builder: (context) => AlertDialog(
+                              insetPadding: EdgeInsets.zero,
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: Sizes.paddingWidget(context),
+                                vertical: Sizes.smallPaddingWidget(context),
                               ),
+                              title: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      'Please type to add your comments',
+                                      style: Sizes.titleTextStyle(context)
+                                          ?.copyWith(
+                                        color: Theme.of(context).primaryColor,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                      width: Sizes.smallPaddingWidget(context)),
+                                  GestureDetector(
+                                      onTap: () {
+                                        Navigator.of(context,
+                                                rootNavigator: true)
+                                            .pop();
+                                      },
+                                      child: const Icon(Icons.clear))
+                                ],
+                              ),
+                              content:
+                                  // Common.addCommentTextField(
+                                  //     controller, 'Add a comment', context)
+                                  Common.mentionsField(globalKey, context),
+                              actions: <Widget>[
+                                CustomButtons.textButton(
+                                  'Add Comment',
+                                  Theme.of(context).colorScheme.primary,
+                                  () async {
+                                    var user =
+                                        locator.get<HomeViewModel>().user;
+                                    if (globalKey.currentState!.controller!.text
+                                        .isNotEmpty) {
+                                      var result = await locator
+                                          .get<ApiService>()
+                                          .addComment(
+                                            doctype: doctype,
+                                            name: subtitle,
+                                            content: globalKey
+                                                .currentState!.controller!.text,
+                                            email: user.email,
+                                            commentBy: user.fullName,
+                                          );
+                                      if (result) {
+                                        // controller.clear();
+                                      }
+                                      flutterStyledToast(
+                                          context,
+                                          'Your comment is added successfully',
+                                          CustomTheme.toastSuccessColor,
+                                          textStyle: TextStyle(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSurface,
+                                          ));
+                                      Navigator.of(context, rootNavigator: true)
+                                          .pop();
+                                    } else {
+                                      flutterStyledToast(
+                                          context,
+                                          'Oops! Looks like the comment field is empty. Please add a comment.',
+                                          Theme.of(context)
+                                              .colorScheme
+                                              .onPrimary,
+                                          textStyle: TextStyle(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary,
+                                          ));
+                                    }
+                                  },
+                                  context,
+                                )
+                              ],
                             ),
+                          );
+                        },
+                        child: Text(
+                          'Comment',
+                          style: Sizes.subTitleTextStyle(context)?.copyWith(
+                            decoration: TextDecoration.underline,
+                            fontWeight: FontWeight.bold,
                           ),
-                          SizedBox(width: Sizes.smallPaddingWidget(context)),
-                          GestureDetector(
-                              onTap: () {
-                                Navigator.of(context, rootNavigator: true)
-                                    .pop();
-                              },
-                              child: const Icon(Icons.clear))
-                        ],
+                          textAlign: TextAlign.end,
+                        ),
                       ),
-                      content:
-                          // Common.addCommentTextField(
-                          //     controller, 'Add a comment', context)
-                          Common.mentionsField(globalKey, context),
-                      actions: <Widget>[
-                        CustomButtons.textButton(
-                            'Comment', Theme.of(context).colorScheme.secondary,
-                            () async {
-                          var user = locator.get<HomeViewModel>().user;
-                          var result =
-                              await locator.get<ApiService>().addComment(
-                                    doctype: doctype,
-                                    name: subtitle,
-                                    content: globalKey
-                                        .currentState!.controller!.text,
-                                    email: user.email,
-                                    commentBy: user.fullName,
-                                  );
-                          if (result) {
-                            // controller.clear();
-                          }
-                          flutterStyledToast(
-                              context,
-                              'Your comment is added successfully',
-                              CustomTheme.toastSuccessColor,
-                              textStyle: TextStyle(
-                                color: Theme.of(context).colorScheme.onSurface,
-                              ));
-                          Navigator.of(context, rootNavigator: true).pop();
-                        })
-                      ],
-                    ),
-                  );
-                }, buttonTextStyle: TextStyle(fontSize: 13)),
-              ),
+                    )
+                  : const SizedBox(),
+              SizedBox(width: Sizes.smallPaddingWidget(context)),
             ],
           ),
         ),
@@ -401,73 +431,290 @@ class Common {
     );
   }
 
+  // static Widget doctypeListViewCardUi(String? doctype, String? title,
+  //     String? subtitle, String icon, String? status, BuildContext context) {
+  //   // TextEditingController controller = TextEditingController();
+  //   var globalKey = GlobalKey<FlutterMentionsState>(debugLabel: 'global_key');
+  //   return Padding(
+  //     padding: EdgeInsets.symmetric(
+  //       horizontal: Sizes.smallPaddingWidget(context) * 1.5,
+  //       vertical: Sizes.extraSmallPaddingWidget(context),
+  //     ),
+  //     child: Card(
+  //       margin: EdgeInsets.zero,
+  //       shape: const RoundedRectangleBorder(borderRadius: Corners.lgBorder),
+  //       elevation: CustomTheme.elevation,
+  //       child: Container(
+  //         padding: EdgeInsets.symmetric(
+  //             horizontal: Sizes.smallPaddingWidget(context),
+  //             vertical: Sizes.smallPaddingWidget(context)),
+  //         child: Row(
+  //           children: [
+  //             Expanded(
+  //               flex: 10,
+  //               child: Image.asset(icon, width: 25, height: 25),
+  //             ),
+  //             SizedBox(width: Sizes.smallPaddingWidget(context)),
+  //             Expanded(
+  //               flex: 58,
+  //               child: Column(
+  //                 crossAxisAlignment: CrossAxisAlignment.start,
+  //                 children: <Widget>[
+  //                   Theme(
+  //                     data: Theme.of(context)
+  //                         .copyWith(dividerColor: Colors.transparent),
+  //                     child: Column(
+  //                       crossAxisAlignment: CrossAxisAlignment.start,
+  //                       children: <Widget>[
+  //                         Text(
+  //                           title ?? '',
+  //                           maxLines: 1,
+  //                           overflow: TextOverflow.ellipsis,
+  //                           style: Sizes.titleTextStyleBold(context)?.copyWith(
+  //                             color: Theme.of(context).primaryColor,
+  //                           ),
+  //                         ),
+  //                         SizedBox(
+  //                           height: Sizes.smallPaddingWidget(context),
+  //                         ),
+  //                         Text(
+  //                           subtitle ?? '',
+  //                           maxLines: 1,
+  //                           overflow: TextOverflow.ellipsis,
+  //                           style: Sizes.subTitleTextStyle(context)?.copyWith(),
+  //                         ),
+  //                         SizedBox(
+  //                             height: Sizes.smallPaddingWidget(context) * 1.5),
+  //                         Container(
+  //                           decoration: BoxDecoration(
+  //                               border: Border.all(
+  //                                 color: CustomTheme.borderColor,
+  //                               ),
+  //                               borderRadius: Corners.lgBorder),
+  //                           child: Padding(
+  //                             padding: EdgeInsets.symmetric(
+  //                                 horizontal: Sizes.smallPaddingWidget(context),
+  //                                 vertical: 2),
+  //                             child: Text(
+  //                               status ?? '',
+  //                               style: TextStyle(
+  //                                   color: CustomTheme.borderColor,
+  //                                   fontSize: 12),
+  //                             ),
+  //                           ),
+  //                         ),
+  //                       ],
+  //                     ),
+  //                   ),
+  //                   SizedBox(height: Sizes.smallPaddingWidget(context)),
+  //                 ],
+  //               ),
+  //             ),
+  //             Expanded(
+  //               flex: 30,
+  //               child: CustomButtons.textButton(
+  //                   'Comment', Theme.of(context).colorScheme.secondary,
+  //                   () async {
+  //                 await showDialog(
+  //                   context: context,
+  //                   barrierDismissible: true,
+  //                   builder: (context) => AlertDialog(
+  //                     insetPadding: EdgeInsets.zero,
+  //                     contentPadding: EdgeInsets.symmetric(
+  //                       horizontal: Sizes.paddingWidget(context),
+  //                       vertical: Sizes.smallPaddingWidget(context),
+  //                     ),
+  //                     title: Row(
+  //                       children: [
+  //                         Expanded(
+  //                           child: Text(
+  //                             'Please type to add your comments',
+  //                             style:
+  //                                 Sizes.titleTextStyleBold(context)?.copyWith(
+  //                               color: Theme.of(context).primaryColor,
+  //                             ),
+  //                           ),
+  //                         ),
+  //                         SizedBox(width: Sizes.smallPaddingWidget(context)),
+  //                         GestureDetector(
+  //                             onTap: () {
+  //                               Navigator.of(context, rootNavigator: true)
+  //                                   .pop();
+  //                             },
+  //                             child: const Icon(Icons.clear))
+  //                       ],
+  //                     ),
+  //                     content:
+  //                         // Common.addCommentTextField(
+  //                         //     controller, 'Add a comment', context)
+  //                         Common.mentionsField(globalKey, context),
+  //                     actions: <Widget>[
+  //                       CustomButtons.textButton(
+  //                           'Comment', Theme.of(context).colorScheme.secondary,
+  //                           () async {
+  //                         var user = locator.get<HomeViewModel>().user;
+  //                         var result =
+  //                             await locator.get<ApiService>().addComment(
+  //                                   doctype: doctype,
+  //                                   name: subtitle,
+  //                                   content: globalKey
+  //                                       .currentState!.controller!.text,
+  //                                   email: user.email,
+  //                                   commentBy: user.fullName,
+  //                                 );
+  //                         if (result) {
+  //                           // controller.clear();
+  //                         }
+  //                         flutterStyledToast(
+  //                             context,
+  //                             'Your comment is added successfully',
+  //                             CustomTheme.toastSuccessColor,
+  //                             textStyle: TextStyle(
+  //                               color: Theme.of(context).colorScheme.onSurface,
+  //                             ));
+  //                         Navigator.of(context, rootNavigator: true).pop();
+  //                       })
+  //                     ],
+  //                   ),
+  //                 );
+  //               }, buttonTextStyle: TextStyle(fontSize: 13)),
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
+
   static AppBar commonAppBar(
-      String? title, List<Widget>? actions, BuildContext context) {
+      String? title, List<Widget>? actions, BuildContext context,
+      {bool? sendResultBack,
+      String? heading,
+      TextStyle? headingStyle,
+      Widget? leading}) {
     return AppBar(
-      title: Text(
-        title ?? '',
-        style: const TextStyle(
-          color: Colors.white,
-        ),
-      ),
-      leadingWidth: 45,
-      leading: Navigator.of(context).canPop()
-          ? Row(
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      title: heading != null
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(
-                  width: 10,
+                Text(
+                  heading,
+                  style: headingStyle,
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 2),
-                  child: GestureDetector(
-                    onTap: () => Navigator.of(context).pop(),
-                    child: Image.asset(
-                      Images.backButtonIcon,
-                      width: 35,
-                      height: 35,
-                    ),
-                  ),
-                ),
-                /*
-                Container(
-                  width: 30,
-                  height: 30,
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Theme.of(context).scaffoldBackgroundColor),
-                  child: Icon(
-                    defaultTargetPlatform == TargetPlatform.android
-                        ? Icons.arrow_back
-                        : Icons.arrow_back_ios,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                ),
-                */
+                Text(
+                  title ?? '',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface,
+                        fontWeight: FontWeight.bold,
+                      ),
+                )
               ],
             )
-          : null,
+          : Text(
+              title ?? '',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurface,
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+      shadowColor: Colors.black.withOpacity(0.4),
+      leadingWidth: 36,
+      leading: leading != null
+          ? leading
+          : Navigator.of(context).canPop()
+              ? Row(
+                  children: [
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 2),
+                      child: GestureDetector(
+                        onTap: () => sendResultBack == true
+                            ? locator.get<NavigationService>().pop(result: true)
+                            : Navigator.of(context).pop(),
+                        child: Icon(
+                          defaultTargetPlatform == TargetPlatform.iOS
+                              ? Icons.arrow_back_ios
+                              : Icons.arrow_back,
+                          size: 24,
+                          color: Theme.of(context).colorScheme.onSurface,
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              : null,
       titleSpacing: Sizes.smallPaddingWidget(context) * 1.5,
-      flexibleSpace: Container(
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.vertical(bottom: Corners.xlRadius),
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: <Color>[
-              Color(0xFF006CB5), // Starting color
-              Color(0xFF002D4C) // ending color
-            ],
-          ),
-        ),
-      ),
-      systemOverlayStyle: SystemUiOverlayStyle.light,
       actions: actions,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          bottom: Corners.xlRadius,
-        ),
-      ),
+      centerTitle: false,
     );
+    // return AppBar(
+    //   title: Text(
+    //     title ?? '',
+    //     style: const TextStyle(
+    //       color: Colors.white,
+    //     ),
+    //   ),
+    //   leadingWidth: 45,
+    //   leading: Navigator.of(context).canPop()
+    //       ? Row(
+    //           children: [
+    //             const SizedBox(
+    //               width: 10,
+    //             ),
+    //             Padding(
+    //               padding: const EdgeInsets.only(top: 2),
+    //               child: GestureDetector(
+    //                 onTap: () => Navigator.of(context).pop(),
+    //                 child: Image.asset(
+    //                   Images.backButtonIcon,
+    //                   width: 35,
+    //                   height: 35,
+    //                 ),
+    //               ),
+    //             ),
+    //             /*
+    //             Container(
+    //               width: 30,
+    //               height: 30,
+    //               decoration: BoxDecoration(
+    //                   shape: BoxShape.circle,
+    //                   color: Theme.of(context).scaffoldBackgroundColor),
+    //               child: Icon(
+    //                 defaultTargetPlatform == TargetPlatform.android
+    //                     ? Icons.arrow_back
+    //                     : Icons.arrow_back_ios,
+    //                 color: Theme.of(context).primaryColor,
+    //               ),
+    //             ),
+    //             */
+    //           ],
+    //         )
+    //       : null,
+    //   titleSpacing: Sizes.smallPaddingWidget(context) * 1.5,
+    //   flexibleSpace: Container(
+    //     decoration: const BoxDecoration(
+    //       borderRadius: BorderRadius.vertical(bottom: Corners.xlRadius),
+    //       gradient: LinearGradient(
+    //         begin: Alignment.topLeft,
+    //         end: Alignment.bottomRight,
+    //         colors: <Color>[
+    //           Color(0xFF006CB5), // Starting color
+    //           Color(0xFF002D4C) // ending color
+    //         ],
+    //       ),
+    //     ),
+    //   ),
+    //   systemOverlayStyle: SystemUiOverlayStyle.light,
+    //   actions: actions,
+    //   shape: const RoundedRectangleBorder(
+    //     borderRadius: BorderRadius.vertical(
+    //       bottom: Corners.xlRadius,
+    //     ),
+    //   ),
+    // );
   }
 
   static double convertToDouble(dynamic data) {
@@ -485,7 +732,7 @@ class Common {
         vertical: Sizes.padding,
       ),
       decoration: BoxDecoration(
-          borderRadius: Corners.xxlBorder,
+          borderRadius: Corners.lgBorder,
           border: Border.all(
             color: CustomTheme.borderColor,
           ),
@@ -532,7 +779,7 @@ class Common {
       child: Icon(
         icon,
         size: iconDimension,
-        color: const Color(0xFF002D4C),
+        color: Theme.of(context).colorScheme.primary,
       ),
     );
   }
@@ -565,10 +812,9 @@ class Common {
         decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: Theme.of(context).scaffoldBackgroundColor),
-        child: Image.asset(
-          Images.filterIcon,
-          width: 30,
-          height: 30,
+        child: Icon(
+          Icons.filter_list,
+          color: Theme.of(context).colorScheme.primary,
         ),
       ),
     );
@@ -754,6 +1000,39 @@ class Common {
     ));
   }
 
+  static Widget reusableRowWidget(
+      String? key, String? value, BuildContext context,
+      {TextStyle? textStyle}) {
+    var fontSize = displayWidth(context) < 600 ? 16.0 : 18.0;
+    return Row(
+      children: [
+        Expanded(
+            flex: 40,
+            child: Text(
+              '$key : ',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: const Color(0xFFA2A2A2),
+                fontSize: fontSize,
+              ),
+            )),
+        Expanded(
+            flex: 60,
+            child: Text(
+              value ?? '',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: textStyle ??
+                  TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface,
+                    fontSize: fontSize,
+                  ),
+            )),
+      ],
+    );
+  }
+
   static Widget reusableTextWidget(
       String? text, double textSize, BuildContext context,
       {Color? color, FontWeight? fontWeight}) {
@@ -802,6 +1081,45 @@ class Common {
       suffixIcon: suffixIcon,
       prefixIcon: prefixIcon,
       suffix: suffix,
+    );
+  }
+
+  static Widget jsonTableMockEntry(bool isLoading, BuildContext context) {
+    var data = [
+      {
+        "name": "John Doe",
+        "age": 29,
+        "email": "john.doe@example.com",
+        "registered": "2023-05-21",
+      },
+      {
+        "name": "Jane Smith",
+        "age": 34,
+        "email": "jane.smith@example.com",
+        "registered": "2022-11-14",
+      },
+      {
+        "name": "Alice Johnson",
+        "age": 25,
+        "email": "alice.johnson@example.com",
+        "registered": "2024-02-10",
+      }
+    ];
+    return Skeletonizer(
+      enabled: isLoading,
+      child: JsonTable(
+        data,
+        showColumnToggle: true,
+        tableCellBuilder: (value) => Sizes.tableCellBuilder(value, context),
+        tableHeaderBuilder: (header) =>
+            Sizes.tableHeaderBuilder(header, context),
+        columns: [
+          JsonTableColumn("name", label: "Name"),
+          JsonTableColumn("age", label: "Age"),
+          JsonTableColumn("email", label: "Email"),
+          JsonTableColumn("registered", label: "Registered"),
+        ],
+      ),
     );
   }
 
@@ -859,6 +1177,41 @@ class Common {
     } else {
       return const EmptyWidget();
     }
+  }
+
+  static Widget userImage(BuildContext context, {double? imgDimension}) {
+    var imageDimension = imgDimension ?? 32.0;
+    var model = locator.get<HomeViewModel>();
+    return model.user.userImage != null
+        ? ClipOval(
+            clipBehavior: Clip.antiAlias,
+            child: imageWidget(
+              '${locator.get<StorageService>().apiUrl}${model.user.userImage}',
+              imageDimension,
+              imageDimension,
+              fit: BoxFit.cover,
+            ),
+          )
+        : Container(
+            width: imageDimension,
+            height: imageDimension,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Theme.of(context).primaryColorLight,
+            ),
+            child: Center(
+              child: Text(
+                model.user.firstName != null ? model.user.firstName![0] : '',
+                style: displayWidth(context) < 600
+                    ? Theme.of(context).textTheme.headlineSmall!.copyWith(
+                        color: Theme.of(context).primaryColor,
+                        fontWeight: FontWeight.w600)
+                    : Theme.of(context).textTheme.headlineSmall!.copyWith(
+                        color: Theme.of(context).primaryColor,
+                        fontWeight: FontWeight.w600),
+              ),
+            ),
+          );
   }
 }
 

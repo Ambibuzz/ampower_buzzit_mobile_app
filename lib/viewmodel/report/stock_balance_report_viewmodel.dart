@@ -18,10 +18,12 @@ class StockBalanceReportViewModel extends BaseViewModel {
   var warehouseList = <String>[];
   dynamic response;
   dynamic company;
+  bool isLoading = false;
 
   Future getStockBalanceReport(bool areDefaultFilters,
       {Map<String, dynamic>? filters}) async {
-    setState(ViewState.busy);
+    isLoading = true;
+    notifyListeners();
     var company = locator.get<HomeViewModel>().globalDefaults.defaultCompany;
     var dateNow = DateTime.now();
     var datePrevMon = Jiffy.now().subtract(months: 1).dateTime;
@@ -48,12 +50,13 @@ class StockBalanceReportViewModel extends BaseViewModel {
           warehouse: "",
           filters: filters,
         );
-    setState(ViewState.idle);
+    isLoading = false;
     notifyListeners();
   }
 
   Future loadData() async {
-    setState(ViewState.busy);
+    isLoading = true;
+    notifyListeners();
     var queryParams = {'order_by': 'name desc'};
     itemCodeList = await locator.get<ApiService>().getDoctypeFieldList(
       '/api/resource/Item',
@@ -71,7 +74,7 @@ class StockBalanceReportViewModel extends BaseViewModel {
           queryParams,
         );
     company = await locator.get<ApiService>().searchLink('Company', {});
-    setState(ViewState.idle);
+    isLoading = false;
     notifyListeners();
   }
 }

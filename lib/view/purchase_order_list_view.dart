@@ -24,6 +24,7 @@ import 'package:ampower_buzzit_mobile/viewmodel/purchase_order_list_viewmodel.da
 import 'package:ampower_buzzit_mobile/viewmodel/sales_order_list_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class PurchaseOrderListView extends StatelessWidget {
   final String? appBarText;
@@ -61,33 +62,33 @@ class PurchaseOrderListView extends StatelessWidget {
             ],
             context,
           ),
-          body: model.state == ViewState.busy
-              ? WidgetsFactoryList.circularProgressIndicator()
-              : RefreshIndicator.adaptive(
-                  onRefresh: () async {
-                    var connectivityStatus =
-                        Provider.of<ConnectivityStatus>(context, listen: false);
-                    // await locator.get<TargetitHomeViewModel>().cacheSalesOrder(
-                    //     Strings.salesOrder, connectivityStatus);
-                    await model.loadData(
-                        Strings.purchaseOrder, model.filtersSO, context);
-                  },
-                  child: model.purchaseOrderList.isEmpty
-                      ? EmptyWidget(
-                          onRefresh: () async {
-                            var connectivityStatus =
-                                Provider.of<ConnectivityStatus>(context,
-                                    listen: false);
-                            // await locator
-                            //     .get<TargetitHomeViewModel>()
-                            //     .cachePurchaseOrder(
-                            //         Strings.PurchaseOrder, connectivityStatus);
-                            await model.loadData(Strings.purchaseOrder,
-                                model.filtersSO, context);
-                          },
-                        )
-                      : purchaseOrderListView(model, context),
-                ),
+          body: RefreshIndicator.adaptive(
+            onRefresh: () async {
+              var connectivityStatus =
+                  Provider.of<ConnectivityStatus>(context, listen: false);
+              // await locator.get<TargetitHomeViewModel>().cacheSalesOrder(
+              //     Strings.salesOrder, connectivityStatus);
+              await model.loadData(
+                  Strings.purchaseOrder, model.filtersSO, context);
+            },
+            child: model.isLoading
+                ? purchaseOrderListView(model, context)
+                : model.purchaseOrderList.isEmpty
+                    ? EmptyWidget(
+                        onRefresh: () async {
+                          var connectivityStatus =
+                              Provider.of<ConnectivityStatus>(context,
+                                  listen: false);
+                          // await locator
+                          //     .get<TargetitHomeViewModel>()
+                          //     .cachePurchaseOrder(
+                          //         Strings.PurchaseOrder, connectivityStatus);
+                          await model.loadData(
+                              Strings.purchaseOrder, model.filtersSO, context);
+                        },
+                      )
+                    : purchaseOrderListView(model, context),
+          ),
         );
       },
     );
@@ -182,12 +183,15 @@ class PurchaseOrderListView extends StatelessWidget {
           padding: EdgeInsets.symmetric(
             vertical: Sizes.smallPaddingWidget(context) * 1.5,
           ),
-          sliver: SliverList.builder(
-            itemCount: model.purchaseOrderList.length,
-            itemBuilder: (context, i) {
-              var purchaseOrder = model.purchaseOrderList[i];
-              return purchaseOrderTile(model, purchaseOrder, context);
-            },
+          sliver: Skeletonizer.sliver(
+            enabled: model.isLoading,
+            child: SliverList.builder(
+              itemCount: model.purchaseOrderList.length,
+              itemBuilder: (context, i) {
+                var purchaseOrder = model.purchaseOrderList[i];
+                return purchaseOrderTile(model, purchaseOrder, context);
+              },
+            ),
           ),
         ),
       ],
@@ -207,7 +211,7 @@ class PurchaseOrderListView extends StatelessWidget {
           Strings.purchaseOrder,
           purchaseOrder.supplierName ?? '',
           purchaseOrder.name ?? '',
-          Images.purchaseOrderListIcon,
+          Images.doctypeListCardIcon,
           purchaseOrder.status,
           context),
     );
@@ -216,8 +220,7 @@ class PurchaseOrderListView extends StatelessWidget {
 
 TextStyle? _listItemTextStyle(BuildContext context) {
   if (displayWidth(context) < 600) {
-    return const TextStyle(
-      fontSize: 14,
+    return Sizes.subTitleTextStyle(context)?.copyWith(
       fontWeight: FontWeight.bold,
     );
   } else {

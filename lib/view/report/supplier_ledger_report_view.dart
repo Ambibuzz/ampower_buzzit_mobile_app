@@ -44,8 +44,8 @@ class SupplierLedgerReportView extends StatelessWidget {
                     .exportCsvPopUpMenu(model.supplierLedger, context),
               ],
               context),
-          body: model.state == ViewState.busy
-              ? WidgetsFactoryList.circularProgressIndicator()
+          body: model.isLoading
+              ? Common.jsonTableMockEntry(model.isLoading, context)
               : model.supplierLedger == null
                   ? EmptyWidget(
                       onRefresh: () async {

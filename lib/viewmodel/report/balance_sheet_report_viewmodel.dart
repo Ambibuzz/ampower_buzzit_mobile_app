@@ -12,9 +12,11 @@ class BalanceSheetReportViewModel extends BaseViewModel {
   dynamic costCenter;
   dynamic project;
   dynamic company;
+  bool isLoading = false;
 
   Future loadData() async {
-    setState(ViewState.busy);
+    isLoading = true;
+    notifyListeners();
     company = await locator.get<ApiService>().searchLink('Company', {});
     costCenter = await locator.get<ApiService>().searchLink(
       'Cost Center',
@@ -24,14 +26,15 @@ class BalanceSheetReportViewModel extends BaseViewModel {
       'Project',
       {'company': locator.get<HomeViewModel>().globalDefaults.defaultCompany},
     );
-    setState(ViewState.idle);
+    isLoading = false;
     notifyListeners();
   }
 
   Future getBalanceSheetReport({
     Map<String, dynamic>? filters,
   }) async {
-    setState(ViewState.busy);
+    isLoading = true;
+    notifyListeners();
     var globalDefaults = locator.get<HomeViewModel>().globalDefaults;
     reportData = null;
     var data = await locator.get<ApiService>().getFiscalYear();
@@ -51,7 +54,7 @@ class BalanceSheetReportViewModel extends BaseViewModel {
         [],
         [],
         filters: filters);
-    setState(ViewState.idle);
+    isLoading = false;
     notifyListeners();
   }
 }

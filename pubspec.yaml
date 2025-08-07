@@ -48,6 +48,8 @@ dependencies:
   flutter_upgrade_version: ^1.1.7
   http: ^1.3.0
   share_plus: ^10.1.4
+  skeletonizer: ^1.4.3
+  feedback: ^3.2.0
 
 dev_dependencies:
   build_runner:
@@ -69,6 +71,7 @@ flutter:
   assets:
     - assets/
     - assets/icon/
+    - assets/icon/quick_links/
 
 flutter_launcher_icons:
   image_path: "assets/ampower_buzzit_logo_with_bg.jpg"

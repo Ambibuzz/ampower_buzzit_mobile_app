@@ -54,8 +54,8 @@ class StockBalanceReportView extends StatelessWidget {
                 ),
               ],
               context),
-          body: model.state == ViewState.busy
-              ? WidgetsFactoryList.circularProgressIndicator()
+          body: model.isLoading
+              ? Common.jsonTableMockEntry(model.isLoading, context)
               : (model.stockBalance.message?.result == null ||
                       model.response == null)
                   ? EmptyWidget(
@@ -172,9 +172,7 @@ class StockBalanceReportView extends StatelessWidget {
           TableData(
               value: '${r.stockUom}\n', width: displayWidth(context) * 0.2),
           TableData(
-              value: r.balQty != null
-                  ? '${r.balQty}\n'
-                  : '0',
+              value: r.balQty != null ? '${r.balQty}\n' : '0',
               width: displayWidth(context) * 0.3,
               alignment: Alignment.centerRight,
               textAlign: TextAlign.end),

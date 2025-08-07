@@ -57,9 +57,9 @@ class CustomDropDown extends StatelessWidget {
         Container(
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.background,
-            borderRadius: Corners.xxlBorder,
+            borderRadius: Corners.lgBorder,
             border: Border.all(
-              color: CustomTheme.borderColor,
+              color: Theme.of(context).colorScheme.primary,
             ),
           ),
           margin: margin,

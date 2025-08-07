@@ -5,12 +5,14 @@ class Images {
   static const customerLedgerIcon =
       'assets/icon/quick_links/cust_ledger_report.png';
   static const commentIcon = 'assets/icon/comment_icon.png';
+  static const doctypeListCardIcon = 'assets/icon/doctype_list_card_icon.png';
   static const downloadIcon = 'assets/icon/download_icon.png';
   static const expenseIcon = 'assets/icon/expense_icon.png';
   static const filterIcon = 'assets/icon/filter_icon.png';
   static const incomeIcon = 'assets/icon/income_icon.png';
   static const itemsIcon = 'assets/icon/quick_links/items.png';
   static const imageNotFound = 'assets/no_image_available.png';
+  static const loginScreenImage = 'assets/login_screen_image.png';
   static const netProfitIcon = 'assets/icon/net_profit_icon.png';
   static const noDataIcon = 'assets/icon/no_data.png';
   static const noInternetIcon = 'assets/icon/no_internet_icon.png';
@@ -18,14 +20,14 @@ class Images {
   static const purchaseInvoiceIcon =
       'assets/icon/quick_links/purchase_invoice.png';
   static const purchaseOrderIcon = 'assets/icon/quick_links/purchase_order.png';
-  static const purchaseOrderListIcon =
-      'assets/icon/purchase_order_list_icon.png';
-  static const purchaseInvoiceListIcon =
-      'assets/icon/purchase_order_list_icon.png';
+  // static const purchaseOrderListIcon =
+  //     'assets/icon/purchase_order_list_icon.png';
+  // static const purchaseInvoiceListIcon =
+  //     'assets/icon/purchase_order_list_icon.png';
   static const salesInvoiceIcon = 'assets/icon/quick_links/sales_invoice.png';
   static const salesOrderIcon = 'assets/icon/quick_links/sales_order.png';
-  static const salesOrderListIcon = 'assets/icon/sales_order_list_icon.png';
-  static const salesInvoiceListIcon = 'assets/icon/sales_order_list_icon.png';
+  // static const salesOrderListIcon = 'assets/icon/sales_order_list_icon.png';
+  // static const salesInvoiceListIcon = 'assets/icon/sales_order_list_icon.png';
   static const stockBalanceIcon =
       'assets/icon/quick_links/stock_balance_report.png';
   static const supplierLedgerIcon =

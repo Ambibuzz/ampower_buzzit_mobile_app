@@ -6,7 +6,8 @@ class CustomButtons {
   static Widget textButton(
     String? buttonText,
     Color? buttonColor,
-    void Function()? onPressed, {
+    void Function()? onPressed,
+    BuildContext context, {
     TextStyle? buttonTextStyle,
   }) {
     return TextButton(
@@ -17,7 +18,10 @@ class CustomButtons {
             const EdgeInsets.symmetric(horizontal: Sizes.extraSmallPadding),
         child: Text(
           buttonText ?? '',
-          style: buttonTextStyle ?? const TextStyle(fontSize: 16),
+          style: buttonTextStyle ??
+              Sizes.titleTextStyle(context)?.copyWith(
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
         ),
       ),
     );

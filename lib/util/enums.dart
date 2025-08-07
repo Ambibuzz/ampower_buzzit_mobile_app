@@ -55,3 +55,7 @@ enum Menu {
 enum ExportType {
   csv,
 }
+
+enum DrawerMenu {
+  buzzit,
+}

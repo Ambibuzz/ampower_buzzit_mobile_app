@@ -14,6 +14,7 @@ import 'package:provider/provider.dart';
 class SalesInvoiceListViewModel extends BaseViewModel {
   var salesInvoiceList = <SalesInvoice>[];
   var filtersSO = [];
+  bool isLoading = false;
 
   //for fetching sales invoice list
   Future<List<SalesInvoice>> getSalesInvoice(
@@ -76,10 +77,12 @@ class SalesInvoiceListViewModel extends BaseViewModel {
       String? appBarText, List<dynamic> filters, BuildContext context) async {
     // filters
     //     .add(FilterCustom(Strings.SalesInvoice, 'status', '=', 'To Deliver'));
+    isLoading = true;
+    notifyListeners();
     var connectivityStatus =
         Provider.of<ConnectivityStatus>(context, listen: false);
     salesInvoiceList = await getSalesInvoice(filters, connectivityStatus);
-
+    isLoading = false;
     notifyListeners();
   }
 }

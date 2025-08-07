@@ -90,7 +90,7 @@ class PurchaseOrderDetailView extends StatelessWidget {
                 Row(
                   children: [
                     Common.reusableTextWidget(
-                        model.po.supplierName, 16, context,
+                        model.po.supplierName ?? '', 16, context,
                         fontWeight: FontWeight.bold,
                         color: Theme.of(context).primaryColor),
                     const Spacer(),
@@ -142,32 +142,35 @@ class PurchaseOrderDetailView extends StatelessWidget {
                 Row(
                   children: [
                     CustomButtons.textButton(
-                        'Comment', Theme.of(context).colorScheme.secondary,
-                        () async {
-                      var connectivityStatus = Provider.of<ConnectivityStatus>(
-                          context,
-                          listen: false);
-                      var user = locator.get<HomeViewModel>().user;
-                      var result = await locator.get<ApiService>().addComment(
-                            doctype: doctype,
-                            name: name,
-                            content: globalKey.currentState!.controller!.text,
-                            email: user.email,
-                            commentBy: user.fullName,
-                          );
-                      if (result) {
-                        model.clearText();
-                        flutterStyledToast(
-                            context,
-                            'Your comment is added successfully',
-                            CustomTheme.toastSuccessColor,
-                            textStyle: TextStyle(
-                              color: Theme.of(context).colorScheme.onSurface,
-                            ));
-                        await model.getPurchaseOrder(
-                            doctype, name, connectivityStatus);
-                      }
-                    }),
+                      'Comment',
+                      Theme.of(context).colorScheme.secondary,
+                      () async {
+                        var connectivityStatus =
+                            Provider.of<ConnectivityStatus>(context,
+                                listen: false);
+                        var user = locator.get<HomeViewModel>().user;
+                        var result = await locator.get<ApiService>().addComment(
+                              doctype: doctype,
+                              name: name,
+                              content: globalKey.currentState!.controller!.text,
+                              email: user.email,
+                              commentBy: user.fullName,
+                            );
+                        if (result) {
+                          model.clearText();
+                          flutterStyledToast(
+                              context,
+                              'Your comment is added successfully',
+                              CustomTheme.toastSuccessColor,
+                              textStyle: TextStyle(
+                                color: Theme.of(context).colorScheme.onSurface,
+                              ));
+                          await model.getPurchaseOrder(
+                              doctype, name, connectivityStatus);
+                        }
+                      },
+                      context,
+                    ),
                   ],
                 ),
                 Common.widgetSpacingVerticalSm(),

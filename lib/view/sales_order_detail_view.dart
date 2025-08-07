@@ -95,7 +95,6 @@ class SalesOrderDetailView extends StatelessWidget {
                     PdfDownloadWidget(
                       doctype: doctype,
                       docname: model.so.name ?? '',
-                      
                     ),
                     // Common.downloadDoctypeWidget(doctype, model.so.name ?? ''),
                     SizedBox(width: Sizes.smallPaddingWidget(context)),
@@ -106,11 +105,11 @@ class SalesOrderDetailView extends StatelessWidget {
                 Common.widgetSpacingVerticalSm(),
                 Common.rowWidget('Address', model.so.addressDisplay, context),
                 Common.widgetSpacingVerticalSm(),
-                Common.rowWidget(
-                    'Transaction Date', defaultDateFormat(model.so.transactiondate!), context),
+                Common.rowWidget('Transaction Date',
+                    defaultDateFormat(model.so.transactiondate!), context),
                 Common.widgetSpacingVerticalSm(),
-                Common.rowWidget(
-                    'Delivery Date', defaultDateFormat(model.so.deliverydate!), context),
+                Common.rowWidget('Delivery Date',
+                    defaultDateFormat(model.so.deliverydate!), context),
                 Common.widgetSpacingVerticalSm(),
                 Common.rowWidget('Advance Paid',
                     Others.formatter.format(model.so.advancepaid), context),
@@ -131,32 +130,35 @@ class SalesOrderDetailView extends StatelessWidget {
                 Row(
                   children: [
                     CustomButtons.textButton(
-                        'Comment', Theme.of(context).colorScheme.secondary,
-                        () async {
-                      var connectivityStatus = Provider.of<ConnectivityStatus>(
-                          context,
-                          listen: false);
-                      var user = locator.get<HomeViewModel>().user;
-                      var result = await locator.get<ApiService>().addComment(
-                            doctype: doctype,
-                            name: name,
-                            content: globalKey.currentState!.controller!.text,
-                            email: user.email,
-                            commentBy: user.fullName,
-                          );
-                      if (result) {
-                        model.clearText();
-                        flutterStyledToast(
-                            context,
-                            'Your comment is added successfully',
-                            CustomTheme.toastSuccessColor,
-                            textStyle: TextStyle(
-                              color: Theme.of(context).colorScheme.onSurface,
-                            ));
-                        await model.getSalesOrder(
-                            doctype, name, connectivityStatus);
-                      }
-                    }),
+                      'Comment',
+                      Theme.of(context).colorScheme.secondary,
+                      () async {
+                        var connectivityStatus =
+                            Provider.of<ConnectivityStatus>(context,
+                                listen: false);
+                        var user = locator.get<HomeViewModel>().user;
+                        var result = await locator.get<ApiService>().addComment(
+                              doctype: doctype,
+                              name: name,
+                              content: globalKey.currentState!.controller!.text,
+                              email: user.email,
+                              commentBy: user.fullName,
+                            );
+                        if (result) {
+                          model.clearText();
+                          flutterStyledToast(
+                              context,
+                              'Your comment is added successfully',
+                              CustomTheme.toastSuccessColor,
+                              textStyle: TextStyle(
+                                color: Theme.of(context).colorScheme.onSurface,
+                              ));
+                          await model.getSalesOrder(
+                              doctype, name, connectivityStatus);
+                        }
+                      },
+                      context,
+                    ),
                   ],
                 ),
                 Common.widgetSpacingVerticalSm(),

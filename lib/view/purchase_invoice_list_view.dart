@@ -28,6 +28,7 @@ import 'package:ampower_buzzit_mobile/viewmodel/purchase_order_list_viewmodel.da
 import 'package:ampower_buzzit_mobile/viewmodel/sales_order_list_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class PurchaseInvoiceListView extends StatelessWidget {
   final String? appBarText;
@@ -62,33 +63,33 @@ class PurchaseInvoiceListView extends StatelessWidget {
                 ),
               ],
               context),
-          body: model.state == ViewState.busy
-              ? WidgetsFactoryList.circularProgressIndicator()
-              : RefreshIndicator.adaptive(
-                  onRefresh: () async {
-                    var connectivityStatus =
-                        Provider.of<ConnectivityStatus>(context, listen: false);
-                    // await locator.get<TargetitHomeViewModel>().cacheSalesOrder(
-                    //     Strings.salesOrder, connectivityStatus);
-                    await model.loadData(
-                        Strings.purchaseInvoice, model.filtersSO, context);
-                  },
-                  child: model.purchaseInvoiceList.isEmpty
-                      ? EmptyWidget(
-                          onRefresh: () async {
-                            var connectivityStatus =
-                                Provider.of<ConnectivityStatus>(context,
-                                    listen: false);
-                            // await locator
-                            //     .get<TargetitHomeViewModel>()
-                            //     .cachePurchaseInvoice(
-                            //         Strings.PurchaseInvoice, connectivityStatus);
-                            await model.loadData(Strings.purchaseInvoice,
-                                model.filtersSO, context);
-                          },
-                        )
-                      : purchaseInvoiceListView(model, context),
-                ),
+          body: RefreshIndicator.adaptive(
+            onRefresh: () async {
+              var connectivityStatus =
+                  Provider.of<ConnectivityStatus>(context, listen: false);
+              // await locator.get<TargetitHomeViewModel>().cacheSalesOrder(
+              //     Strings.salesOrder, connectivityStatus);
+              await model.loadData(
+                  Strings.purchaseInvoice, model.filtersSO, context);
+            },
+            child: model.isLoading
+                ? purchaseInvoiceListView(model, context)
+                : model.purchaseInvoiceList.isEmpty
+                    ? EmptyWidget(
+                        onRefresh: () async {
+                          var connectivityStatus =
+                              Provider.of<ConnectivityStatus>(context,
+                                  listen: false);
+                          // await locator
+                          //     .get<TargetitHomeViewModel>()
+                          //     .cachePurchaseInvoice(
+                          //         Strings.PurchaseInvoice, connectivityStatus);
+                          await model.loadData(Strings.purchaseInvoice,
+                              model.filtersSO, context);
+                        },
+                      )
+                    : purchaseInvoiceListView(model, context),
+          ),
         );
       },
     );
@@ -163,12 +164,15 @@ class PurchaseInvoiceListView extends StatelessWidget {
           padding: EdgeInsets.symmetric(
             vertical: Sizes.smallPaddingWidget(context) * 1.5,
           ),
-          sliver: SliverList.builder(
-            itemCount: model.purchaseInvoiceList.length,
-            itemBuilder: (context, i) {
-              var purchaseInvoice = model.purchaseInvoiceList[i];
-              return purchaseInvoiceTile(model, purchaseInvoice, context);
-            },
+          sliver: Skeletonizer.sliver(
+            enabled: model.isLoading,
+            child: SliverList.builder(
+              itemCount: model.purchaseInvoiceList.length,
+              itemBuilder: (context, i) {
+                var purchaseInvoice = model.purchaseInvoiceList[i];
+                return purchaseInvoiceTile(model, purchaseInvoice, context);
+              },
+            ),
           ),
         ),
       ],
@@ -219,7 +223,7 @@ class PurchaseInvoiceListView extends StatelessWidget {
           Strings.purchaseInvoice,
           purchaseInvoice.supplierName ?? '',
           purchaseInvoice.name ?? '',
-          Images.purchaseInvoiceListIcon,
+          Images.doctypeListCardIcon,
           purchaseInvoice.status,
           context),
     );
@@ -228,8 +232,7 @@ class PurchaseInvoiceListView extends StatelessWidget {
 
 TextStyle? _listItemTextStyle(BuildContext context) {
   if (displayWidth(context) < 600) {
-    return const TextStyle(
-      fontSize: 14,
+    return Sizes.subTitleTextStyle(context)?.copyWith(
       fontWeight: FontWeight.bold,
     );
   } else {

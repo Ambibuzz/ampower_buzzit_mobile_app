@@ -110,6 +110,13 @@ String getServerMessage(String serverMsgs) {
   return errorStr;
 }
 
+Future fileShare(String path, String title, String text) async {
+  await Share.shareXFiles(
+    [XFile(path)],
+    text: text,
+  );
+}
+
 Future shareText(String title, String text) async {
   await Share.share(
     text,

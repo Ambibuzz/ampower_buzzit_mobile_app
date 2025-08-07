@@ -55,8 +55,7 @@ class NoInternetConnectionView extends StatelessWidget {
                 SizedBox(height: Sizes.paddingWidget(context)),
                 Text(
                   'Something is wrong with the Internet',
-                  style: TextStyle(
-                    fontSize: 14,
+                  style: Sizes.subTitleTextStyle(context)?.copyWith(
                     color: Theme.of(context).colorScheme.onSecondary,
                   ),
                 ),

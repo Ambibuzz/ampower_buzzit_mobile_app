@@ -10,23 +10,26 @@ import 'package:jiffy/jiffy.dart';
 class SupplierLedgerReportViewModel extends BaseViewModel {
   dynamic supplierLedger;
   var supplierList = <String>[];
+  bool isLoading = false;
 
   Future loadData() async {
-    setState(ViewState.busy);
+    isLoading = true;
+    notifyListeners();
     var queryParams = {'order_by': 'name desc'};
     supplierList = await locator.get<ApiService>().getDoctypeFieldList(
           '/api/resource/Supplier',
           'name',
           queryParams,
         );
-    setState(ViewState.idle);
+    isLoading = false;
     notifyListeners();
   }
 
   Future getSupplierLedgerReport({
     Map<String, dynamic>? filters,
   }) async {
-    setState(ViewState.busy);
+    isLoading = true;
+    notifyListeners();
     var globalDefaults = locator.get<HomeViewModel>().globalDefaults;
     var dateNow = DateTime.now();
     var datePrevMon = Jiffy.now().subtract(months: 1).dateTime;
@@ -41,7 +44,7 @@ class SupplierLedgerReportViewModel extends BaseViewModel {
         [],
         'Group by Voucher (Consolidated)',
         filters: filters);
-    setState(ViewState.idle);
+    isLoading = false;
     notifyListeners();
   }
 }

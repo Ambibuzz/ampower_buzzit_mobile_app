@@ -16,10 +16,10 @@ class TypeAheadWidgets {
           child: Text(
             key: Key(item),
             item,
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  color: textColor,
-                  fontWeight: FontWeight.w500,
-                ),
+            style: Sizes.subTitleTextStyle(context)?.copyWith(
+              color: textColor,
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ),
       ],

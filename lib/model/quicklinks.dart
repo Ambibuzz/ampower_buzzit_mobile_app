@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class QuickLinks {
   final String? doctypeName;
   final String label;
@@ -5,6 +7,8 @@ class QuickLinks {
   final String routeType;
   final dynamic args;
   final String? icon;
+  bool isBottomSheet;
+  Widget? bottomSheet;
 
   QuickLinks({
     this.doctypeName,
@@ -13,5 +17,7 @@ class QuickLinks {
     required this.routeType,
     this.args,
     this.icon,
+    this.isBottomSheet = false,
+    this.bottomSheet,
   });
 }

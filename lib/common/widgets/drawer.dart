@@ -12,6 +12,8 @@ import 'package:ampower_buzzit_mobile/util/enums.dart';
 import 'package:ampower_buzzit_mobile/viewmodel/home_viewmodel.dart';
 import 'package:flutter/material.dart';
 
+import 'package:flutter/material.dart';
+
 Drawer drawer(BuildContext context, DrawerMenu appSelected) {
   var model = locator.get<HomeViewModel>();
   var imageIconDimension = displayWidth(context) < 600 ? 28.0 : 32.0;
@@ -19,8 +21,7 @@ Drawer drawer(BuildContext context, DrawerMenu appSelected) {
   return Drawer(
     child: SizedBox(
       height: displayHeight(context),
-      child: ListView(
-        padding: EdgeInsets.zero,
+      child: Column(
         children: [
           SizedBox(
             height: 250,
@@ -30,11 +31,10 @@ Drawer drawer(BuildContext context, DrawerMenu appSelected) {
                   Row(
                     children: [
                       Expanded(
-                          flex: 30,
-                          child: Common.userImage(context, imgDimension: 80)),
-                      SizedBox(
-                        width: Sizes.paddingWidget(context),
+                        flex: 30,
+                        child: Common.userImage(context, imgDimension: 80),
                       ),
+                      SizedBox(width: Sizes.paddingWidget(context)),
                       Expanded(
                         flex: 70,
                         child: Column(
@@ -71,15 +71,18 @@ Drawer drawer(BuildContext context, DrawerMenu appSelected) {
                             getAppSelected(appSelected),
                             style: Theme.of(context)
                                 .textTheme
-                                .headlineSmall
+                                .headlineMedium
                                 ?.copyWith(
                                   fontWeight: FontWeight.bold,
+                                  fontSize: 20,
                                 ),
                           ),
                           SizedBox(
                               height: Sizes.extraSmallPaddingWidget(context)),
                           Text(
-                            'Your Office. In Your Pocket',
+                            'Track Visits and Target vs Achievement',
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
                             style: Sizes.subTitleTextStyle(context)?.copyWith(
                               fontWeight: FontWeight.bold,
                               color: CustomTheme.borderColor,
@@ -94,45 +97,54 @@ Drawer drawer(BuildContext context, DrawerMenu appSelected) {
               ),
             ),
           ),
-          ListTile(
-            leading:
-                listTileImageWidget(Images.mainMenuIcon, imageIconDimension),
-            title: listTileTitleWidget('Main Menu (Apps)', context),
-            onTap: () async {
-              Navigator.pop(context);
-              await locator
-                  .get<NavigationService>()
-                  .pushReplacementNamed(homeViewRoute);
-            },
+          ListView(
+            shrinkWrap: true,
+            padding: EdgeInsets.zero,
+            children: [
+              // ListTile(
+              //   leading: listTileImageWidget(
+              //       Images.customerSelectionIcon, imageIconDimension),
+              //   title: listTileTitleWidget('Customer Selection', context),
+              //   onTap: () async {
+              //     Navigator.pop(context);
+              //     await locator
+              //         .get<NavigationService>()
+              //         .pushReplacementNamed(enterCustomerRoute);
+              //   },
+              // ),
+              ListTile(
+                leading: listTileImageWidget(
+                    Images.mainMenuIcon, imageIconDimension),
+                title: listTileTitleWidget('Main Menu (Apps)', context),
+                onTap: () async {
+                  Navigator.pop(context);
+                  await locator
+                      .get<NavigationService>()
+                      .pushReplacementNamed(homeViewRoute);
+                },
+              ),
+              const Divider(),
+              ListTile(
+                leading:
+                    listTileImageWidget(Images.profileIcon, imageIconDimension),
+                title: listTileTitleWidget('Profile', context),
+                onTap: () async {
+                  Navigator.pop(context);
+                  await locator
+                      .get<NavigationService>()
+                      .pushReplacementNamed(profileViewRoute);
+                },
+              ),
+            ],
           ),
-          const Divider(
-            endIndent: 0,
-            indent: 0,
-          ),
-          ListTile(
-            leading: listTileImageWidget(
-                Images.profileIconBlack, imageIconDimension),
-            title: listTileTitleWidget('Profile', context),
-            onTap: () async {
-              Navigator.pop(context);
-              await locator
-                  .get<NavigationService>()
-                  .pushReplacementNamed(profileViewRoute);
-            },
-          ),
-          SizedBox(
-            height: displayHeight(context) *
-                (displayHeight(context) > 960
-                    ? 0.52
-                    : (displayWidth(context) > displayHeight(context))
-                        ? 0.35
-                        : 0.46),
-          ),
+          const Spacer(),
           Directionality(
             textDirection: TextDirection.rtl,
             child: Container(
               padding: EdgeInsets.symmetric(
-                  horizontal: Sizes.paddingWidget(context)),
+                horizontal: Sizes.paddingWidget(context),
+              ),
+              width: displayWidth(context),
               height: Sizes.buttonHeightWidget(context),
               child: TextButton.icon(
                 onPressed: () async {
@@ -143,10 +155,11 @@ Drawer drawer(BuildContext context, DrawerMenu appSelected) {
                   style: Sizes.titleTextStyle(context)?.copyWith(
                       color: Theme.of(context).colorScheme.onSecondary),
                 ),
-                icon: Icon(Icons.logout),
+                icon: const Icon(Icons.logout),
               ),
             ),
           ),
+          SizedBox(height: Sizes.paddingWidget(context)),
         ],
       ),
     ),

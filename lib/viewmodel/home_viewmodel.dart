@@ -40,6 +40,7 @@ class HomeViewModel extends BaseViewModel {
   }
 
   void getQuickLinksList() {
+    quickLinksList.clear();
     if (buzzitConfig.doctype == null) {
       quickLinksList.addAll(<QuickLinks>[
         QuickLinks(

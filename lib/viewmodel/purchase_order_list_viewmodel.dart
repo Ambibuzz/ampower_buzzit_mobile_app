@@ -16,6 +16,7 @@ import 'package:provider/provider.dart';
 class PurchaseOrderListViewModel extends BaseViewModel {
   var purchaseOrderList = <PurchaseOrder>[];
   var filtersSO = [];
+  bool isLoading = false;
 
   //for fetching purchase order list
   Future<List<PurchaseOrder>> getPurchaseOrder(
@@ -78,9 +79,12 @@ class PurchaseOrderListViewModel extends BaseViewModel {
       String? appBarText, List<dynamic> filters, BuildContext context) async {
     // filters
     //     .add(FilterCustom(Strings.PurchaseOrder, 'status', '=', 'To Deliver'));
+    isLoading = true;
+    notifyListeners();
     var connectivityStatus =
         Provider.of<ConnectivityStatus>(context, listen: false);
     purchaseOrderList = await getPurchaseOrder(filters, connectivityStatus);
+    isLoading = false;
     notifyListeners();
   }
 }

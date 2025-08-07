@@ -17,6 +17,7 @@ import 'package:ampower_buzzit_mobile/viewmodel/filters/sales_order_filter_botto
 import 'package:ampower_buzzit_mobile/viewmodel/sales_order_list_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class SalesOrderListView extends StatelessWidget {
   final String? appBarText;
@@ -50,33 +51,33 @@ class SalesOrderListView extends StatelessWidget {
             ],
             context,
           ),
-          body: model.state == ViewState.busy
-              ? WidgetsFactoryList.circularProgressIndicator()
-              : RefreshIndicator.adaptive(
-                  onRefresh: () async {
-                    var connectivityStatus =
-                        Provider.of<ConnectivityStatus>(context, listen: false);
-                    // await locator.get<TargetitHomeViewModel>().cacheSalesOrder(
-                    //     Strings.salesOrder, connectivityStatus);
-                    await model.loadData(
-                        Strings.salesOrder, model.filtersSO, context);
-                  },
-                  child: model.salesOrderList.isEmpty
-                      ? EmptyWidget(
-                          onRefresh: () async {
-                            var connectivityStatus =
-                                Provider.of<ConnectivityStatus>(context,
-                                    listen: false);
-                            // await locator
-                            //     .get<TargetitHomeViewModel>()
-                            //     .cacheSalesOrder(
-                            //         Strings.salesOrder, connectivityStatus);
-                            await model.loadData(
-                                Strings.salesOrder, model.filtersSO, context);
-                          },
-                        )
-                      : salesOrderListView(model, context),
-                ),
+          body: RefreshIndicator.adaptive(
+            onRefresh: () async {
+              var connectivityStatus =
+                  Provider.of<ConnectivityStatus>(context, listen: false);
+              // await locator.get<TargetitHomeViewModel>().cacheSalesOrder(
+              //     Strings.salesOrder, connectivityStatus);
+              await model.loadData(
+                  Strings.salesOrder, model.filtersSO, context);
+            },
+            child: model.isLoading
+                ? salesOrderListView(model, context)
+                : model.salesOrderList.isEmpty
+                    ? EmptyWidget(
+                        onRefresh: () async {
+                          var connectivityStatus =
+                              Provider.of<ConnectivityStatus>(context,
+                                  listen: false);
+                          // await locator
+                          //     .get<TargetitHomeViewModel>()
+                          //     .cacheSalesOrder(
+                          //         Strings.salesOrder, connectivityStatus);
+                          await model.loadData(
+                              Strings.salesOrder, model.filtersSO, context);
+                        },
+                      )
+                    : salesOrderListView(model, context),
+          ),
         );
       },
     );
@@ -152,12 +153,15 @@ class SalesOrderListView extends StatelessWidget {
           padding: EdgeInsets.symmetric(
             vertical: Sizes.smallPaddingWidget(context) * 1.5,
           ),
-          sliver: SliverList.builder(
-            itemCount: model.salesOrderList.length,
-            itemBuilder: (context, i) {
-              var salesOrder = model.salesOrderList[i];
-              return salesOrderTile(model, salesOrder, context);
-            },
+          sliver: Skeletonizer.sliver(
+            enabled: model.isLoading,
+            child: SliverList.builder(
+              itemCount: model.salesOrderList.length,
+              itemBuilder: (context, i) {
+                var salesOrder = model.salesOrderList[i];
+                return salesOrderTile(model, salesOrder, context);
+              },
+            ),
           ),
         ),
       ],
@@ -177,7 +181,7 @@ class SalesOrderListView extends StatelessWidget {
           Strings.salesOrder,
           salesOrder.customer ?? '',
           salesOrder.name ?? '',
-          Images.salesOrderListIcon,
+          Images.doctypeListCardIcon,
           salesOrder.status,
           context),
     );

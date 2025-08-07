@@ -32,6 +32,7 @@ class HomeViewModel extends BaseViewModel {
   User user = User();
   var userFullNameList = <String>[];
   bool isQuickLinksLoading = false;
+  bool isLoading = false;
 
   void setIsLoading(bool val) {
     isQuickLinksLoading = val;
@@ -225,9 +226,12 @@ class HomeViewModel extends BaseViewModel {
   }
 
   Future getUser() async {
+    isLoading = true;
+    notifyListeners();
     user = await locator
         .get<ApiService>()
         .getUser(locator.get<StorageService>().name);
+    isLoading = false;
     notifyListeners();
   }
 
@@ -237,10 +241,11 @@ class HomeViewModel extends BaseViewModel {
   }
 
   Future getAccounts() async {
-    setState(ViewState.busy);
-    accounts = await locator.get<HomeService>().getAccounts();
+    isLoading = true;
     notifyListeners();
-    setState(ViewState.idle);
+    accounts = await locator.get<HomeService>().getAccounts();
+    isLoading = false;
+    notifyListeners();
   }
 
   Future getAccountBalance() async {
@@ -271,7 +276,10 @@ class HomeViewModel extends BaseViewModel {
   }
 
   Future getGlobalDefaults() async {
+    isLoading = true;
+    notifyListeners();
     globalDefaults = await locator.get<ApiService>().getGlobalDefaults();
+    isLoading = false;
     notifyListeners();
   }
 }

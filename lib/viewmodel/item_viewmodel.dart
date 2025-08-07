@@ -19,6 +19,8 @@ class ItemViewModel extends BaseViewModel {
   dynamic item;
   var binList = <Bin>[];
   var itemList = <Item>[];
+  bool isLoading = false;
+  bool isItemDataLoading = false;
 
   void init() {
     itemNameController.clear();
@@ -27,11 +29,18 @@ class ItemViewModel extends BaseViewModel {
   }
 
   Future getItemsModelData(ConnectivityStatus connectivityStatus) async {
+    isLoading = true;
+    notifyListeners();
+    await Future.delayed(const Duration(milliseconds: 200));
     itemList = await getItemList([], connectivityStatus);
+    isLoading = false;
     notifyListeners();
   }
 
   Future getBinList(String? itemCode) async {
+    isItemDataLoading = true;
+    notifyListeners();
+    await Future.delayed(const Duration(milliseconds: 200));
     var bin =
         await locator.get<FetchCachedDoctypeService>().fetchCachedBinData();
     binList.clear();
@@ -41,6 +50,7 @@ class ItemViewModel extends BaseViewModel {
         )
         .toList();
     binList = filteredBinList;
+    isItemDataLoading = false;
     notifyListeners();
   }
 
@@ -87,7 +97,9 @@ class ItemViewModel extends BaseViewModel {
 
   Future getItem(String doctype, String name,
       ConnectivityStatus connectivityStatus) async {
-    setState(ViewState.busy);
+    isItemDataLoading = true;
+    notifyListeners();
+    await Future.delayed(const Duration(milliseconds: 200));
     final cu = doctypeDetailUrl(doctype, name);
     try {
       if (connectivityStatus == ConnectivityStatus.cellular ||
@@ -112,9 +124,10 @@ class ItemViewModel extends BaseViewModel {
     } catch (e) {
       exception(e, cu, 'getItem');
     } finally {
-      setState(ViewState.idle);
+      isItemDataLoading = false;
     }
-    setState(ViewState.idle);
+    isItemDataLoading = false;
+    notifyListeners();
   }
 
   Future getItemNameList() async {

@@ -16,6 +16,7 @@ import 'package:ampower_buzzit_mobile/viewmodel/filters/sales_invoice_filter_bot
 import 'package:ampower_buzzit_mobile/viewmodel/sales_invoice_list_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class SalesInvoiceListView extends StatelessWidget {
   final String? appBarText;
@@ -50,33 +51,33 @@ class SalesInvoiceListView extends StatelessWidget {
                 ),
               ],
               context),
-          body: model.state == ViewState.busy
-              ? WidgetsFactoryList.circularProgressIndicator()
-              : RefreshIndicator.adaptive(
-                  onRefresh: () async {
-                    var connectivityStatus =
-                        Provider.of<ConnectivityStatus>(context, listen: false);
-                    // await locator.get<TargetitHomeViewModel>().cacheSalesInvoice(
-                    //     Strings.SalesInvoice, connectivityStatus);
-                    await model.loadData(
-                        Strings.salesInvoice, model.filtersSO, context);
-                  },
-                  child: model.salesInvoiceList.isEmpty
-                      ? EmptyWidget(
-                          onRefresh: () async {
-                            var connectivityStatus =
-                                Provider.of<ConnectivityStatus>(context,
-                                    listen: false);
-                            // await locator
-                            //     .get<TargetitHomeViewModel>()
-                            //     .cacheSalesInvoice(
-                            //         Strings.SalesInvoice, connectivityStatus);
-                            await model.loadData(
-                                Strings.salesInvoice, model.filtersSO, context);
-                          },
-                        )
-                      : salesInvoiceListView(model, context),
-                ),
+          body: RefreshIndicator.adaptive(
+            onRefresh: () async {
+              var connectivityStatus =
+                  Provider.of<ConnectivityStatus>(context, listen: false);
+              // await locator.get<TargetitHomeViewModel>().cacheSalesInvoice(
+              //     Strings.SalesInvoice, connectivityStatus);
+              await model.loadData(
+                  Strings.salesInvoice, model.filtersSO, context);
+            },
+            child: model.isLoading
+                ? salesInvoiceListView(model, context)
+                : model.salesInvoiceList.isEmpty
+                    ? EmptyWidget(
+                        onRefresh: () async {
+                          var connectivityStatus =
+                              Provider.of<ConnectivityStatus>(context,
+                                  listen: false);
+                          // await locator
+                          //     .get<TargetitHomeViewModel>()
+                          //     .cacheSalesInvoice(
+                          //         Strings.SalesInvoice, connectivityStatus);
+                          await model.loadData(
+                              Strings.salesInvoice, model.filtersSO, context);
+                        },
+                      )
+                    : salesInvoiceListView(model, context),
+          ),
         );
       },
     );
@@ -154,12 +155,15 @@ class SalesInvoiceListView extends StatelessWidget {
           padding: EdgeInsets.symmetric(
             vertical: Sizes.smallPaddingWidget(context) * 1.5,
           ),
-          sliver: SliverList.builder(
-            itemCount: model.salesInvoiceList.length,
-            itemBuilder: (context, i) {
-              var salesInvoice = model.salesInvoiceList[i];
-              return SalesInvoiceTile(model, salesInvoice, context);
-            },
+          sliver: Skeletonizer.sliver(
+            enabled: model.isLoading,
+            child: SliverList.builder(
+              itemCount: model.salesInvoiceList.length,
+              itemBuilder: (context, i) {
+                var salesInvoice = model.salesInvoiceList[i];
+                return SalesInvoiceTile(model, salesInvoice, context);
+              },
+            ),
           ),
         ),
       ],
@@ -179,7 +183,7 @@ class SalesInvoiceListView extends StatelessWidget {
           Strings.salesInvoice,
           salesInvoice.customer ?? '',
           salesInvoice.name ?? '',
-          Images.salesInvoiceListIcon,
+          Images.doctypeListCardIcon,
           salesInvoice.status,
           context),
     );

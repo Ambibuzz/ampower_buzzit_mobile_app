@@ -381,7 +381,8 @@ class HomeView extends StatelessWidget {
           shrinkWrap: true,
           itemCount: model.quickLinksList.length,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 4),
+            crossAxisCount: 4,
+          ),
           itemBuilder: (context, index) {
             var e = model.quickLinksList[index];
             return quickLinkGridTile(
@@ -553,6 +554,7 @@ class HomeView extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: Sizes.subTitleTextStyle(context)?.copyWith(
                   color: Theme.of(context).primaryColor,
+                  fontSize: 13,
                 ),
               ),
             ],

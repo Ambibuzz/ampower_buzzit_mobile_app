@@ -6,7 +6,9 @@ import 'package:ampower_buzzit_mobile/common/widgets/abstract_factory/iwidgetsfa
 import 'package:ampower_buzzit_mobile/common/widgets/common.dart';
 import 'package:ampower_buzzit_mobile/common/widgets/custom_textformfield.dart';
 import 'package:ampower_buzzit_mobile/common/widgets/custom_toast.dart';
+import 'package:ampower_buzzit_mobile/config/styles.dart';
 import 'package:ampower_buzzit_mobile/config/theme.dart';
+import 'package:ampower_buzzit_mobile/config/theme_model.dart';
 import 'package:ampower_buzzit_mobile/locator/locator.dart';
 import 'package:ampower_buzzit_mobile/route/routing_constants.dart';
 import 'package:ampower_buzzit_mobile/service/camera_service.dart';
@@ -18,13 +20,25 @@ import 'package:ampower_buzzit_mobile/util/helpers.dart';
 import 'package:ampower_buzzit_mobile/view/login_view.dart';
 import 'package:ampower_buzzit_mobile/viewmodel/profile_viewmodel.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:feedback/feedback.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 
 class ProfileView extends StatelessWidget {
   ProfileView({super.key});
   final _formKey = GlobalKey<FormState>(debugLabel: 'profile');
+
+  Future<String> writeImageToStorage(Uint8List feedbackScreenshot) async {
+    final Directory output = await getTemporaryDirectory();
+    final String screenshotFilePath = '${output.path}/feedback.png';
+    final File screenshotFile = File(screenshotFilePath);
+    await screenshotFile.writeAsBytes(feedbackScreenshot);
+    return screenshotFilePath;
+  }
+
   @override
   Widget build(BuildContext context) {
     return BaseView<ProfileViewModel>(
@@ -34,45 +48,56 @@ class ProfileView extends StatelessWidget {
       },
       builder: (context, model, child) {
         return Scaffold(
-            appBar: Common.commonAppBar(
-                'Profile',
-                [
-                  TextButton(
-                    style: ButtonStyle(
-                      backgroundColor: WidgetStatePropertyAll(
-                          Theme.of(context).colorScheme.onSecondary),
-                    ),
-                    onPressed: () async {
-                      await locator
-                          .get<NavigationService>()
-                          .navigateTo(errorLogListViewRoute);
-                    },
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: Sizes.smallPaddingWidget(context)),
-                      child: Text(
-                        'Error Log',
-                        style: Sizes.titleTextStyle(context)?.copyWith(
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
+          appBar: Common.commonAppBar(
+              'Profile',
+              [
+                ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStatePropertyAll(
+                        Theme.of(context).colorScheme.secondary),
+                  ),
+                  onPressed: () async {
+                    await locator
+                        .get<NavigationService>()
+                        .navigateTo(errorLogListViewRoute);
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: Sizes.smallPaddingWidget(context)),
+                    child: Text(
+                      'Error Log',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSecondary,
+                        fontSize: 16,
                       ),
                     ),
                   ),
-                  SizedBox(width: Sizes.paddingWidget(context)),
-                ],
-                context),
-            body: model.state == ViewState.busy
-                ? WidgetsFactoryList.circularProgressIndicator()
-                : profileScreenUi(model, context));
+                ),
+                SizedBox(width: Sizes.paddingWidget(context)),
+              ],
+              context),
+          body: model.state == ViewState.busy
+              ? WidgetsFactoryList.circularProgressIndicator()
+              : Consumer(builder: (context, ThemeModel themeModel, child) {
+                  var isDark = themeModel.isDark;
+                  return LayoutBuilder(
+                    builder: (context, constraints) {
+                      return smallScreen(
+                          model, context, themeModel, themeModel.isDark);
+                    },
+                  );
+                }),
+        );
       },
     );
   }
 
-  Widget profileScreenUi(ProfileViewModel model, BuildContext context) {
+  Widget smallScreen(ProfileViewModel model, BuildContext context,
+      ThemeModel themeNotifier, bool isDark) {
     return Padding(
       padding: EdgeInsets.only(
-        left: Sizes.smallPaddingWidget(context),
-        right: Sizes.smallPaddingWidget(context),
+        left: Sizes.paddingWidget(context),
+        right: Sizes.paddingWidget(context),
         top: Sizes.paddingWidget(context),
         bottom: Sizes.smallPaddingWidget(context),
       ),
@@ -82,45 +107,139 @@ class ProfileView extends StatelessWidget {
           children: [
             UserImage(model: model),
             SizedBox(height: Sizes.paddingWidget(context)),
-            fullNameField(model, context),
-            SizedBox(height: Sizes.paddingWidget(context)),
-            emailAddressField(model, context),
-            SizedBox(height: Sizes.paddingWidget(context)),
-            mobileNoField(model, context),
+            Card(
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: Sizes.paddingWidget(context),
+                  vertical: Sizes.paddingWidget(context),
+                ),
+                child: Column(
+                  children: [
+                    Common.reusableRowWidget(
+                        'Full Name', model.fullNameController.text, context),
+                    SizedBox(height: Sizes.smallPaddingWidget(context)),
+                    Common.reusableRowWidget(
+                        'E-mail', model.emailController.text, context),
+                    SizedBox(height: Sizes.smallPaddingWidget(context)),
+                    Common.reusableRowWidget(
+                        'Mobile No', model.mobileNoController.text, context),
+                  ],
+                ),
+              ),
+            ),
             SizedBox(height: Sizes.paddingWidget(context)),
             connectedToUrlField(model, context),
             SizedBox(height: Sizes.paddingWidget(context)),
-            SizedBox(
-              width: displayWidth(context) < 600
-                  ? displayWidth(context)
-                  : displayWidth(context) * 0.5,
-              height: Sizes.buttonHeightTargetitWidget(context),
-              child: ElevatedButton(
-                onPressed: () async {
-                  await model.logout(context);
-                },
-                child: const Text('Logout'),
+            // Card(
+            //   child: Padding(
+            //     padding: EdgeInsets.symmetric(
+            //       horizontal: Sizes.paddingWidget(context),
+            //       vertical: Sizes.smallPaddingWidget(context),
+            //     ),
+            //     child: Row(
+            //       children: [
+            //         const Text('Light Theme'),
+            //         const Spacer(),
+            //         Switch.adaptive(
+            //           value: false,
+            //           onChanged: (value) {},
+            //         )
+            //       ],
+            //     ),
+            //   ),
+            // ),
+            // SizedBox(height: Sizes.paddingWidget(context)),
+            Align(
+              alignment: Alignment.center,
+              child: Text(
+                'Premium v${model.version}',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor,
+                    ),
               ),
             ),
             const Spacer(),
-            const PoweredByAmbibuzzLogo(),
-            Padding(
-              padding: EdgeInsets.only(
-                  bottom: defaultTargetPlatform == TargetPlatform.iOS
-                      ? Sizes.smallPaddingWidget(context)
-                      : 0),
-              child: Align(
-                alignment: Alignment.center,
-                child: Text(
-                  'v${model.version}',
-                  textAlign: TextAlign.right,
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).primaryColor,
+            // SizedBox(
+            //   width: displayWidth(context) < 600
+            //       ? displayWidth(context)
+            //       : displayWidth(context) * 0.5,
+            //   height: Sizes.buttonHeightTargetitWidget(context),
+            //   child: TextButton(
+            //     style: ButtonStyle(
+            //         backgroundColor: WidgetStatePropertyAll(
+            //             model.state == ViewState.busy
+            //                 ? CustomTheme.fillColorGrey
+            //                 : Theme.of(context).colorScheme.secondary)),
+            //     onPressed: () async {
+            //       // locator.get<NavigationService>().pop();
+            //       await locator
+            //           .get<NavigationService>()
+            //           .pushReplacementNamed(onBoardingViewRoute);
+            //     },
+            //     child: const Text('Onboarding Screen'),
+            //   ),
+            // ),
+            Row(
+              children: [
+                Expanded(
+                  child: SizedBox(
+                    height: Sizes.buttonHeightTargetitWidget(context),
+                    child: TextButton(
+                      style: ButtonStyle(
+                          shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                              borderRadius: Corners.lgBorder,
+                              side: BorderSide(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .secondary))),
+                          backgroundColor: WidgetStatePropertyAll(
+                              model.state == ViewState.busy
+                                  ? CustomTheme.fillColorGrey
+                                  : Theme.of(context).colorScheme.onSecondary)),
+                      onPressed: () async {
+                        BetterFeedback.of(context).show(
+                          (feedback) async {
+                            final screenshotFilePath =
+                                await writeImageToStorage(feedback.screenshot);
+                            await fileShare(
+                                screenshotFilePath, 'Feedback', feedback.text);
+                          },
+                        );
+                      },
+                      child: Text(
+                        'Feedback',
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.secondary),
+                      ),
+                    ),
                   ),
                 ),
-              ),
+                SizedBox(width: Sizes.smallPaddingWidget(context)),
+                Expanded(
+                  child: SizedBox(
+                    height: Sizes.buttonHeightTargetitWidget(context),
+                    child: TextButton(
+                      style: ButtonStyle(
+                          backgroundColor: WidgetStatePropertyAll(
+                              model.state == ViewState.busy
+                                  ? CustomTheme.fillColorGrey
+                                  : Theme.of(context).colorScheme.secondary)),
+                      onPressed: () async {
+                        // locator.get<NavigationService>().pop();
+                        await locator
+                            .get<NavigationService>()
+                            .pushReplacementNamed(homeViewRoute);
+                      },
+                      child: const Text('Go to home'),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: Sizes.paddingWidget(context),
             ),
           ],
         ),

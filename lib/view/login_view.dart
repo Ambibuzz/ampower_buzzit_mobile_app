@@ -74,30 +74,29 @@ class LoginView extends StatelessWidget {
                 key: _formKey,
                 child: Container(
                   decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: <Color>[
-                        Color(0xFF006CB5), // Starting color
-                        Color(0xFF002D4C) // ending color
-                      ],
-                    ),
+                    image: DecorationImage(
+                        image: AssetImage(Images.loginScreenImage),
+                        fit: BoxFit.fill),
                   ),
                   child: Column(
                     children: [
                       SizedBox(
                         width: displayWidth(context),
-                        height: displayHeight(context) * 0.38,
+                        height: displayHeight(context) *
+                            (displayHeight(context) <= 780 ? 0.54 : 0.6),
                         child: const Center(child: Logo()),
                       ),
                       Stack(
                         children: [
                           Container(
                             height: displayHeight(context) -
-                                (displayHeight(context) * 0.38),
+                                (displayHeight(context) *
+                                    (displayHeight(context) <= 780
+                                        ? 0.54
+                                        : 0.6)),
                             decoration: const BoxDecoration(
                                 borderRadius: BorderRadius.vertical(
-                                  top: Corners.xxlRadius,
+                                  top: Corners.lgRadius,
                                 ),
                                 color: Colors.white),
                             child: Padding(
@@ -107,12 +106,12 @@ class LoginView extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   SizedBox(
-                                    height: displayHeight(context) * 0.04,
+                                    height: displayHeight(context) * 0.03,
                                   ),
                                   // const Logo(),
                                   Common.reusableTextWidget(
-                                    'Ready to dive in?',
-                                    28,
+                                    'Sign In to your Account',
+                                    20,
                                     context,
                                     color: Colors.black,
                                   ),
@@ -120,7 +119,7 @@ class LoginView extends StatelessWidget {
                                       height:
                                           Sizes.smallPaddingWidget(context)),
                                   Common.reusableTextWidget(
-                                      'Access your account with your login details.',
+                                      'Enter your Email and password to Log In',
                                       14,
                                       context,
                                       color: Color(0xFF666666),
@@ -155,46 +154,20 @@ class LoginView extends StatelessWidget {
                                             fontSize:
                                                 displayWidth(context) < 600
                                                     ? 16
-                                                    : 28,
+                                                    : 24,
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
                                       ),
                                     ],
                                   ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          Positioned(
-                            left: 0,
-                            right: 0,
-                            bottom: 0,
-                            child: Center(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  const PoweredByAmbibuzzLogo(),
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                        bottom: defaultTargetPlatform ==
-                                                TargetPlatform.iOS
-                                            ? Sizes.paddingWidget(context)
-                                            : 0),
-                                    child: Text(
-                                      'v${model.version}',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold,
-                                        color: Theme.of(context).primaryColor,
-                                      ),
-                                    ),
+                                  SizedBox(
+                                    height: displayHeight(context) * 0.02,
                                   ),
                                 ],
                               ),
                             ),
-                          )
+                          ),
                         ],
                       ),
                     ],

@@ -234,7 +234,7 @@ class ApiService {
         return bc;
       }
     } catch (e) {
-      exception(e, url, 'getBuzzitConfig');
+      debugPrint(e.toString());
     }
     return BuzzitConfig();
   }

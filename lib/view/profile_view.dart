@@ -152,7 +152,7 @@ class ProfileView extends StatelessWidget {
             Align(
               alignment: Alignment.center,
               child: Text(
-                'Premium v${model.version}',
+                'v${model.version}',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.labelMedium?.copyWith(
                       fontWeight: FontWeight.bold,

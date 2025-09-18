@@ -45,6 +45,12 @@ AmPower BuzzIT is the go-to mobile app for business owners, managers, and key pe
 - Can view Sales Order, Sales Invoice, Purchase Invoice, Purchase Order, Items
 - Reports : Balance Sheet, Customer Ledger, Supplier Ledger
 
+## 🔗 Frappe App Installation Guide
+
+To integrate and manage the BuzzIT Mobile App with your ERP system, please install the corresponding Frappe wrapper app:  
+[AmPower BuzzIT App](https://github.com/Ambibuzz/ampower_buzzit_app)
+
+
 ### To run code
 Clone the source code<br/>
 ```sh

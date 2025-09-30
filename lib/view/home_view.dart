@@ -137,49 +137,51 @@ class HomeView extends StatelessWidget {
                 // model.state == ViewState.busy
                 //     ? WidgetsFactoryList.circularProgressIndicator()
                 //     :
-                RefreshIndicator(
-              onRefresh: () async {
-                var connectivityStatus =
-                    Provider.of<ConnectivityStatus>(context, listen: false);
-                locator
-                    .get<DoctypeCachingService>()
-                    .reCacheDoctype(connectivityStatus);
-              },
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: Sizes.smallPaddingWidget(context) * 1.5),
-                child: CustomScrollView(
-                  slivers: [
-                    verticalPadding(context),
-                    SliverToBoxAdapter(
-                      child: Text(
-                        'Financial Summary',
-                        style: Sizes.titleTextStyle(context)?.copyWith(
-                          fontWeight: FontWeight.bold,
+                SafeArea(
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  var connectivityStatus =
+                      Provider.of<ConnectivityStatus>(context, listen: false);
+                  locator
+                      .get<DoctypeCachingService>()
+                      .reCacheDoctype(connectivityStatus);
+                },
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: Sizes.smallPaddingWidget(context) * 1.5),
+                  child: CustomScrollView(
+                    slivers: [
+                      verticalPadding(context),
+                      SliverToBoxAdapter(
+                        child: Text(
+                          'Financial Summary',
+                          style: Sizes.titleTextStyle(context)?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
-                    ),
-                    SliverToBoxAdapter(
-                      child: SizedBox(
-                        height: Sizes.smallPaddingWidget(context),
-                      ),
-                    ),
-                    SliverToBoxAdapter(child: cardUi(model, context)),
-                    verticalPadding(context),
-                    SliverToBoxAdapter(
-                      child: Text(
-                        'Action Center',
-                        style: TextStyle(
-                          fontSize: Sizes.fontSizeWidget(context),
-                          fontWeight: FontWeight.bold,
+                      SliverToBoxAdapter(
+                        child: SizedBox(
+                          height: Sizes.smallPaddingWidget(context),
                         ),
                       ),
-                    ),
-                    verticalPadding(context),
-                    quickLinksGridViewWidget(model, context),
-                    // accountBalanceData(model, context),
-                    // verticalPadding(context),
-                  ],
+                      SliverToBoxAdapter(child: cardUi(model, context)),
+                      verticalPadding(context),
+                      SliverToBoxAdapter(
+                        child: Text(
+                          'Action Center',
+                          style: TextStyle(
+                            fontSize: Sizes.fontSizeWidget(context),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      verticalPadding(context),
+                      quickLinksGridViewWidget(model, context),
+                      // accountBalanceData(model, context),
+                      // verticalPadding(context),
+                    ],
+                  ),
                 ),
               ),
             ),

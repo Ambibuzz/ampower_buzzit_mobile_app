@@ -51,32 +51,34 @@ class SalesInvoiceListView extends StatelessWidget {
                 ),
               ],
               context),
-          body: RefreshIndicator.adaptive(
-            onRefresh: () async {
-              var connectivityStatus =
-                  Provider.of<ConnectivityStatus>(context, listen: false);
-              // await locator.get<TargetitHomeViewModel>().cacheSalesInvoice(
-              //     Strings.SalesInvoice, connectivityStatus);
-              await model.loadData(
-                  Strings.salesInvoice, model.filtersSO, context);
-            },
-            child: model.isLoading
-                ? salesInvoiceListView(model, context)
-                : model.salesInvoiceList.isEmpty
-                    ? EmptyWidget(
-                        onRefresh: () async {
-                          var connectivityStatus =
-                              Provider.of<ConnectivityStatus>(context,
-                                  listen: false);
-                          // await locator
-                          //     .get<TargetitHomeViewModel>()
-                          //     .cacheSalesInvoice(
-                          //         Strings.SalesInvoice, connectivityStatus);
-                          await model.loadData(
-                              Strings.salesInvoice, model.filtersSO, context);
-                        },
-                      )
-                    : salesInvoiceListView(model, context),
+          body: SafeArea(
+            child: RefreshIndicator.adaptive(
+              onRefresh: () async {
+                var connectivityStatus =
+                    Provider.of<ConnectivityStatus>(context, listen: false);
+                // await locator.get<TargetitHomeViewModel>().cacheSalesInvoice(
+                //     Strings.SalesInvoice, connectivityStatus);
+                await model.loadData(
+                    Strings.salesInvoice, model.filtersSO, context);
+              },
+              child: model.isLoading
+                  ? salesInvoiceListView(model, context)
+                  : model.salesInvoiceList.isEmpty
+                      ? EmptyWidget(
+                          onRefresh: () async {
+                            var connectivityStatus =
+                                Provider.of<ConnectivityStatus>(context,
+                                    listen: false);
+                            // await locator
+                            //     .get<TargetitHomeViewModel>()
+                            //     .cacheSalesInvoice(
+                            //         Strings.SalesInvoice, connectivityStatus);
+                            await model.loadData(
+                                Strings.salesInvoice, model.filtersSO, context);
+                          },
+                        )
+                      : salesInvoiceListView(model, context),
+            ),
           ),
         );
       },

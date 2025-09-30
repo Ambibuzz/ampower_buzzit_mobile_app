@@ -54,35 +54,38 @@ class StockBalanceReportView extends StatelessWidget {
                 ),
               ],
               context),
-          body: model.isLoading
-              ? Common.jsonTableMockEntry(model.isLoading, context)
-              : (model.stockBalance.message?.result == null ||
-                      model.response == null)
-                  ? EmptyWidget(
-                      onRefresh: () async {
-                        await model.loadData();
-                        await model.getStockBalanceReport(true);
-                      },
-                    )
-                  : SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          model.stockBalance.message?.result?.isNotEmpty == true
-                              ? Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      vertical:
-                                          Sizes.smallPaddingWidget(context) *
-                                              1.5,
-                                      horizontal:
-                                          Sizes.smallPaddingWidget(context) *
-                                              1.5),
-                                  child: table2(model, context),
-                                )
-                              : const SizedBox(),
-                          const SizedBox(height: 50),
-                        ],
+          body: SafeArea(
+            child: model.isLoading
+                ? Common.jsonTableMockEntry(model.isLoading, context)
+                : (model.stockBalance.message?.result == null ||
+                        model.response == null)
+                    ? EmptyWidget(
+                        onRefresh: () async {
+                          await model.loadData();
+                          await model.getStockBalanceReport(true);
+                        },
+                      )
+                    : SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            model.stockBalance.message?.result?.isNotEmpty ==
+                                    true
+                                ? Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical:
+                                            Sizes.smallPaddingWidget(context) *
+                                                1.5,
+                                        horizontal:
+                                            Sizes.smallPaddingWidget(context) *
+                                                1.5),
+                                    child: table2(model, context),
+                                  )
+                                : const SizedBox(),
+                            const SizedBox(height: 50),
+                          ],
+                        ),
                       ),
-                    ),
+          ),
         );
       },
     );

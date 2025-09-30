@@ -44,27 +44,29 @@ class SupplierLedgerReportView extends StatelessWidget {
                     .exportCsvPopUpMenu(model.supplierLedger, context),
               ],
               context),
-          body: model.isLoading
-              ? Common.jsonTableMockEntry(model.isLoading, context)
-              : model.supplierLedger == null
-                  ? EmptyWidget(
-                      onRefresh: () async {
-                        await model.loadData();
-                        await model.getSupplierLedgerReport();
-                      },
-                    )
-                  : Common.reportTable(
-                      model.supplierLedger,
-                      <String>[
-                        'posting_date',
-                        'account',
-                        'debit',
-                        'credit',
-                        'balance',
-                        'voucher_type',
-                        'voucher_no'
-                      ],
-                      context),
+          body: SafeArea(
+            child: model.isLoading
+                ? Common.jsonTableMockEntry(model.isLoading, context)
+                : model.supplierLedger == null
+                    ? EmptyWidget(
+                        onRefresh: () async {
+                          await model.loadData();
+                          await model.getSupplierLedgerReport();
+                        },
+                      )
+                    : Common.reportTable(
+                        model.supplierLedger,
+                        <String>[
+                          'posting_date',
+                          'account',
+                          'debit',
+                          'credit',
+                          'balance',
+                          'voucher_type',
+                          'voucher_no'
+                        ],
+                        context),
+          ),
         );
       },
     );

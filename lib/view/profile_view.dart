@@ -76,17 +76,19 @@ class ProfileView extends StatelessWidget {
                 SizedBox(width: Sizes.paddingWidget(context)),
               ],
               context),
-          body: model.state == ViewState.busy
-              ? WidgetsFactoryList.circularProgressIndicator()
-              : Consumer(builder: (context, ThemeModel themeModel, child) {
-                  var isDark = themeModel.isDark;
-                  return LayoutBuilder(
-                    builder: (context, constraints) {
-                      return smallScreen(
-                          model, context, themeModel, themeModel.isDark);
-                    },
-                  );
-                }),
+          body: SafeArea(
+            child: model.state == ViewState.busy
+                ? WidgetsFactoryList.circularProgressIndicator()
+                : Consumer(builder: (context, ThemeModel themeModel, child) {
+                    var isDark = themeModel.isDark;
+                    return LayoutBuilder(
+                      builder: (context, constraints) {
+                        return smallScreen(
+                            model, context, themeModel, themeModel.isDark);
+                      },
+                    );
+                  }),
+          ),
         );
       },
     );

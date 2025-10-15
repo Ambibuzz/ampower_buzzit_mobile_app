@@ -63,32 +63,34 @@ class PurchaseInvoiceListView extends StatelessWidget {
                 ),
               ],
               context),
-          body: RefreshIndicator.adaptive(
-            onRefresh: () async {
-              var connectivityStatus =
-                  Provider.of<ConnectivityStatus>(context, listen: false);
-              // await locator.get<TargetitHomeViewModel>().cacheSalesOrder(
-              //     Strings.salesOrder, connectivityStatus);
-              await model.loadData(
-                  Strings.purchaseInvoice, model.filtersSO, context);
-            },
-            child: model.isLoading
-                ? purchaseInvoiceListView(model, context)
-                : model.purchaseInvoiceList.isEmpty
-                    ? EmptyWidget(
-                        onRefresh: () async {
-                          var connectivityStatus =
-                              Provider.of<ConnectivityStatus>(context,
-                                  listen: false);
-                          // await locator
-                          //     .get<TargetitHomeViewModel>()
-                          //     .cachePurchaseInvoice(
-                          //         Strings.PurchaseInvoice, connectivityStatus);
-                          await model.loadData(Strings.purchaseInvoice,
-                              model.filtersSO, context);
-                        },
-                      )
-                    : purchaseInvoiceListView(model, context),
+          body: SafeArea(
+            child: RefreshIndicator.adaptive(
+              onRefresh: () async {
+                var connectivityStatus =
+                    Provider.of<ConnectivityStatus>(context, listen: false);
+                // await locator.get<TargetitHomeViewModel>().cacheSalesOrder(
+                //     Strings.salesOrder, connectivityStatus);
+                await model.loadData(
+                    Strings.purchaseInvoice, model.filtersSO, context);
+              },
+              child: model.isLoading
+                  ? purchaseInvoiceListView(model, context)
+                  : model.purchaseInvoiceList.isEmpty
+                      ? EmptyWidget(
+                          onRefresh: () async {
+                            var connectivityStatus =
+                                Provider.of<ConnectivityStatus>(context,
+                                    listen: false);
+                            // await locator
+                            //     .get<TargetitHomeViewModel>()
+                            //     .cachePurchaseInvoice(
+                            //         Strings.PurchaseInvoice, connectivityStatus);
+                            await model.loadData(Strings.purchaseInvoice,
+                                model.filtersSO, context);
+                          },
+                        )
+                      : purchaseInvoiceListView(model, context),
+            ),
           ),
         );
       },

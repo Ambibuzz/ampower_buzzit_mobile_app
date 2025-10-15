@@ -31,7 +31,7 @@ if (keystorePropertiesFile.exists()) {
 android {
     namespace "com.ampower.buzzit_mobile_app"
     compileSdk 36
-    ndkVersion "29.0.13113456"
+    ndkVersion "29.0.13113456 rc1"
 
 
     sourceSets {
@@ -58,9 +58,9 @@ android {
         versionName flutter.versionName
         multiDexEnabled true
 
-        // ndk {
-        //     abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
-        // }
+//        ndk {
+//            abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+//        }
     }
 
     signingConfigs {

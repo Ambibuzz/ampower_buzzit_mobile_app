@@ -28,17 +28,19 @@ class ErrorLogListView extends StatelessWidget {
       builder: (context, model, child) {
         return Scaffold(
           appBar: Common.commonAppBar('Error Logs', [], context),
-          body: model.state == ViewState.busy
-              ? WidgetsFactoryList.circularProgressIndicator()
-              // : SizedBox()
-              // /*
-              : model.errorLogList.isNotEmpty
-                  ? errorLogList(model, context)
-                  : Center(
-                      child: EmptyWidget(
-                        height: displayHeight(context),
+          body: SafeArea(
+            child: model.state == ViewState.busy
+                ? WidgetsFactoryList.circularProgressIndicator()
+                // : SizedBox()
+                // /*
+                : model.errorLogList.isNotEmpty
+                    ? errorLogList(model, context)
+                    : Center(
+                        child: EmptyWidget(
+                          height: displayHeight(context),
+                        ),
                       ),
-                    ),
+          ),
           // */
         );
       },

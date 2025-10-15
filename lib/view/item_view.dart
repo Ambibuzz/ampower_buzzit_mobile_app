@@ -29,13 +29,15 @@ class ItemView extends StatelessWidget {
       builder: (context, model, child) {
         return Scaffold(
           appBar: Common.commonAppBar('Item', [], context),
-          body: model.state == ViewState.busy
-              ? WidgetsFactoryList.circularProgressIndicator()
-              : GestureDetector(
-                  onTap: () {
-                    model.unfocus(context);
-                  },
-                  child: itemViewWidget(model, context)),
+          body: SafeArea(
+            child: model.state == ViewState.busy
+                ? WidgetsFactoryList.circularProgressIndicator()
+                : GestureDetector(
+                    onTap: () {
+                      model.unfocus(context);
+                    },
+                    child: itemViewWidget(model, context)),
+          ),
         );
       },
     );

@@ -51,32 +51,34 @@ class SalesOrderListView extends StatelessWidget {
             ],
             context,
           ),
-          body: RefreshIndicator.adaptive(
-            onRefresh: () async {
-              var connectivityStatus =
-                  Provider.of<ConnectivityStatus>(context, listen: false);
-              // await locator.get<TargetitHomeViewModel>().cacheSalesOrder(
-              //     Strings.salesOrder, connectivityStatus);
-              await model.loadData(
-                  Strings.salesOrder, model.filtersSO, context);
-            },
-            child: model.isLoading
-                ? salesOrderListView(model, context)
-                : model.salesOrderList.isEmpty
-                    ? EmptyWidget(
-                        onRefresh: () async {
-                          var connectivityStatus =
-                              Provider.of<ConnectivityStatus>(context,
-                                  listen: false);
-                          // await locator
-                          //     .get<TargetitHomeViewModel>()
-                          //     .cacheSalesOrder(
-                          //         Strings.salesOrder, connectivityStatus);
-                          await model.loadData(
-                              Strings.salesOrder, model.filtersSO, context);
-                        },
-                      )
-                    : salesOrderListView(model, context),
+          body: SafeArea(
+            child: RefreshIndicator.adaptive(
+              onRefresh: () async {
+                var connectivityStatus =
+                    Provider.of<ConnectivityStatus>(context, listen: false);
+                // await locator.get<TargetitHomeViewModel>().cacheSalesOrder(
+                //     Strings.salesOrder, connectivityStatus);
+                await model.loadData(
+                    Strings.salesOrder, model.filtersSO, context);
+              },
+              child: model.isLoading
+                  ? salesOrderListView(model, context)
+                  : model.salesOrderList.isEmpty
+                      ? EmptyWidget(
+                          onRefresh: () async {
+                            var connectivityStatus =
+                                Provider.of<ConnectivityStatus>(context,
+                                    listen: false);
+                            // await locator
+                            //     .get<TargetitHomeViewModel>()
+                            //     .cacheSalesOrder(
+                            //         Strings.salesOrder, connectivityStatus);
+                            await model.loadData(
+                                Strings.salesOrder, model.filtersSO, context);
+                          },
+                        )
+                      : salesOrderListView(model, context),
+            ),
           ),
         );
       },

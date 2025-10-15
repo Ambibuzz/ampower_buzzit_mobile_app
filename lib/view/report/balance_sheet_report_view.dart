@@ -45,17 +45,19 @@ class BalanceSheetReportView extends StatelessWidget {
                 ),
               ],
               context),
-          body: model.state == ViewState.busy
-              ? WidgetsFactoryList.circularProgressIndicator()
-              : model.reportData == null
-                  ? EmptyWidget(
-                      onRefresh: () async {
-                        await model.loadData();
-                        await model.getBalanceSheetReport();
-                      },
-                    )
-                  : Common.reportTableWithHiddenColumns(
-                      model.reportData, <String>['currency'], context),
+          body: SafeArea(
+            child: model.state == ViewState.busy
+                ? WidgetsFactoryList.circularProgressIndicator()
+                : model.reportData == null
+                    ? EmptyWidget(
+                        onRefresh: () async {
+                          await model.loadData();
+                          await model.getBalanceSheetReport();
+                        },
+                      )
+                    : Common.reportTableWithHiddenColumns(
+                        model.reportData, <String>['currency'], context),
+          ),
         );
       },
     );

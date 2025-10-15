@@ -44,27 +44,29 @@ class CustomerLedgerReportView extends StatelessWidget {
                     .exportCsvPopUpMenu(model.customerLedger, context),
               ],
               context),
-          body: model.isLoading
-              ? Common.jsonTableMockEntry(model.isLoading, context)
-              : model.customerLedger == null
-                  ? EmptyWidget(
-                      onRefresh: () async {
-                        await model.loadData();
-                        await model.getCustomerLedgerReport();
-                      },
-                    )
-                  : Common.reportTable(
-                      model.customerLedger,
-                      <String>[
-                        'posting_date',
-                        'account',
-                        'debit',
-                        'credit',
-                        'balance',
-                        'voucher_type',
-                        'voucher_no'
-                      ],
-                      context),
+          body: SafeArea(
+            child: model.isLoading
+                ? Common.jsonTableMockEntry(model.isLoading, context)
+                : model.customerLedger == null
+                    ? EmptyWidget(
+                        onRefresh: () async {
+                          await model.loadData();
+                          await model.getCustomerLedgerReport();
+                        },
+                      )
+                    : Common.reportTable(
+                        model.customerLedger,
+                        <String>[
+                          'posting_date',
+                          'account',
+                          'debit',
+                          'credit',
+                          'balance',
+                          'voucher_type',
+                          'voucher_no'
+                        ],
+                        context),
+          ),
         );
       },
     );

@@ -23,6 +23,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -58,7 +59,7 @@ class HomeView extends StatelessWidget {
         }
         await model.getBuzzitConfig();
         model.getQuickLinksList();
-        await Future.delayed(const Duration(seconds: 1));
+        await Future.delayed(const Duration(milliseconds: 300));
         model.setIsLoading(false);
         await model.checkDoctypeCachedOrNot(connectivityStatus);
         await model.getGlobalDefaults();
@@ -67,6 +68,7 @@ class HomeView extends StatelessWidget {
         await model.getAccountBalance();
         model.getIncomeAndExpense();
         await model.getUserFullNameList();
+        await model.fetchDefaultCurrencyFromCompany();
       },
       builder: (context, model, child) {
         return WillPopScope(
@@ -201,7 +203,7 @@ class HomeView extends StatelessWidget {
                 model,
                 Images.incomeIcon,
                 'Income',
-                model.income,
+                model.income.toStringAsFixed(2),
                 Colors.green.shade500,
                 context,
               ),
@@ -211,7 +213,7 @@ class HomeView extends StatelessWidget {
                 model,
                 Images.expenseIcon,
                 'Expense',
-                model.expense,
+                model.expense.toStringAsFixed(2),
                 Colors.red.shade500,
                 context,
               ),
@@ -222,7 +224,7 @@ class HomeView extends StatelessWidget {
           model,
           Images.netProfitIcon,
           'Net Profit',
-          model.income - model.expense,
+          (model.income - model.expense).toStringAsFixed(2),
           model.income > model.expense
               ? Colors.green.shade500
               : Colors.red.shade500,
@@ -233,7 +235,7 @@ class HomeView extends StatelessWidget {
   }
 
   Widget cardTileUi(HomeViewModel model, String icon, String title,
-      double value, Color color, BuildContext context) {
+      String value, Color color, BuildContext context) {
     return Card(
       child: Padding(
         padding: EdgeInsets.symmetric(
@@ -263,11 +265,26 @@ class HomeView extends StatelessWidget {
                 SizedBox(
                   height: Sizes.smallPaddingWidget(context),
                 ),
-                Text(
-                  Others.formatter.format(value),
-                  style: TextStyle(
-                    color: color,
-                    fontWeight: FontWeight.bold,
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: model.currentCurrencySymbol,
+                        style: TextStyle(
+                          fontFamily:
+                              'Roboto', // System font that supports PHP symbol
+                          color: color,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      TextSpan(
+                        text: value,
+                        style: GoogleFonts.dmSans(
+                          color: color,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],

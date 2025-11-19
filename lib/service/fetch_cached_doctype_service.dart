@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:ampower_buzzit_mobile/common/model/currency_model.dart';
 import 'package:ampower_buzzit_mobile/common/service/offline_storage_service.dart';
 import 'package:ampower_buzzit_mobile/locator/locator.dart';
 import 'package:ampower_buzzit_mobile/model/bin.dart';
@@ -14,6 +15,21 @@ class FetchCachedDoctypeService {
       var binList = BinList.fromJson(itemdata);
       if (binList.binList != null) {
         return binList.binList!;
+      } else {
+        return [];
+      }
+    } else {
+      return [];
+    }
+  }
+
+  Future<List<CurrencyModel>> fetchCachedCurrencyData() async {
+    var data = locator.get<OfflineStorage>().getItem(Strings.currency);
+    if (data['data'] != null) {
+      var cdata = jsonDecode(data['data']);
+      var clist = CurrencyList.fromJson(cdata);
+      if (clist.currencyList != null) {
+        return clist.currencyList!;
       } else {
         return [];
       }

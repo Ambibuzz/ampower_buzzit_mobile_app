@@ -18,6 +18,7 @@ import 'package:ampower_buzzit_mobile/util/constants/lists.dart';
 import 'package:ampower_buzzit_mobile/util/constants/strings.dart';
 import 'package:ampower_buzzit_mobile/util/enums.dart';
 import 'package:ampower_buzzit_mobile/util/preference.dart';
+import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 
 class HomeViewModel extends BaseViewModel {
@@ -33,6 +34,26 @@ class HomeViewModel extends BaseViewModel {
   var userFullNameList = <String>[];
   bool isQuickLinksLoading = false;
   bool isLoading = false;
+  var currentCurrencySymbol = '₹';
+
+  Future fetchDefaultCurrencyFromCompany() async {
+    try {
+      var company = globalDefaults.defaultCompany;
+      if (company != null && company.isNotEmpty) {
+        var currentCurrency = await locator
+            .get<ApiService>()
+            .getDefaultCurrencyFromCompany(globalDefaults.defaultCompany!);
+        if (currentCurrency.isNotEmpty) {
+          currentCurrencySymbol = await locator
+              .get<ApiService>()
+              .getCurrencySymbolFromCurrency(currentCurrency);
+        }
+      }
+    } catch (e) {
+      exception(e, '', 'fetchDefaultCurrencyFromCompany');
+    }
+    notifyListeners();
+  }
 
   void setIsLoading(bool val) {
     isQuickLinksLoading = val;

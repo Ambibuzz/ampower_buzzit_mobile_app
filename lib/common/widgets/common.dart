@@ -13,6 +13,7 @@ import 'package:ampower_buzzit_mobile/config/theme.dart';
 import 'package:ampower_buzzit_mobile/locator/locator.dart';
 import 'package:ampower_buzzit_mobile/model/comment.dart';
 import 'package:ampower_buzzit_mobile/service/api_service.dart';
+import 'package:ampower_buzzit_mobile/util/constants/formatter.dart';
 import 'package:ampower_buzzit_mobile/util/constants/images.dart';
 import 'package:ampower_buzzit_mobile/util/constants/sizes.dart';
 import 'package:ampower_buzzit_mobile/util/display_helper.dart';
@@ -41,6 +42,43 @@ class Common {
         ),
       ),
       maxLines: 4,
+    );
+  }
+
+  static Widget currencyFormattedWidget(
+      String? currency, double? value, TextStyle? style) {
+    return FutureBuilder<String>(
+      future: ApiService().getCurrencySymbolFromCurrency(currency ?? 'INR'),
+      builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Text(
+            Formatter.formatter.format(value),
+            style: style,
+          );
+        } else if (snapshot.hasError) {
+          return Text(
+            Formatter.formatter.format(value),
+            style: style,
+          );
+        } else if (snapshot.hasData) {
+          if (snapshot.data!.isNotEmpty == true) {
+            return Text(
+              Formatter.customFormatter(snapshot.data).format(value),
+              style: style,
+            );
+          } else {
+            return Text(
+              Formatter.customFormatter(snapshot.data).format(value),
+              style: style,
+            );
+          }
+        } else {
+          return Text(
+            Formatter.customFormatter(snapshot.data).format(value),
+            style: style,
+          );
+        }
+      },
     );
   }
 

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:ampower_buzzit_mobile/common/model/buzzit_config.dart';
+import 'package:ampower_buzzit_mobile/common/model/currency_model.dart';
 import 'package:ampower_buzzit_mobile/common/model/global_defaults.dart';
 import 'package:ampower_buzzit_mobile/common/service/offline_storage_service.dart';
 import 'package:ampower_buzzit_mobile/common/widgets/custom_toast.dart';
@@ -153,6 +154,84 @@ class ApiService {
       exception(e, url, 'getBinList');
     }
     return binlist;
+  }
+
+  Future<String> getCurrencySymbolFromCurrency(String currency) async {
+    if (currency.isNotEmpty == true) {
+      var currencyList = await locator
+          .get<FetchCachedDoctypeService>()
+          .fetchCachedCurrencyData();
+      if (currencyList.isNotEmpty) {
+        var model = currencyList.firstWhere(
+          (element) => element.name == currency,
+        );
+        return model.symbol ?? '';
+      } else {
+        return '';
+      }
+    } else {
+      return '';
+    }
+  }
+
+  //for fetching currency list
+  Future<List<CurrencyModel>> getCurrencyList(
+      List<dynamic> filters, ConnectivityStatus connectivityStatus) async {
+    var list = [];
+    var clist = <CurrencyModel>[];
+    var url = '/api/resource/Currency';
+    var queryParams = {
+      'fields': '["*"]',
+      'limit_page_length': '*',
+      'filters': jsonEncode(filters),
+      'order_by': 'modified desc'
+    };
+    try {
+      // online
+      if (connectivityStatus == ConnectivityStatus.cellular ||
+          connectivityStatus == ConnectivityStatus.wifi) {
+        final response = await DioHelper.dio?.get(
+          url,
+          queryParameters: queryParams,
+        );
+        if (response?.statusCode == 200) {
+          var data = response?.data;
+          list = data['data'];
+          for (var listJson in list) {
+            clist.add(CurrencyModel.fromJson(listJson));
+          }
+          return clist;
+        }
+      }
+      // offline
+      else {
+        return await locator
+            .get<FetchCachedDoctypeService>()
+            .fetchCachedCurrencyData();
+      }
+    } catch (e) {
+      exception(e, url, 'getCurrencyList');
+    }
+    return clist;
+  }
+
+  Future<String> getDefaultCurrencyFromCompany(String company) async {
+    String defaultCurrency = '';
+    var url = '/api/resource/Company/$company';
+    try {
+      final response = await DioHelper.dio?.get(
+        url,
+      );
+
+      if (response?.statusCode == 200) {
+        var data = response?.data;
+        defaultCurrency = data['data']['default_currency'];
+        return defaultCurrency;
+      }
+    } catch (e) {
+      exception(e, url, 'getDefaultCurrencyFromCompany');
+    }
+    return defaultCurrency;
   }
 
   Future<dynamic> getDoc(String? doctype, String? name) async {

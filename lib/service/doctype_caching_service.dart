@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:ampower_buzzit_mobile/common/model/currency_model.dart';
 import 'package:ampower_buzzit_mobile/common/service/offline_storage_service.dart';
 import 'package:ampower_buzzit_mobile/common/widgets/custom_toast.dart';
 import 'package:ampower_buzzit_mobile/locator/locator.dart';
@@ -26,6 +27,7 @@ class DoctypeCachingService {
       cachePurchaseOrder(Strings.purchaseOrder, connectivityStatus),
       cacheSalesInvoice(Strings.salesInvoice, connectivityStatus),
       cacheSalesOrder(Strings.salesOrder, connectivityStatus),
+      cacheCurrency(Strings.currency, connectivityStatus),
     ]);
   }
 
@@ -52,6 +54,10 @@ class DoctypeCachingService {
       // cache sales order
       else if (doctype == Strings.salesOrder) {
         await cacheSalesOrder(doctype, connectivityStatus);
+      }
+      // cache currency
+      else if (doctype == Strings.currency) {
+        await cacheCurrency(doctype, connectivityStatus);
       }
     } else {
       if (data['timestamp'] != null) {
@@ -85,6 +91,10 @@ class DoctypeCachingService {
             // cache sales order
             else if (doctype == Strings.salesOrder) {
               await cacheSalesOrder(doctype, connectivityStatus);
+            }
+            // cache currency
+            else if (doctype == Strings.currency) {
+              await cacheCurrency(doctype, connectivityStatus);
             } else {}
           }
         } else {
@@ -103,6 +113,18 @@ class DoctypeCachingService {
           .get<OfflineStorage>()
           .putItem(doctype, jsonEncode(BinList(binList: binlist).toJson()));
       await showToast('${Strings.bin} synced ');
+    }
+  }
+
+  Future cacheCurrency(
+      String doctype, ConnectivityStatus connectivityStatus) async {
+    var clist = <CurrencyModel>[];
+    clist =
+        await locator.get<ApiService>().getCurrencyList([], connectivityStatus);
+    if (clist.isNotEmpty) {
+      await locator.get<OfflineStorage>().putItem(
+          doctype, jsonEncode(CurrencyList(currencyList: clist).toJson()));
+      await showToast('${Strings.currency} synced ');
     }
   }
 

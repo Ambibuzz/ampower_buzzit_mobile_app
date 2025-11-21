@@ -5,24 +5,11 @@ import 'dart:io';
 import 'package:ampower_buzzit_mobile/viewmodel/home_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class ExportService {
   Future<void> createCsvFile(dynamic reportData,BuildContext context) async {
     var dateTime = DateTime.now();
     try {
-      // Request storage permissions (Android only)
-      if (Platform.isAndroid) {
-        var status = await Permission.storage.request();
-        if (!status.isGranted) {
-          showSnackBar(
-            "Storage permission denied",
-            context,
-            backgroundColor: Theme.of(context).cardColor,
-          );
-          return;
-        }
-      }
 
       // Get the Downloads directory
       Directory? downloadsDirectory;

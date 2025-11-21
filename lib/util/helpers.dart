@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:html/parser.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -71,17 +70,6 @@ Future<String> getDownloadPath() async {
 //         true, // click on notification to open downloaded file (for Android)
 //   );
 // }
-
-Future<bool> _checkPermission() async {
-  if (defaultTargetPlatform == TargetPlatform.android) {
-    if (await Permission.storage.request().isGranted) {
-      return true;
-    }
-  } else {
-    return true;
-  }
-  return false;
-}
 
 noInternetAlert(
   BuildContext context,

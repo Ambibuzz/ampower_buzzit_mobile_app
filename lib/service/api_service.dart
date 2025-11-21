@@ -21,7 +21,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class ApiService {
   //for fetching username
@@ -425,9 +424,6 @@ class ApiService {
   }
 
   Future<String> downloadPdf(String doctype, String docname) async {
-    var storagePermission = await [
-      Permission.storage,
-    ].request();
     var queryParams = <String, dynamic>{};
     final pu = pdfUrl();
     // if (defaultPrintFormat == null) {
@@ -451,36 +447,34 @@ class ApiService {
     // /*
     try {
       String fullPath = '';
-      if (storagePermission.isNotEmpty) {
-        var downpath = '';
-        if (defaultTargetPlatform == TargetPlatform.android) {
-          var downloadsDirectoryPath = await getApplicationSupportDirectory();
-          downpath = downloadsDirectoryPath.path;
-        } else {
-          var downloadsDirectoryPath = await getApplicationDocumentsDirectory();
-          downpath = downloadsDirectoryPath.path;
-        }
-
-        // var datetime = DateTime.now();
-        // FileUtils.mkdir([downpath]);
-        var fileName = '/$docname.pdf';
-        fullPath = downpath + fileName;
-        // print('full path $fullPath');
-        await DioHelper.dio?.download(
-          pu,
-          fullPath,
-          queryParameters: queryParams,
-          // onReceiveProgress: showDownloadProgress,
-          options: Options(
-              responseType: ResponseType.bytes,
-              followRedirects: false,
-              validateStatus: (status) {
-                return status! < 500;
-              }),
-        );
-
-        return fullPath;
+      var downpath = '';
+      if (defaultTargetPlatform == TargetPlatform.android) {
+        var downloadsDirectoryPath = await getApplicationSupportDirectory();
+        downpath = downloadsDirectoryPath.path;
+      } else {
+        var downloadsDirectoryPath = await getApplicationDocumentsDirectory();
+        downpath = downloadsDirectoryPath.path;
       }
+
+      // var datetime = DateTime.now();
+      // FileUtils.mkdir([downpath]);
+      var fileName = '/$docname.pdf';
+      fullPath = downpath + fileName;
+      // print('full path $fullPath');
+      await DioHelper.dio?.download(
+        pu,
+        fullPath,
+        queryParameters: queryParams,
+        // onReceiveProgress: showDownloadProgress,
+        options: Options(
+            responseType: ResponseType.bytes,
+            followRedirects: false,
+            validateStatus: (status) {
+              return status! < 500;
+            }),
+      );
+
+      return fullPath;
     } catch (e) {
       // exception(e, pu, 'pdfFromDocName');
       if (e is PathExistsException) {

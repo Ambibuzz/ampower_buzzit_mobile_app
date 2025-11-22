@@ -17,11 +17,10 @@ import 'package:ampower_buzzit_mobile/util/constants/strings.dart';
 import 'package:ampower_buzzit_mobile/util/dio_helper.dart';
 import 'package:ampower_buzzit_mobile/util/enums.dart';
 import 'package:dio/dio.dart';
+import 'package:file_save_directory/file_save_directory.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class ApiService {
   //for fetching username
@@ -425,82 +424,37 @@ class ApiService {
   }
 
   Future<String> downloadPdf(String doctype, String docname) async {
-    var storagePermission = await [
-      Permission.storage,
-    ].request();
-    var queryParams = <String, dynamic>{};
-    final pu = pdfUrl();
-    // if (defaultPrintFormat == null) {
-    queryParams = {
-      'doctype': doctype,
-      'name': docname,
-    };
-    // }
-    //  else {
-    //   queryParams = {
-    //     'doctype': doctype,
-    //     'name': docname,
-    //     'format': defaultPrintFormat,
-    //     'no_letterhead': 1,
-    //     'letterhead': 'No Letterhead',
-    //     'settings': '{}',
-    //     '_lang': 'en'
-    //   };
-    // }
-
-    // /*
     try {
-      String fullPath = '';
-      if (storagePermission.isNotEmpty) {
-        var downpath = '';
-        if (defaultTargetPlatform == TargetPlatform.android) {
-          var downloadsDirectoryPath = await getApplicationSupportDirectory();
-          downpath = downloadsDirectoryPath.path;
-        } else {
-          var downloadsDirectoryPath = await getApplicationDocumentsDirectory();
-          downpath = downloadsDirectoryPath.path;
-        }
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+      final filename = '${docname}_$timestamp.pdf';
 
-        // var datetime = DateTime.now();
-        // FileUtils.mkdir([downpath]);
-        var fileName = '/$docname.pdf';
-        fullPath = downpath + fileName;
-        // print('full path $fullPath');
-        await DioHelper.dio?.download(
-          pu,
-          fullPath,
-          queryParameters: queryParams,
-          // onReceiveProgress: showDownloadProgress,
-          options: Options(
-              responseType: ResponseType.bytes,
-              followRedirects: false,
-              validateStatus: (status) {
-                return status! < 500;
-              }),
+      // 1. Fetch PDF bytes from Frappe
+      final response = await DioHelper.dio?.get(
+        '/api/method/frappe.utils.print_format.download_pdf',
+        queryParameters: {
+          'doctype': doctype,
+          'name': docname,
+        },
+        options: Options(responseType: ResponseType.bytes),
+      );
+
+      if (response?.data != null) {
+        final bytes = Uint8List.fromList(response?.data);
+
+        // 2. Save file to file_save_directory
+        final savedPath = await FileSaveDirectory.instance.saveFile(
+          fileName: filename,
+          fileBytes: bytes,
+          location: SaveLocation
+              .downloads, // or SaveLocation.documents, SaveLocation.music, SaveLocation.videos, SaveLocation.appDocuments
+          openAfterSave: true, // Default to true
         );
 
-        return fullPath;
+        return savedPath.path ?? ''; // Full absolute path returned
       }
     } catch (e) {
-      // exception(e, pu, 'pdfFromDocName');
-      if (e is PathExistsException) {
-        var downpath = '';
-        if (defaultTargetPlatform == TargetPlatform.android) {
-          var downloadsDirectoryPath = await getApplicationSupportDirectory();
-          downpath = downloadsDirectoryPath.path;
-        } else {
-          var downloadsDirectoryPath = await getApplicationDocumentsDirectory();
-          downpath = downloadsDirectoryPath.path;
-        }
-        var fullPath = '$downpath/$docname.pdf';
-        // for a file
-        var isExists = await File(fullPath).exists();
-        if (isExists) {
-          await OpenFilex.open(fullPath);
-        }
-      }
+      exception(e, pdfUrl(), 'downloadPdf');
     } finally {}
-    // */
     return '';
   }
 

@@ -344,8 +344,10 @@ class UserImage extends StatelessWidget {
                         Navigator.of(context).pop();
                         final picker = ImagePicker();
                         // Capture a photo.
-                        var image =
-                            await picker.pickImage(source: ImageSource.gallery);
+                        var image = await picker.pickImage(
+                          source: ImageSource.gallery,
+                          requestFullMetadata: false,
+                        );
                         model.setImage(image);
                         if (image != null) {
                           if (image.path.endsWith('jpg') ||
@@ -412,8 +414,10 @@ class UserImage extends StatelessWidget {
                         Navigator.of(context).pop();
                         final picker = ImagePicker();
                         // Pick an image.
-                        final image =
-                            await picker.pickImage(source: ImageSource.camera);
+                        final image = await picker.pickImage(
+                          source: ImageSource.camera,
+                          requestFullMetadata: false,
+                        );
                         model.setImage(image);
                         if (image != null) {
                           if (image.path.endsWith('jpg') ||

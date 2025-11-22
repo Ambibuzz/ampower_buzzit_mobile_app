@@ -43,16 +43,6 @@ String getBase64FormateFile(String path) {
   return fileInBase64;
 }
 
-Future<String> getDownloadPath() async {
-  if (defaultTargetPlatform == TargetPlatform.android) {
-    return '/storage/emulated/0/Download/';
-  } else if (defaultTargetPlatform == TargetPlatform.iOS) {
-    var downloadsDirectory = await getApplicationDocumentsDirectory();
-    return downloadsDirectory.path;
-  }
-  return '';
-}
-
 // Future downloadFile(String fileUrl, String downloadPath) async {
 //   await _checkPermission();
 

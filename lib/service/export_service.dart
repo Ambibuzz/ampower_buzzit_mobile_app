@@ -5,9 +5,10 @@ import 'package:ampower_buzzit_mobile/config/exception.dart';
 import 'package:ampower_buzzit_mobile/locator/locator.dart';
 import 'dart:io';
 import 'package:ampower_buzzit_mobile/viewmodel/home_viewmodel.dart';
-import 'package:file_save_directory/file_save_directory.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:open_filex/open_filex.dart';
+
 
 class ExportService {
   Future<void> createCsvFile(dynamic reportData, BuildContext context) async {
@@ -40,13 +41,18 @@ class ExportService {
       final csvBytes = Uint8List.fromList(csvContent.codeUnits);
       final fileName =
           "general-ledger-${dateTime.year}-${dateTime.month}-${dateTime.day}-${dateTime.hour}${dateTime.minute}${dateTime.second}.csv";
-      final savedPath = await FileSaveDirectory.instance.saveFile(
-        fileName: fileName,
-        fileBytes: csvBytes,
-        location: SaveLocation.downloads, // Saves in Downloads folder
-        openAfterSave: false, // Set true if you want auto-open
-      );
-      showSnackBar("CSV saved at: $savedPath", context);
+      // 1. Choose a platform-safe internal directory
+      final directory = await getApplicationSupportDirectory();
+
+      // 2. Create full file path
+      final filePath = '${directory.path}/$fileName';
+
+      // 3. Write file
+      final file = File(filePath);
+      await file.writeAsBytes(csvBytes);
+
+      // 4. (Optional) open after save
+      await OpenFilex.open(filePath);
     } catch (e) {
       exception(e, '', 'createCsvFile');
     }

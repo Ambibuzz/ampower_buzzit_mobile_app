@@ -17,7 +17,6 @@ import 'package:ampower_buzzit_mobile/util/constants/strings.dart';
 import 'package:ampower_buzzit_mobile/util/dio_helper.dart';
 import 'package:ampower_buzzit_mobile/util/enums.dart';
 import 'package:dio/dio.dart';
-import 'package:file_save_directory/file_save_directory.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
@@ -441,16 +440,16 @@ class ApiService {
       if (response?.data != null) {
         final bytes = Uint8List.fromList(response?.data);
 
-        // 2. Save file to file_save_directory
-        final savedPath = await FileSaveDirectory.instance.saveFile(
-          fileName: filename,
-          fileBytes: bytes,
-          location: SaveLocation
-              .downloads, // or SaveLocation.documents, SaveLocation.music, SaveLocation.videos, SaveLocation.appDocuments
-          openAfterSave: true, // Default to true
-        );
+        // 2. Platform-safe internal directory (Android + iOS)
+        final directory = await getApplicationSupportDirectory();
 
-        return savedPath.path ?? ''; // Full absolute path returned
+        final filePath = '${directory.path}/$filename';
+        final file = File(filePath);
+
+        // 3. Write file bytes
+        await file.writeAsBytes(bytes);
+
+        return filePath;
       }
     } catch (e) {
       exception(e, pdfUrl(), 'downloadPdf');

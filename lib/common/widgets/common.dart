@@ -25,6 +25,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_mentions/flutter_mentions.dart';
 import 'package:json_table/json_table.dart';
+import 'package:open_filex/open_filex.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -796,7 +797,11 @@ class Common {
       String doctype, String docname, String? defaultPrintFormat) {
     return GestureDetector(
       onTap: () async {
-        await locator.get<ApiService>().downloadPdf(doctype, docname);
+        var path =
+            await locator.get<ApiService>().downloadPdf(doctype, docname);
+        if (path.isNotEmpty) {
+          OpenFilex.open(path);
+        }
       },
       child: Image.asset(
         Images.downloadIcon,
